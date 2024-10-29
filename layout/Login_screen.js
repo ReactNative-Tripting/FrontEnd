@@ -1,32 +1,28 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Image } from 'react-native';
-//import CheckBox from '@react-native-community/checkbox'; // CheckBox 모듈 import
-import { Switch } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Switch } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
 export default function LoginScreen() {
   const [rememberMe, setRememberMe] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const navigation = useNavigation();
 
   return (
     <View style={styles.container}>
-      {/* 상단 로고 */}
-     
       <Text style={styles.title}>안녕하세요.</Text>
       <Text style={styles.subtitle}>Tripting 입니다.</Text>
       <Text style={styles.description}>먼저 로그인이 필요합니다 :)</Text>
 
-      {/* 아이디 입력 필드 */}
-      <TextInput 
-        style={styles.input} 
-        placeholder="아이디" 
+      <TextInput
+        style={styles.input}
+        placeholder="Enter your ID"
         placeholderTextColor="#999"
       />
 
-      {/* 비밀번호 입력 필드 */}
       <View style={styles.passwordContainer}>
-        <TextInput 
-          style={styles.input} 
-          placeholder="비밀번호" 
+        <TextInput
+          style={styles.passwordInput}
+          placeholder="Enter your password"
           placeholderTextColor="#999"
           secureTextEntry={!showPassword}
         />
@@ -35,40 +31,43 @@ export default function LoginScreen() {
         </TouchableOpacity>
       </View>
 
-      {/* 기억하기 체크박스 */}
       <View style={styles.rememberContainer}>
         <Switch
           value={rememberMe}
           onValueChange={setRememberMe}
+          thumbColor={rememberMe ? "#4caf50" : "#f4f3f4"}
+          trackColor={{ false: "#767577", true: "#81b0ff" }}
         />
         <Text style={styles.rememberText}>기억하기</Text>
       </View>
 
-      {/* 로그인 버튼 */}
       <TouchableOpacity style={styles.loginButton}>
         <Text style={styles.loginText}>로그인</Text>
       </TouchableOpacity>
 
-      {/* 아이디, 비밀번호 찾기 및 회원가입 */}
-      <Text style={styles.helpText}>아이디 찾기   비밀번호 찾기   회원가입</Text>
+      {/* Navigation Links */}
+      <View style={styles.linkContainer}>
+        <TouchableOpacity /*</View>onPress={() => navigation.navigate('FindID')}*/>
+          <Text style={styles.linkText}>아이디 찾기</Text>
+        </TouchableOpacity>
+        <TouchableOpacity /*onPress={() => navigation.navigate('FindPassword')}*/>
+          <Text style={styles.linkText}>비밀번호 찾기</Text>
+        </TouchableOpacity>
+        <TouchableOpacity /*onPress={() => navigation.navigate('SignUp')}*/>
+          <Text style={styles.linkText}>회원가입</Text>
+        </TouchableOpacity>
+      </View>
 
-      {/* 구분선 */}
       <View style={styles.divider}></View>
 
-      {/* 간편 로그인 */}
       <Text style={styles.quickLoginText}>간편 로그인</Text>
 
-      {/* 카카오톡 로그인 버튼 */}
       <TouchableOpacity style={[styles.socialButton, styles.kakaoButton]}>
         <Text style={styles.socialText}>카카오톡</Text>
       </TouchableOpacity>
-
-      {/* 네이버 로그인 버튼 */}
       <TouchableOpacity style={[styles.socialButton, styles.naverButton]}>
         <Text style={styles.socialText}>네이버</Text>
       </TouchableOpacity>
-
-      {/* 구글 로그인 버튼 */}
       <TouchableOpacity style={[styles.socialButton, styles.googleButton]}>
         <Text style={styles.socialText}>구글</Text>
       </TouchableOpacity>
@@ -80,54 +79,54 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    justifyContent: 'center',
     backgroundColor: '#fff',
-  },
-  logo: {
-    width: 100, // 로고 크기
-    height: 100,
-    resizeMode: 'contain',
-    alignSelf: 'center',
-    marginBottom: 30,
+    justifyContent: 'center',
   },
   title: {
     fontSize: 28,
     fontWeight: 'bold',
     color: '#000',
     marginBottom: 5,
-    textAlign: 'center',
+    textAlign: 'left',
   },
   subtitle: {
     fontSize: 20,
     color: '#000',
     marginBottom: 10,
-    textAlign: 'center',
+    textAlign: 'left',
   },
   description: {
     fontSize: 14,
     color: '#666',
-    textAlign: 'center',
     marginBottom: 30,
+    textAlign: 'left',
   },
   input: {
     borderWidth: 1,
     borderColor: '#ccc',
-    borderRadius: 5,
+    borderRadius: 25,
     padding: 12,
+    paddingHorizontal: 20,
     marginBottom: 10,
     fontSize: 16,
   },
   passwordContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    borderColor: '#ccc',
     borderWidth: 1,
-    borderRadius: 5,
+    borderColor: '#ccc',
+    borderRadius: 25,
+    paddingHorizontal: 20,
+    paddingVertical: 12,
     marginBottom: 10,
+  },
+  passwordInput: {
+    flex: 1,
+    fontSize: 16,
   },
   eyeIcon: {
     fontSize: 18,
-    marginRight: 10,
+    color: '#999',
   },
   rememberContainer: {
     flexDirection: 'row',
@@ -141,8 +140,8 @@ const styles = StyleSheet.create({
   },
   loginButton: {
     backgroundColor: '#ADD8E6',
-    padding: 15,
-    borderRadius: 5,
+    paddingVertical: 15,
+    borderRadius: 25,
     alignItems: 'center',
     marginBottom: 20,
   },
@@ -151,11 +150,15 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
-  helpText: {
-    fontSize: 12,
-    color: '#666',
-    textAlign: 'center',
+  linkContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
     marginBottom: 20,
+  },
+  linkText: {
+    fontSize: 12,
+    color: '#0066cc',
+    marginHorizontal: 10,
   },
   divider: {
     borderBottomColor: '#ccc',
@@ -168,8 +171,8 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   socialButton: {
-    padding: 15,
-    borderRadius: 5,
+    paddingVertical: 15,
+    borderRadius: 25,
     alignItems: 'center',
     marginBottom: 10,
   },
