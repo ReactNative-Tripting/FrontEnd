@@ -19,7 +19,7 @@ export default function MainScreen() {
       {/* Banner Section */}
       <View style={styles.bannerContainer}>
         <Image source={require('./image/event1.png')} style={styles.bannerImage}/>
-        <Text style={styles.bannerText}>Banner Title</Text> {/* Banner Title */}
+        <Text style={styles.bannerText}>Banner Title</Text>
         <TouchableOpacity>
             <Text style={styles.bannerLink}>더 보기</Text>
         </TouchableOpacity>
@@ -30,12 +30,7 @@ export default function MainScreen() {
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.eventList}>
         <View style={styles.eventCard}>
           <Image source={require('./image/event1.png')} style={styles.eventImage} />
-          <Text style={styles.eventText}>Event Title 1</Text> {/* Event Title */}
-        </View>
-      
-        <View style={styles.eventCard}>
-          <Image source={require('./image/event1.png')} style={styles.eventImage} />
-          <Text style={styles.eventText}>Event Title 2</Text>
+          <Text style={styles.eventText}>Event Title 1</Text>      
         </View>
       </ScrollView>
 

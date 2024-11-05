@@ -1,12 +1,22 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { useNavigation } from '@react-navigation/native';
 
-export default function SignUpScreen() {
-  const navigation = useNavigation();
-  const [id, setId] = useState('');
-  const [name, setName] = useState('');
+export default function SignUp2({ navigation }) {
+  const [password, setPassword] = useState('');
+  const [pwcheck, setPwcheck] = useState('');
+  const [phonenum, setPhonenum] = useState('');
+  const [gender, setGender] = useState('');
+  const [termsofuse, setTermsofuse] = useState('');
+  const [personalinfouse, setPersonalinfouse] = useState('');
+
+  const isPasswordMatch = password === pwcheck || pwcheck === '';
+
+  const handleSubmit = () => {
+    console.log('Password:', password);
+    console.log('Phonenum:', phonenum);
+    console.log('Gender:', gender);
+  };
 
   return (
     <View style={styles.container}>
@@ -20,31 +30,34 @@ export default function SignUpScreen() {
 
       {/* Content */}
       <View style={styles.content}>
-        <Text style={styles.subtitle}>여행{'\n'}그 시작을 함께 해볼까요?</Text>
-        <Text style={styles.description}>먼저 아이디가 필요해요.</Text>
-
-        <Text style={styles.label}>아이디</Text>
+        <Text style={styles.label}>비밀번호</Text>
         <TextInput
           style={styles.input}
-          placeholder="아이디를 입력해주세요."
+          placeholder="비밀번호를 입력해 주세요."
           placeholderTextColor="#C4C4C4"
-          value={id}
-          onChangeText={setId}
+          value={password}
+          onChangeText={setPassword}
+          secureTextEntry
         />
 
-        <Text style={styles.label}>이름</Text>
+        <Text style={styles.label}>비밀번호 확인</Text>
         <TextInput
           style={styles.input}
-          placeholder="이름을 입력해 주세요."
+          placeholder="다시 입력해 주세요."
           placeholderTextColor="#C4C4C4"
-          value={name}
-          onChangeText={setName}
+          value={pwcheck}
+          onChangeText={setPwcheck}
+          secureTextEntry
         />
+
+        {!isPasswordMatch && (
+          <Text style={styles.errorText}>비밀번호가 일치하지 않습니다</Text>
+        )}
       </View>
 
       {/* Button Container */}
       <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('SignUp2')}>
+        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('SignUp3')}>
           <Text style={styles.buttonText}>계속하기</Text>
         </TouchableOpacity>
       </View>
@@ -75,16 +88,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: 40,
   },
-  subtitle: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    marginBottom: 8,
-  },
-  description: {
-    fontSize: 16,
-    color: '#000000',
-    marginBottom: 30,
-  },
   label: {
     fontSize: 16,
     fontWeight: 'bold',
@@ -97,6 +100,11 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     fontSize: 16,
     color: '#000000',
+  },
+  errorText: {
+    color: 'red',
+    fontSize: 14,
+    marginTop: 4,
   },
   buttonContainer: {
     paddingHorizontal: 20,
@@ -115,4 +123,3 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 });
-

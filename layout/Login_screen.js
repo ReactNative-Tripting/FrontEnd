@@ -58,12 +58,6 @@ export default function LoginScreen() {
         </TouchableOpacity>
       </View>
 
-
-      <TouchableOpacity style={styles.loginButton} onPress={() => navigation.navigate('Main')}>
-        <Text style={styles.loginText}>로그인</Text>
-      </TouchableOpacity>
-
-
       <View style={styles.divider}></View>
 
       <Text style={styles.quickLoginText}>간편 로그인</Text>
