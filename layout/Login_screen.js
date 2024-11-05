@@ -47,10 +47,10 @@ export default function LoginScreen() {
 
       {/* Navigation Links */}
       <View style={styles.linkContainer}>
-        <TouchableOpacity /*onPress={() => navigation.navigate('FindID')}*/>
+        <TouchableOpacity onPress={() => navigation.navigate('FindID')}>
           <Text style={styles.linkText}>아이디 찾기</Text>
         </TouchableOpacity>
-        <TouchableOpacity /*onPress={() => navigation.navigate('FindPassword')}*/>
+        <TouchableOpacity onPress={() => navigation.navigate('FindPw')}>
           <Text style={styles.linkText}>비밀번호 찾기</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => navigation.navigate('SignUp')}>
