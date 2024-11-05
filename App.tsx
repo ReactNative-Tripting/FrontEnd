@@ -8,8 +8,6 @@ import 'react-native-gesture-handler';
 import LoginScreen from './layout/Login_screen';
 import SplashScreen from './layout/Splash_screen';
 import MainScreen from './layout/Main_screen';
-//import FindID from './layout/FindID';
-//import FindPassword from './layout/FindPassword';
 import SignUp from './layout/Signup_screen';
 import SignUp2 from './layout/Signup_screen2';
 import SignUp3 from './layout/Signup_screen3'
@@ -19,10 +17,6 @@ import Main from './layout/Main_screen';
 
 const Stack = createStackNavigator();
 
-/*  <Stack.Screen name="FindID" component={FindID} />
-    <Stack.Screen name="FindPassword" component={FindPassword} />
-    
-*/
 
 export default function App() {
   return (
