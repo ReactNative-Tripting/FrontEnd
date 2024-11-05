@@ -17,7 +17,7 @@ export default function SignUpScreen({ navigation }) {
       {/* Navigation Bar */}
       <View style={styles.navBar}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Icon name="arrow-left" size={24} color="black" />
+          <Icon name="arrow-left" size={24} />
         </TouchableOpacity>
         <Text style={styles.navTitle}>회원가입</Text>
       </View>

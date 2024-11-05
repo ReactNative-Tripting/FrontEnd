@@ -10,7 +10,7 @@ export default function MainScreen() {
         <TouchableOpacity>
           <Icon name="menu" size={28} color="black" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>트립팅</Text>
+            <Text style={styles.headerTitle}>트립팅</Text>
         <TouchableOpacity>
           <Icon name="notifications" size={28} color="black" />
         </TouchableOpacity>
@@ -18,79 +18,63 @@ export default function MainScreen() {
 
       {/* Banner Section */}
       <View style={styles.bannerContainer}>
-        <Image 
-        source={require('./image/event1.png')} 
-        style={styles.bannerImage} 
-        />
-  <Text style={styles.bannerText}>Banner Title</Text> {/* Banner Title */}
-  <TouchableOpacity>
-    <Text style={styles.bannerLink}>더 보기</Text>
-  </TouchableOpacity>
-</View>
-
-      {/* Event Section */}
-      <View style={styles.sectionHeader}>
-        <Text style={styles.sectionTitle}>행사 D-day</Text>
+        <Image source={require('./image/event1.png')} style={styles.bannerImage}/>
+        <Text style={styles.bannerText}>Banner Title</Text> {/* Banner Title */}
         <TouchableOpacity>
-          <Icon name="arrow-forward" size={20} color="black" />
+            <Text style={styles.bannerLink}>더 보기</Text>
         </TouchableOpacity>
       </View>
+    
 
+      {/* Event Section */}
       <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.eventList}>
         <View style={styles.eventCard}>
-          <Image 
-            source={require('./image/event1.png')} 
-            style={styles.eventImage} 
-          />
+          <Image source={require('./image/event1.png')} style={styles.eventImage} />
           <Text style={styles.eventText}>Event Title 1</Text> {/* Event Title */}
         </View>
+      
         <View style={styles.eventCard}>
-          <Image 
-            source={require('./image/event2.png')} 
-            style={styles.eventImage} 
-          />
+          <Image source={require('./image/event1.png')} style={styles.eventImage} />
           <Text style={styles.eventText}>Event Title 2</Text>
         </View>
       </ScrollView>
 
       {/* Scheduled Events Section */}
-      <View style={styles.sectionHeader}>
-        <Text style={styles.sectionTitle}>설정 된 일정</Text>
-        <TouchableOpacity>
-          <Icon name="arrow-forward" size={20} color="black" />
-        </TouchableOpacity>
-      </View>
-
       <View style={styles.scheduleList}>
         <View style={styles.scheduleItem}>
-          <Text style={styles.scheduleText}>Scheduled Event 1</Text>
-          <TouchableOpacity>
-            <Icon name="check-box" size={24} color="#6e6e6e" />
-          </TouchableOpacity>
+            <Text style={styles.scheduleText}>Scheduled Event 1</Text>
+            <TouchableOpacity>
+                <Icon name="check-box" size={24} color="#6e6e6e" />
+            </TouchableOpacity>
         </View>
-        <View style={styles.scheduleItem}>
-          <Text style={styles.scheduleText}>Scheduled Event 2</Text>
-          <TouchableOpacity>
-            <Icon name="check-box-outline-blank" size={24} color="#6e6e6e" />
-          </TouchableOpacity>
-        </View>
-      </View>
 
-      {/* Bottom Navigation */}
-      <View style={styles.bottomNavigation}>
-        <TouchableOpacity>
-          <Icon name="home" size={30} color="black" />
-        </TouchableOpacity>
-        <TouchableOpacity>
-          <Icon name="add-circle" size={30} color="black" />
-        </TouchableOpacity>
-        <TouchableOpacity>
-          <Icon name="event" size={30} color="black" />
-        </TouchableOpacity>
-        <TouchableOpacity>
-          <Icon name="shopping-cart" size={30} color="black" />
-        </TouchableOpacity>
-      </View>
+            <View style={styles.scheduleItem}>
+                <Text style={styles.scheduleText}>Scheduled Event 2</Text>
+                <TouchableOpacity>
+                    <Icon name="check-box-outline-blank" size={24} color="#6e6e6e" />
+                </TouchableOpacity>
+            </View>
+        </View>
+
+
+        {/* Bottom Navigation */}
+        <View style={styles.bottomNavigation}>
+            <TouchableOpacity>
+                <Icon name="home" size={30} color="black" />
+            </TouchableOpacity>
+    
+            <TouchableOpacity>
+                <Icon name="add-circle" size={30} color="black" />
+            </TouchableOpacity>
+    
+      <TouchableOpacity>
+        <Icon name="event" size={30} color="black" />
+      </TouchableOpacity>
+    
+      <TouchableOpacity>
+        <Icon name="shopping-cart" size={30} color="black" />
+      </TouchableOpacity>
+    </View>
     </View>
   );
 }

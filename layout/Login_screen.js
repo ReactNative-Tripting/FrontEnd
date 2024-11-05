@@ -41,6 +41,10 @@ export default function LoginScreen() {
         <Text style={styles.rememberText}>기억하기</Text>
       </View>
 
+      <TouchableOpacity style={styles.loginButton} onPress={() => navigation.navigate('Main')}>
+        <Text style={styles.loginText}>로그인</Text>
+      </TouchableOpacity>
+
       {/* Navigation Links */}
       <View style={styles.linkContainer}>
         <TouchableOpacity /*onPress={() => navigation.navigate('FindID')}*/>
