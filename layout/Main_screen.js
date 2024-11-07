@@ -2,7 +2,9 @@ import React from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
-export default function MainScreen() {
+//import Carousel from 'react-native-snap-carousel';
+
+export default function MainScreen({ navigation }) {
   return (
     <View style={styles.container}>
       {/* Header */}
@@ -54,22 +56,26 @@ export default function MainScreen() {
 
         {/* Bottom Navigation */}
         <View style={styles.bottomNavigation}>
-            <TouchableOpacity>
-                <Icon name="home" size={30} color="black" />
-            </TouchableOpacity>
+          <TouchableOpacity>
+            <Icon name="home" size={30} color="black" />
+          </TouchableOpacity>
+
+          <TouchableOpacity>
+					<Icon name="map" size={30} color="black"/>
+				  </TouchableOpacity>
     
-            <TouchableOpacity>
-                <Icon name="add-circle" size={30} color="black" />
-            </TouchableOpacity>
+          <TouchableOpacity>
+            <Icon name="add-circle" size={30} color="black" />
+          </TouchableOpacity>
     
-      <TouchableOpacity>
-        <Icon name="event" size={30} color="black" />
-      </TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate('Event')}>
+            <Icon name="event" size={30} color="black" />
+          </TouchableOpacity>
     
-      <TouchableOpacity>
-        <Icon name="shopping-cart" size={30} color="black" />
-      </TouchableOpacity>
-    </View>
+          <TouchableOpacity>
+            <Icon name="shopping-cart" size={30} color="black" />
+          </TouchableOpacity>
+        </View>
     </View>
   );
 }

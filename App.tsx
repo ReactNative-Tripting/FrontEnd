@@ -1,20 +1,20 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { MaterialIcons } from '@expo/vector-icons';
 import 'react-native-gesture-handler';
 
-
-import LoginScreen from './layout/Login_screen';
 import SplashScreen from './layout/Splash_screen';
-import MainScreen from './layout/Main_screen';
+import LoginScreen from './layout/Login_screen';
+
 import SignUp from './layout/Signup_screen';
 import SignUp2 from './layout/Signup_screen2';
 import SignUp3 from './layout/Signup_screen3'
+
 import FindPw from './layout/FindPassword';
 import FindID from './layout/FindID';
-import Main from './layout/Main_screen';
 
+import Main from './layout/Main_screen';
+import Event from './layout/Event_screen';
 const Stack = createStackNavigator();
 
 
@@ -31,6 +31,7 @@ export default function App() {
         <Stack.Screen name="FindID" component={FindID}/>
       
         <Stack.Screen name="Main" component={Main} />
+        <Stack.Screen name="Event"component={Event}/>
       </Stack.Navigator>
 	
     </NavigationContainer>
