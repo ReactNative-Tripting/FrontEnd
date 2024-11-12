@@ -19,11 +19,11 @@ export default function MainScreen({ navigation }) {
       {/* Header */}
       <View style={commonStyles.header}>
         <TouchableOpacity>
-          <Icon name="menu" size={commonStyles.iconStyle.size} color={commonStyles.iconStyle.color} />
+          <Icon name="notifications" size={commonStyles.iconStyle.size} color={commonStyles.iconStyle.color} />
         </TouchableOpacity>
         <Text style={commonStyles.headerTitle}>트립팅</Text>
         <TouchableOpacity>
-          <Icon name="notifications" size={commonStyles.iconStyle.size} color={commonStyles.iconStyle.color} />
+          <Icon name="user" size={commonStyles.iconStyle.size} color={commonStyles.iconStyle.color} />
         </TouchableOpacity>
       </View>
 

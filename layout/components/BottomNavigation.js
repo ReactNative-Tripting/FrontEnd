@@ -13,7 +13,7 @@ const BottomNavigation = ({ navigation }) => (
       <Icon name="map" size={24} color="black" />
       <Text style={commonStyles.navText}>미션</Text>
     </TouchableOpacity>
-    <TouchableOpacity style={commonStyles.navItem} onPress={() => navigation.navigate('Add')}>
+    <TouchableOpacity style={commonStyles.navItem} onPress={() => navigation.navigate('StartMenu')}>
       <Icon name="add-circle-outline" size={24} color="black" />
       <Text style={commonStyles.navText}>추가</Text> 
     </TouchableOpacity>

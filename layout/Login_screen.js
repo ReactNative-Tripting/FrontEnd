@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Switch } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 export default function LoginScreen() {
   const [rememberMe, setRememberMe] = useState(false);
@@ -27,7 +28,7 @@ export default function LoginScreen() {
           secureTextEntry={!showPassword}
         />
         <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
-          <Text style={styles.eyeIcon}>👁️</Text>
+          <Icon name="remove-red-eye" size={20} color="000000"/>
         </TouchableOpacity>
       </View>
 
