@@ -23,6 +23,7 @@ const commonStyles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
   },
+
   //mainpage
   bannerContainer: {
     padding: 16,
@@ -48,10 +49,18 @@ const commonStyles = StyleSheet.create({
     fontWeight: 'bold',
     marginTop: 10,
   },
+  moreText: {
+    color: '#888',
+    marginTop: 5,
+  },
   bannerLink: {
     fontSize: 14,
     color: '#888',
     marginTop: 5,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
   },
 
   //eventpage
@@ -62,15 +71,33 @@ const commonStyles = StyleSheet.create({
     width: 120,
     marginRight: 10,
   },
-  eventImage: {
+ /* eventImage: {
     width: '100%',
     height: 80,
     borderRadius: 8,
+  },*/
+  eventImage: {
+    width: 100,
+    height: 80,
+    borderRadius: 8,
+    marginRight: 10,
+  },
+  eventDescription: {
+    flex: 2,
   },
   eventText: {
     fontSize: 12,
     textAlign: 'center',
     marginTop: 5,
+  },
+  eventTextTitle: {
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
+  eventTextDetail: {
+    fontSize: 12,
+    color: '#555',
+    marginTop: 4,
   },
   calendar: {
     marginVertical: 16,
