@@ -20,7 +20,12 @@ import Store from './layout/Store_Screen';
 import Mission from './layout/Mission_screen';
   import MissionDetail from './layout/MissionDetail_screen';
 import StartMenu from './layout/StartMenu_screen';
+  //import { TeamWaitingRoom } from './layout/Waiting_room_T';
+import RoomScreen from './layout/Room_screen';
 const Stack = createStackNavigator();
+
+//<Stack.Screen nmae="Teamwait" component={TeamWaitingRoom}/>
+        
 
 export default function App() {
   return (
@@ -40,7 +45,8 @@ export default function App() {
         <Stack.Screen name="StartMenu" component={StartMenu}/>
         <Stack.Screen name="Mission" component={Mission}/>
         <Stack.Screen name="MissionDetail" component={MissionDetail}/>
-        
+        <Stack.Screen name="Room" component={RoomScreen}/>
+       
       </Stack.Navigator>
     </NavigationContainer>
   );
