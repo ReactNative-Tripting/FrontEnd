@@ -1,118 +1,67 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
-
 import React from 'react';
-import type {PropsWithChildren} from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import 'react-native-gesture-handler';
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+import SplashScreen from './layout/Splash_screen';
+import LoginScreen from './layout/Login_screen';
 
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
+import SignUp from './layout/Signup_screen';
+import SignUp2 from './layout/Signup_screen2';
+import SignUp3 from './layout/Signup_screen3';
 
-function Section({children, title}: SectionProps): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
+import FindPw from './layout/FindPassword';
+import FindID from './layout/FindID';
+
+import Main from './layout/Main_screen';
+import Event from './layout/Event_screen';
+import Store from './layout/Store_Screen';
+  import Product from './layout/Product_screen';
+import Mission from './layout/Mission_screen';
+  import MissionDetail from './layout/MissionDetail_screen';
+import StartMenu from './layout/StartMenu_screen';
+  //import { TeamWaitingRoom } from './layout/Waiting_room_T';
+import RoomScreen from './layout/Room_screen';
+
+import HealingScreen from './layout/HealingScreen';
+import EducationScreen from './layout/EducationScreen';
+import FoodScreen from './layout/FoodScreen';
+import MountainScreen from './layout/MountainScreen';
+import UserSettingScreen from './layout/UserSettingScreen';
+
+
+const Stack = createStackNavigator();
+
+//<Stack.Screen nmae="Teamwait" component={TeamWaitingRoom}/>
+        
+
+export default function App() {
   return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="Splash" screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="Splash" component={SplashScreen} />
+        <Stack.Screen name="Login" component={LoginScreen} />
+        <Stack.Screen name="SignUp" component={SignUp} />
+        <Stack.Screen name="SignUp2" component={SignUp2} />
+        <Stack.Screen name="SignUp3" component={SignUp3} />
+        <Stack.Screen name="FindPw" component={FindPw} />
+        <Stack.Screen name="FindID" component={FindID} />
+        <Stack.Screen name="Main" component={Main} />
+        <Stack.Screen name="Event" component={Event} />
+        <Stack.Screen name="Store" component={Store} />
+        <Stack.Screen name="Product" component={Product} />
+        <Stack.Screen name="StartMenu" component={StartMenu}/>
+        <Stack.Screen name="Mission" component={Mission}/>
+        <Stack.Screen name="MissionDetail" component={MissionDetail}/>
+        <Stack.Screen name="Room" component={RoomScreen}/>
+        <Stack.Screen name="Healing" component={HealingScreen}/>
+        <Stack.Screen name="Education" component={EducationScreen}/>
+        <Stack.Screen name="Food" component={FoodScreen}/>
+        <Stack.Screen name="Mountain" component={MountainScreen}/>
+        <Stack.Screen name="UserSettings" component={UserSettingScreen}/>
+
+       
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
-
-function App(): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
-
-  return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
-  );
-}
-
-const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-});
-
-export default App;
