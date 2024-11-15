@@ -20,32 +20,54 @@ const generateRoomCode = () => {
 };
 
 const StartMenuScreen = ({ navigation }) => {
-	const [isRacingModalVisible, setRacingModalVisible] = useState(false);
-	const [joinRoomCode, setJoinRoomCode] = useState(''); // 참가 코드 상태
+	const [isIndividualModalVisible, setIndividualModalVisible] = useState(false);
+	const [isTeamModalVisible, setTeamModalVisible] = useState(false);
+	const [joinRoomCode, setJoinRoomCode] = useState('');
 
 	// 메뉴 아이템 클릭 처리
 	const handleMenuPress = (item) => {
-		if (item.id === '1' || item.id === '2') {
-			setRacingModalVisible(true);
+		if (item.id === '1') {
+			setIndividualModalVisible(true);
+		} else if (item.id === '2') {
+			setTeamModalVisible(true);
+		} else if (item.id === '3') {
+			navigation.navigate('Healing');
+		} else if (item.id === '4') {
+			navigation.navigate('Education');
+		} else if (item.id === '5') {
+			navigation.navigate('Food');
+		} else if (item.id === '6') {
+			navigation.navigate('Mountain');
+		} else if (item.id === '7') {
+			navigation.navigate('UserSettings');
 		} else {
 			console.log(`${item.label} 클릭됨`);
 		}
 	};
 
-	// 방 생성 버튼 처리
-	const handleCreateRoom = () => {
+	// 개인 방 생성 버튼 처리
+	const handleCreateIndividualRoom = () => {
 		const roomCode = generateRoomCode();
-		setRacingModalVisible(false); // 모달 닫기
-		navigation.navigate('Room', { roomCode }); // RoomScreen으로 이동
+		setIndividualModalVisible(false);
+		navigation.navigate('RoomP', { roomCode });
+	};
+
+	// 팀 방 생성 버튼 처리
+	const handleCreateTeamRoom = () => {
+		const roomCode = generateRoomCode();
+		setTeamModalVisible(false);
+		navigation.navigate('RoomT', { roomCode });
 	};
 
 	// 참가 버튼 처리
-	const handleJoinRoom = () => {
+	const handleJoinRoom = (roomType) => {
 		if (joinRoomCode) {
-			setRacingModalVisible(false); // 모달 닫기
-			navigation.navigate('Room', { roomCode: joinRoomCode }); // 입력된 방 코드로 이동
+			const destination = roomType === 'individual' ? 'RoomP' : 'RoomT';
+			setIndividualModalVisible(false);
+			setTeamModalVisible(false);
+			navigation.navigate(destination, { roomCode: joinRoomCode });
 		} else {
-			alert("참가 코드를 입력해주세요."); // 코드가 없을 경우 알림
+			alert("참가 코드를 입력해주세요.");
 		}
 	};
 
@@ -74,23 +96,21 @@ const StartMenuScreen = ({ navigation }) => {
 				))}
 			</View>
 
-			{/* Racing Modal */}
+			{/* Individual Racing Modal */}
 			<Modal
-				visible={isRacingModalVisible}
+				visible={isIndividualModalVisible}
 				transparent={true}
 				animationType="slide"
-				onRequestClose={() => setRacingModalVisible(false)}
+				onRequestClose={() => setIndividualModalVisible(false)}
 			>
 				<View style={styles.modalOverlay}>
 					<View style={styles.modalContainer}>
-						<Text style={styles.modalTitle}>레이싱 옵션</Text>
+						<Text style={styles.modalTitle}>개인 레이싱 옵션</Text>
 
-						{/* 방 만들기 버튼 */}
-						<TouchableOpacity style={styles.modalButton} onPress={handleCreateRoom}>
+						<TouchableOpacity style={styles.modalButton} onPress={handleCreateIndividualRoom}>
 							<Text style={styles.modalButtonText}>방 만들기</Text>
 						</TouchableOpacity>
 
-						{/* 참가 코드 입력 및 참가 버튼 */}
 						<TextInput
 							style={styles.input}
 							placeholder="참가 코드 입력"
@@ -98,12 +118,44 @@ const StartMenuScreen = ({ navigation }) => {
 							onChangeText={setJoinRoomCode}
 							keyboardType="numeric"
 						/>
-						<TouchableOpacity style={styles.modalButton} onPress={handleJoinRoom}>
+						<TouchableOpacity style={styles.modalButton} onPress={() => handleJoinRoom('individual')}>
 							<Text style={styles.modalButtonText}>참가</Text>
 						</TouchableOpacity>
 
-						{/* 모달 닫기 버튼 */}
-						<TouchableOpacity style={styles.modalCloseButton} onPress={() => setRacingModalVisible(false)}>
+						<TouchableOpacity style={styles.modalCloseButton} onPress={() => setIndividualModalVisible(false)}>
+							<Text style={styles.modalCloseButtonText}>닫기</Text>
+						</TouchableOpacity>
+					</View>
+				</View>
+			</Modal>
+
+			{/* Team Racing Modal */}
+			<Modal
+				visible={isTeamModalVisible}
+				transparent={true}
+				animationType="slide"
+				onRequestClose={() => setTeamModalVisible(false)}
+			>
+				<View style={styles.modalOverlay}>
+					<View style={styles.modalContainer}>
+						<Text style={styles.modalTitle}>팀 레이싱 옵션</Text>
+
+						<TouchableOpacity style={styles.modalButton} onPress={handleCreateTeamRoom}>
+							<Text style={styles.modalButtonText}>방 만들기</Text>
+						</TouchableOpacity>
+
+						<TextInput
+							style={styles.input}
+							placeholder="참가 코드 입력"
+							value={joinRoomCode}
+							onChangeText={setJoinRoomCode}
+							keyboardType="numeric"
+						/>
+						<TouchableOpacity style={styles.modalButton} onPress={() => handleJoinRoom('team')}>
+							<Text style={styles.modalButtonText}>참가</Text>
+						</TouchableOpacity>
+
+						<TouchableOpacity style={styles.modalCloseButton} onPress={() => setTeamModalVisible(false)}>
 							<Text style={styles.modalCloseButtonText}>닫기</Text>
 						</TouchableOpacity>
 					</View>

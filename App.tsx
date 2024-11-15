@@ -21,7 +21,15 @@ import Mission from './layout/Mission_screen';
   import MissionDetail from './layout/MissionDetail_screen';
 import StartMenu from './layout/StartMenu_screen';
   //import { TeamWaitingRoom } from './layout/Waiting_room_T';
-import RoomScreen from './layout/Room_screen';
+import RoomScreenP from './layout/Room_screen_P';
+import RoomScreenT from './layout/Room_screen_T';
+import UserProfileScreen from './layout/Profile_screen';
+
+import HealingScreen from './layout/HealingScreen';
+import EducationScreen from './layout/EducationScreen';
+import FoodScreen from './layout/FoodScreen';
+import MountainScreen from './layout/MountainScreen';
+
 const Stack = createStackNavigator();
 
 //<Stack.Screen nmae="Teamwait" component={TeamWaitingRoom}/>
@@ -45,9 +53,14 @@ export default function App() {
         <Stack.Screen name="StartMenu" component={StartMenu}/>
         <Stack.Screen name="Mission" component={Mission}/>
         <Stack.Screen name="MissionDetail" component={MissionDetail}/>
-        <Stack.Screen name="Room" component={RoomScreen}/>
-       
-      </Stack.Navigator>
+        <Stack.Screen name="RoomP" component={RoomScreenP}/>
+        <Stack.Screen name="RoomT" component={RoomScreenT}/>     
+        <Stack.Screen name="Healing" component={HealingScreen}/>
+        <Stack.Screen name="Education" component={EducationScreen}/>
+        <Stack.Screen name="Food" component={FoodScreen}/>
+        <Stack.Screen name="Mountain" component={MountainScreen}/>
+        <Stack.Screen name="User" component={UserProfileScreen}/>
+       </Stack.Navigator>
     </NavigationContainer>
   );
 }
