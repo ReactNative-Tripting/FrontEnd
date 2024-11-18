@@ -1,10 +1,10 @@
 import { StyleSheet } from 'react-native';
 
 const commonStyles = StyleSheet.create({
-  //all
+  //모든 화면에 사용될 컴포넌트 스타일.
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#fff', //배경 색상
   },
   scrollContainer: {
     flexGrow: 1,
@@ -13,7 +13,7 @@ const commonStyles = StyleSheet.create({
   },
   header: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'space-between', //사이에 빈 공간을 넣어, 균일히 공간을 맞추는 설정
     padding: 16,
     alignItems: 'center',
     borderBottomWidth: 1,
@@ -24,7 +24,7 @@ const commonStyles = StyleSheet.create({
     fontWeight: 'bold',
   },
 
-  //mainpage
+  //메인페이지에서 사용되는 스타일.
   bannerContainer: {
     padding: 16,
     alignItems: 'center',
@@ -63,7 +63,7 @@ const commonStyles = StyleSheet.create({
     fontWeight: 'bold',
   },
 
-  //eventpage
+  //이벤트 페이지에서 사용되는 스타일.
   eventList: {
     paddingHorizontal: 16,
   },
@@ -118,7 +118,7 @@ const commonStyles = StyleSheet.create({
     color: '#333',
   },
 
-  //store page
+  //상점 페이지에서 사용되는 스타일.
   filters: {
     flexDirection: 'row',
     flexWrap: 'wrap',
@@ -132,7 +132,7 @@ const commonStyles = StyleSheet.create({
     borderRadius: 16,
     margin: 4,
     fontSize: 12,
-    color: '#333', // 텍스트 색상
+    color: '#333', 
   },
   selectedFilter: {
     backgroundColor: '#D0D8FF',
@@ -147,7 +147,7 @@ const commonStyles = StyleSheet.create({
     backgroundColor: '#F9F9F9',
     borderRadius: 8,
     alignItems: 'center',
-    justifyContent: 'center',  // 중앙 정렬
+    justifyContent: 'center',  
   },
   itemImage: {
     width: '100%',
@@ -158,16 +158,16 @@ const commonStyles = StyleSheet.create({
   itemName: {
     fontSize: 14,
     fontWeight: 'bold',
-    textAlign: 'center', // 텍스트 중앙 정렬
+    textAlign: 'center',
   },
   itemPoints: {
     fontSize: 12,
     color: '#888888',
-    textAlign: 'center', // 텍스트 중앙 정렬
+    textAlign: 'center', 
 
   },
 
-  //startmenu
+  //스타트 메뉴 페이지에서 사용되는 스타일.
   menuContainer: {
 		flex: 1,
 		paddingHorizontal: 15,
@@ -188,7 +188,7 @@ const commonStyles = StyleSheet.create({
 		padding: 12,
 	},
 
-  //misionpage
+  //미션 페이지에서 사용되는 스타일.
   missionItem: {
     padding: 16,
     marginVertical: 8,
@@ -208,7 +208,7 @@ const commonStyles = StyleSheet.create({
     justifyContent: 'center',  // 세로 중앙 정렬
   },
   
-  // Bottom Navigation Style
+  // 하단 네비게이션 페이지에서 사용되는 스타일.
   bottomNav: {
     flexDirection: 'row',
     justifyContent: 'space-around',
@@ -219,7 +219,7 @@ const commonStyles = StyleSheet.create({
   },
   bottomNavContainer: {
     flex: 1,
-    justifyContent: 'flex-end', // 이 부분이 하단에 붙게 합니다
+    justifyContent: 'flex-end', //하단에 붙게끔 설정.
   },
   iconStyle: {
     size: 28,
@@ -228,7 +228,7 @@ const commonStyles = StyleSheet.create({
   navText: {
     fontSize: 10,
     marginTop: 4,
-    color: '#333', // 기본 텍스트 색상
+    color: '#333', // 텍스트 색상
   },
   navItem: {
     alignItems: 'center',
