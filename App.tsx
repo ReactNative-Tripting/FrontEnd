@@ -3,6 +3,8 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import 'react-native-gesture-handler';
 
+//스크린 임포팅
+
 import SplashScreen from './layout/Splash_screen';
 import LoginScreen from './layout/Login_screen';
 
@@ -20,7 +22,6 @@ import Store from './layout/Store_Screen';
 import Mission from './layout/Mission_screen';
   import MissionDetail from './layout/MissionDetail_screen';
 import StartMenu from './layout/StartMenu_screen';
-  //import { TeamWaitingRoom } from './layout/Waiting_room_T';
 import RoomScreenP from './layout/Room_screen_P';
 import RoomScreenT from './layout/Room_screen_T';
 import UserProfileScreen from './layout/Profile_screen';
@@ -31,9 +32,6 @@ import FoodScreen from './layout/FoodScreen';
 import MountainScreen from './layout/MountainScreen';
 
 const Stack = createStackNavigator();
-
-//<Stack.Screen nmae="Teamwait" component={TeamWaitingRoom}/>
-        
 
 export default function App() {
   return (
