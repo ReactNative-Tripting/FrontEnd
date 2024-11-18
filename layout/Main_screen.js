@@ -19,7 +19,7 @@ export default function MainScreen({ navigation }) {
           <Icon name="menu" size={28} color="black" />
         </TouchableOpacity>
         <Text style={commonStyles.headerTitle}>트립팅</Text>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate('User')}>
           <IconAnt name="user" size={28} color="black" />
         </TouchableOpacity>
       </View>
