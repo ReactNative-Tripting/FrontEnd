@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-
+//헤더
 const Header = ({ navigation }) => (
   <View style={styles.header}>
     <TouchableOpacity onPress={() => navigation.goBack()}>
@@ -11,7 +11,7 @@ const Header = ({ navigation }) => (
     <Icon name="shopping-cart" size={24} color="black" />
   </View>
 );
-
+//구매버튼을 누르면 아래 핸들 사용
 const ProductContent = ({ item }) => {
   const handlePurchase = () => {
     Alert.alert('구매 완료', `${item.name}를 구매하였습니다!`);
