@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import BottomNavigation from './components/BottomNavigation';
 //헤더
 const Header = ({ navigation }) => (
   <View style={styles.header}>
@@ -14,64 +15,32 @@ const Header = ({ navigation }) => (
 //구매버튼을 누르면 아래 핸들 사용
 const ProductContent = ({ item }) => {
   const handlePurchase = () => {
-    Alert.alert('구매 완료', `${item.name}를 구매하였습니다!`);
+    Alert.alert('구매 완료', `${item.name}를 구매하였습니다!`);{/* 포인트 차감 확인 modal 사용자에게 송출후, 확인버튼 누를 시 해당 사용자 보관함에 아이템 추가및 아이템 가격만큼 포인트 차감.*/}
   };
 
   return (
     <View style={styles.content}>
-      <Image source={item.image} style={styles.productImage} />
-      <Text style={styles.productName}>{item.name}</Text>
-      <Text style={styles.productPoints}>{item.points}</Text>
-      <TouchableOpacity style={styles.purchaseButton} onPress={handlePurchase}>
+      <Image source={item.image} style={styles.productImage} />{/*상품 이미지*/}
+      <Text style={styles.productName}>{item.name}</Text>{/*상품 이름*/}
+      <Text style={styles.productPoints}>{item.points}</Text>{/*상품 가격*/}
+      <TouchableOpacity style={styles.purchaseButton} onPress={handlePurchase}>{/*상품 구매버튼*/}
         <Text style={styles.purchaseButtonText}>구매하기</Text>
       </TouchableOpacity>
     </View>
   );
 };
 
-const BottomNavigation = ({ navigation }) => (
-  <View style={styles.bottomNav}>
-    <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('Home')}>
-      <Icon name="home" size={24} color="black" />
-      <Text style={styles.navText}>메인화면</Text>
-    </TouchableOpacity>
-    <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('Mission')}>
-      <Icon name="map" size={24} color="black" />
-      <Text style={styles.navText}>미션</Text>
-    </TouchableOpacity>
-    <TouchableOpacity style={styles.navItem}>
-      <Icon name="add-circle-outline" size={24} color="black" />
-      <Text style={styles.navText}>추가</Text>
-    </TouchableOpacity>
-    <TouchableOpacity style={styles.navItem}>
-      <Icon name="event" size={24} color="black" />
-      <Text style={styles.navText}>행사</Text>
-    </TouchableOpacity>
-    <TouchableOpacity style={styles.navItem} onPress={() => navigation.navigate('Store')}>
-      <Icon name="store" size={24} color="black" />
-      <Text style={styles.navText}>상점</Text>
-    </TouchableOpacity>
-  </View>
-);
-
 const ProductScreen = ({ route, navigation }) => {
   const { item } = route.params;
 
   return (
     <View style={styles.container}>
-      {/* Header */}
       <Header navigation={navigation} />
-      
-      {/* Spacer */}
+      {/* 공란*/}
       <View style={styles.spacer} />
-
-      {/* Content */}
       <ProductContent item={item} />
-
-      {/* Spacer */}
+      {/* 공란*/}
       <View style={styles.spacer} />
-
-      {/* Bottom Navigation */}
       <BottomNavigation navigation={navigation} />
     </View>
   );
@@ -96,7 +65,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   spacer: {
-    flex: 0.1, // 공백을 위해 공간 확보
+    flex: 0.1, 
   },
   content: {
     flex: 1,

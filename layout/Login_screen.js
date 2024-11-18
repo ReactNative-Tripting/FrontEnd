@@ -9,17 +9,18 @@ export default function LoginScreen() {
   const navigation = useNavigation();
 
   return (
+    //소개 문구
     <View style={styles.container}>
       <Text style={styles.title}>안녕하세요.</Text>
       <Text style={styles.subtitle}>Tripting 입니다.</Text>
       <Text style={styles.description}>먼저 로그인이 필요합니다 :)</Text>
-
+    {/*아이디 입력창*/} 
       <TextInput
         style={styles.input}
         placeholder="Enter your ID"
         placeholderTextColor="#999"
       />
-
+    {/* 비밀번호 입력창*/}
       <View style={styles.passwordContainer}>
         <TextInput
           style={styles.passwordInput}
@@ -27,6 +28,7 @@ export default function LoginScreen() {
           placeholderTextColor="#999"
           secureTextEntry={!showPassword}
         />
+        {/*비밀번호 확인 아이콘*/}
         <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
           <Icon name="remove-red-eye" size={20} color="000000"/>
         </TouchableOpacity>
@@ -39,6 +41,8 @@ export default function LoginScreen() {
           thumbColor={rememberMe ? "#4caf50" : "#f4f3f4"}
           trackColor={{ false: "#767577", true: "#81b0ff" }}
         />
+        {/*로그인 기억하기 */}
+        {/*asyncstorage로 구현할것*/}
         <Text style={styles.rememberText}>기억하기</Text>
       </View>
 
@@ -46,7 +50,7 @@ export default function LoginScreen() {
         <Text style={styles.loginText}>로그인</Text>
       </TouchableOpacity>
 
-      {/* Navigation Links */}
+      {/* 네비게이트 될 링크들 */}
       <View style={styles.linkContainer}>
         <TouchableOpacity onPress={() => navigation.navigate('FindID')}>
           <Text style={styles.linkText}>아이디 찾기</Text>
@@ -61,6 +65,8 @@ export default function LoginScreen() {
 
       <View style={styles.divider}></View>
 
+      {/* 타 sns계정 연동 로그인 */}
+      {/* 구현 후순위 */}
       <Text style={styles.quickLoginText}>간편 로그인</Text>
 
       <TouchableOpacity style={[styles.socialButton, styles.kakaoButton]}>

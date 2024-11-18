@@ -32,65 +32,46 @@ const UserProfileScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    padding: 16,
     backgroundColor: '#fff',
-    paddingHorizontal: 20,
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingVertical: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ddd',
+    marginBottom: 20,
   },
   headerTitle: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: 'bold',
-    color: '#000',
+    marginLeft: 10,
   },
   iconContainer: {
     alignItems: 'center',
-    marginVertical: 30,
+    marginVertical: 20,
   },
-  infoContainer: {
-    borderTopWidth: 1,
-    borderBottomWidth: 1,
-    borderColor: '#ddd',
+  profileImage: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    marginBottom: 10,
   },
-  infoRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingVertical: 15,
-    paddingHorizontal: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
-  },
-  label: {
-    fontSize: 16,
-    color: '#333',
-  },
-  value: {
-    fontSize: 16,
-    color: '#666',
-  },
-  noDataText: {
-    fontSize: 16,
-    color: '#888',
-    textAlign: 'center',
-    paddingVertical: 20,
+  userName: {
+    fontSize: 18,
+    fontWeight: '600',
   },
   logoutButton: {
-    marginTop: 30,
-    backgroundColor: '#FF4D4D',
-    paddingVertical: 12,
-    borderRadius: 5,
+    marginTop: 20,
+    padding: 15,
+    backgroundColor: '#FF5733',
+    borderRadius: 8,
     alignItems: 'center',
   },
   logoutButtonText: {
-    color: 'white',
+    color: '#fff',
     fontSize: 16,
     fontWeight: 'bold',
   },
 });
+
 
 export default UserProfileScreen;
