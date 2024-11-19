@@ -13,9 +13,10 @@ import event2Image from './image/event2.png';
 export default function MainScreen({ navigation }) {
   return (
     <View style={commonStyles.container}>
-      {/* 헤더 */}
+      {/* 헤더, 우측 버튼 회원가입 버튼으로 디버깅*/}
+      
       <View style={commonStyles.header}>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate('SignUp')}>
           <Icon name="menu" size={28} color="black" />
         </TouchableOpacity>
         <Text style={commonStyles.headerTitle}>트립팅</Text>

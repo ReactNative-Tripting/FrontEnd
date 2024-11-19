@@ -4,7 +4,11 @@ import IconAnt from 'react-native-vector-icons/AntDesign';
 
 const UserProfileScreen = ({ navigation }) => {
   // 예시 user 데이터 (null일 경우)
-  const user = null;  // 여기에 실제 데이터가 들어가면 값을 볼 수 있습니다.
+  const user = {
+    name: '홍길동',
+    email: 'hong@example.com',
+    joinDate: '2023-06-01',
+  }; // 실제 사용자 데이터로 대체
 
   return (
     <View style={styles.container}>
@@ -20,7 +24,18 @@ const UserProfileScreen = ({ navigation }) => {
       <View style={styles.iconContainer}>
         <IconAnt name="user" size={100} color="black" />
       </View>
-      
+
+      {/* User Info */}
+      {user ? (
+        <View style={styles.userInfoContainer}>
+          <Text style={styles.userName}>{user.name}</Text>
+          <Text style={styles.userEmail}>{user.email}</Text>
+          <Text style={styles.userJoinDate}>가입일: {user.joinDate}</Text>
+        </View>
+      ) : (
+        <Text style={styles.noUserText}>유저 정보가 없습니다.</Text>
+      )}
+
       {/* Logout Button */}
       <TouchableOpacity style={styles.logoutButton} onPress={() => navigation.navigate('Login')}>
         <Text style={styles.logoutButtonText}>Logout</Text>
@@ -49,18 +64,33 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginVertical: 20,
   },
-  profileImage: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    marginBottom: 10,
+  userInfoContainer: {
+    alignItems: 'center',
+    marginTop: 20,
   },
   userName: {
-    fontSize: 18,
+    fontSize: 22,
     fontWeight: '600',
+    color: '#333',
+  },
+  userEmail: {
+    fontSize: 16,
+    color: '#555',
+    marginTop: 8,
+  },
+  userJoinDate: {
+    fontSize: 14,
+    color: '#777',
+    marginTop: 4,
+  },
+  noUserText: {
+    fontSize: 16,
+    color: '#555',
+    textAlign: 'center',
+    marginTop: 20,
   },
   logoutButton: {
-    marginTop: 20,
+    marginTop: 30,
     padding: 15,
     backgroundColor: '#FF5733',
     borderRadius: 8,
@@ -72,6 +102,5 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 });
-
 
 export default UserProfileScreen;

@@ -21,6 +21,7 @@ export default function SignUpScreen({ navigation }) {
   const handleNextStep = () => {
     if (step === 3) {
       if (signupData.termsAccepted && signupData.privacyAccepted) {
+        console.log('회원가입 데이터:', signupData); // 회원가입 데이터 출력
         Alert.alert('회원가입 성공', '회원가입이 완료되었습니다.');
         navigation.navigate('Main'); // 회원가입 완료 후 메인 화면으로 이동
       } else {
