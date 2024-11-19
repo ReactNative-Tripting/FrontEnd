@@ -19,6 +19,7 @@ const StartMenuScreen = ({ navigation }) => {
 	const [isIndividualModalVisible, setIndividualModalVisible] = useState(false);
 	const [isTeamModalVisible, setTeamModalVisible] = useState(false);
 	const [joinRoomCode, setJoinRoomCode] = useState('');
+	const [userId, setUserId] = useState('');
 
 	// 메뉴 아이템 클릭 처리
 	const handleMenuPress = (item) => {
@@ -127,7 +128,7 @@ const StartMenuScreen = ({ navigation }) => {
 					'Content-Type': 'application/json',
 				},
 				body: JSON.stringify({
-					userId: 'testUser123', // 사용자 ID를 동적으로 가져올 수 있도록 수정 가능
+					userId: userId, // 사용자 ID를 동적으로 가져올 수 있도록 수정 가능
 					inviteCode: joinRoomCode,
 				}),
 			});
