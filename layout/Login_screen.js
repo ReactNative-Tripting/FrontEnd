@@ -1,36 +1,66 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Switch } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Switch, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 export default function LoginScreen() {
   const [rememberMe, setRememberMe] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [userId, setUserId] = useState('');
+  const [password, setPassword] = useState('');
   const navigation = useNavigation();
 
+  const handleLogin = async () => {
+    try {
+      const response = await fetch('http://localhost:8080/users/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userId,
+          password,
+        }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        Alert.alert('로그인 성공', `환영합니다, ${userId}!`);
+        navigation.navigate('Main'); // 로그인 성공 시 메인 화면으로 이동
+      } else {
+        const error = await response.json();
+        Alert.alert('로그인 실패', error.message || '아이디 또는 비밀번호를 확인하세요.');
+      }
+    } catch (error) {
+      Alert.alert('오류 발생', '서버와 통신 중 문제가 발생했습니다.');
+    }
+  };
+
   return (
-    //소개 문구
     <View style={styles.container}>
       <Text style={styles.title}>안녕하세요.</Text>
       <Text style={styles.subtitle}>Tripting 입니다.</Text>
       <Text style={styles.description}>먼저 로그인이 필요합니다 :)</Text>
-    {/*아이디 입력창*/} 
+
       <TextInput
         style={styles.input}
         placeholder="Enter your ID"
         placeholderTextColor="#999"
+        value={userId}
+        onChangeText={setUserId}
       />
-    {/* 비밀번호 입력창*/}
+
       <View style={styles.passwordContainer}>
         <TextInput
           style={styles.passwordInput}
           placeholder="Enter your password"
           placeholderTextColor="#999"
           secureTextEntry={!showPassword}
+          value={password}
+          onChangeText={setPassword}
         />
-        {/*비밀번호 확인 아이콘*/}
         <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
-          <Icon name="remove-red-eye" size={20} color="000000"/>
+          <Icon name="remove-red-eye" size={20} color="#000000" />
         </TouchableOpacity>
       </View>
 
@@ -38,19 +68,17 @@ export default function LoginScreen() {
         <Switch
           value={rememberMe}
           onValueChange={setRememberMe}
-          thumbColor={rememberMe ? "#4caf50" : "#f4f3f4"}
-          trackColor={{ false: "#767577", true: "#81b0ff" }}
+          thumbColor={rememberMe ? '#4caf50' : '#f4f3f4'}
+          trackColor={{ false: '#767577', true: '#81b0ff' }}
         />
-        {/*로그인 기억하기 */}
-        {/*asyncstorage로 구현할것*/}
         <Text style={styles.rememberText}>기억하기</Text>
       </View>
 
-      <TouchableOpacity style={styles.loginButton} onPress={() => navigation.navigate('Main')}>
+      <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
         <Text style={styles.loginText}>로그인</Text>
       </TouchableOpacity>
 
-      {/* 네비게이트 될 링크들 */}
+      {/* Navigation Links */}
       <View style={styles.linkContainer}>
         <TouchableOpacity onPress={() => navigation.navigate('FindID')}>
           <Text style={styles.linkText}>아이디 찾기</Text>
@@ -65,8 +93,6 @@ export default function LoginScreen() {
 
       <View style={styles.divider}></View>
 
-      {/* 타 sns계정 연동 로그인 */}
-      {/* 구현 후순위 */}
       <Text style={styles.quickLoginText}>간편 로그인</Text>
 
       <TouchableOpacity style={[styles.socialButton, styles.kakaoButton]}>
