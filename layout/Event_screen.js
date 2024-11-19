@@ -13,18 +13,18 @@ export default function EventsPage({ navigation }) {
 
   return (
     <View style={commonStyles.container}>
-      {/* Header */}
+      {/*헤더*/}
       <View style={commonStyles.header}>
         <TouchableOpacity>
-          <Icon name="menu" size={28} color="black" />
+          <Icon name="menu" size={28} color="black" /> {/*헤더 좌측 아이콘*/} 
         </TouchableOpacity>
-        <Text style={commonStyles.headerTitle}>트립팅</Text>
+        <Text style={commonStyles.headerTitle}>트립팅</Text> {/*헤더 이름 텍스트*/}
         <TouchableOpacity>
-          <Icon name="notifications" size={28} color="black" />
+          <Icon name="notifications" size={28} color="black" /> {/*헤더 우측 아이콘*/}
         </TouchableOpacity>
       </View>
 
-      {/* Banner Section */}
+      {/* 배너 */}
       <View style={commonStyles.bannerContainer}>
         <Image source={event1Image} style={commonStyles.bannerImage} />
         <Text style={commonStyles.bannerTitle}>신정호 국제 아트페스티벌</Text>
@@ -34,7 +34,8 @@ export default function EventsPage({ navigation }) {
         </TouchableOpacity>
       </View>
 
-      {/* Calendar */}
+      {/* 달력 */}
+      {/*참조: https://wix.github.io/react-native-calendars/docs/Intro */}
       <Calendar
         onDayPress={day => {
           setSelected(day.dateString);
@@ -45,7 +46,7 @@ export default function EventsPage({ navigation }) {
         style={commonStyles.calendar}
       />
 
-      {/* Bottom Navigation */}
+      {/* 하단 네비게이션 */}
       <View style={commonStyles.bottomNavContainer}>
         <BottomNavigation navigation={navigation} />
       </View>

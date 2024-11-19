@@ -4,36 +4,9 @@ import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 export default function LoginScreen() {
-  const [userId, setUserId] = useState('');
-  const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const navigation = useNavigation();
-
-  const handleLogin = async () => {
-    try {
-      const response = await fetch('http://52.79.58.210/Tripting/users/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ userId, password }),
-      });
-
-      if (!response.ok) {
-        throw new Error(`Login failed! Status: ${response.status}`);
-      }
-
-      const data = await response.json();
-      console.log('Login successful:', data);
-
-      // 로그인 성공 시 Main 화면으로 이동
-      navigation.navigate('Main');
-    } catch (error) {
-      console.error('Error during login:', error);
-      alert('로그인 실패: 아이디와 비밀번호를 확인하세요.');
-    }
-  };
 
   return (
     <View style={styles.container}>
@@ -45,8 +18,6 @@ export default function LoginScreen() {
         style={styles.input}
         placeholder="Enter your ID"
         placeholderTextColor="#999"
-        value={userId}
-        onChangeText={setUserId}
       />
 
       <View style={styles.passwordContainer}>
@@ -55,11 +26,9 @@ export default function LoginScreen() {
           placeholder="Enter your password"
           placeholderTextColor="#999"
           secureTextEntry={!showPassword}
-          value={password}
-          onChangeText={setPassword}
         />
         <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
-          <Icon name="remove-red-eye" size={20} color="#000" />
+          <Icon name="remove-red-eye" size={20} color="000000"/>
         </TouchableOpacity>
       </View>
 
@@ -73,10 +42,11 @@ export default function LoginScreen() {
         <Text style={styles.rememberText}>기억하기</Text>
       </View>
 
-      <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
+      <TouchableOpacity style={styles.loginButton} onPress={() => navigation.navigate('Main')}>
         <Text style={styles.loginText}>로그인</Text>
       </TouchableOpacity>
 
+      {/* Navigation Links */}
       <View style={styles.linkContainer}>
         <TouchableOpacity onPress={() => navigation.navigate('FindID')}>
           <Text style={styles.linkText}>아이디 찾기</Text>
