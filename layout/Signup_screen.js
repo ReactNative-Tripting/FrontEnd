@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import {
-  View,Text,TextInput,TouchableOpacity, StyleSheet, Alert,Switch, ScrollView,} from 'react-native';
+  View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Switch, ScrollView,
+} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import commonStyles from './components/Style';
+
 export default function SignUpScreen({ navigation }) {
   const [step, setStep] = useState(1); // 현재 단계
   const [signupData, setSignupData] = useState({
@@ -186,8 +188,14 @@ export default function SignUpScreen({ navigation }) {
       <ScrollView contentContainerStyle={commonStyles.content}>{renderStepContent()}</ScrollView>
 
       {/* 하단 버튼 */}
-      <TouchableOpacity style={commonStyles.button} onPress={handleNextStep}>
-        <Text style={commonStyles.buttonText}>{step === 3 ? '회원가입 완료' : '계속하기'}</Text>
+      <TouchableOpacity
+        style={commonStyles.button}
+        onPress={handleNextStep}
+        disabled={!isPasswordMatch && step === 2} // Disable button if passwords don't match
+      >
+        <Text style={commonStyles.buttonText}>
+          {step === 3 ? '회원가입 완료' : '계속하기'}
+        </Text>
       </TouchableOpacity>
     </View>
   );

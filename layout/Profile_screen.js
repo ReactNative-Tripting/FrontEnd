@@ -1,14 +1,39 @@
-import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet, Image, Alert } from 'react-native';
 import IconAnt from 'react-native-vector-icons/AntDesign';
+import { launchImageLibrary } from 'react-native-image-picker'; // Use launchImageLibrary to select images
 
 const UserProfileScreen = ({ navigation }) => {
-  // 예시 user 데이터 (null일 경우)
-  const user = {
+  const [user, setUser] = useState({
     name: '홍길동',
+    id: 'hong123',
+    password: '********',
     email: 'hong@example.com',
+    points: 1200,
     joinDate: '2023-06-01',
-  }; // 실제 사용자 데이터로 대체
+    profileImage: null, // Initially no profile image
+  });
+
+  // Function to handle the profile image change
+  const handleImageChange = () => {
+    const options = {
+      mediaType: 'photo',
+      quality: 1,
+      includeBase64: false, // Can set to true if you need base64 data
+    };
+
+    // Open the image picker
+    launchImageLibrary(options, (response) => {
+      if (response.didCancel) {
+        console.log('User cancelled image picker');
+      } else if (response.errorCode) {
+        console.log('ImagePicker Error: ', response.errorMessage);
+      } else if (response.assets) {
+        const source = { uri: response.assets[0].uri };
+        setUser({ ...user, profileImage: source });
+      }
+    });
+  };
 
   return (
     <View style={styles.container}>
@@ -20,16 +45,25 @@ const UserProfileScreen = ({ navigation }) => {
         <View style={{ width: 24 }} />
       </View>
 
-      {/* Profile Icon */}
-      <View style={styles.iconContainer}>
-        <IconAnt name="user" size={100} color="black" />
-      </View>
+      {/* Profile Icon or Image */}
+      <TouchableOpacity onPress={handleImageChange}>
+        <View style={styles.iconContainer}>
+          {/* Display profile image or default icon */}
+          {user.profileImage ? (
+            <Image source={user.profileImage} style={styles.profileImage} />
+          ) : (
+            <IconAnt name="user" size={100} color="black" />
+          )}
+        </View>
+      </TouchableOpacity>
 
       {/* User Info */}
       {user ? (
         <View style={styles.userInfoContainer}>
           <Text style={styles.userName}>{user.name}</Text>
-          <Text style={styles.userEmail}>{user.email}</Text>
+          <Text style={styles.userId}>아이디: {user.id}</Text>
+          <Text style={styles.userEmail}>이메일: {user.email}</Text>
+          <Text style={styles.userPoints}>보유 포인트: {user.points} P</Text>
           <Text style={styles.userJoinDate}>가입일: {user.joinDate}</Text>
         </View>
       ) : (
@@ -37,7 +71,7 @@ const UserProfileScreen = ({ navigation }) => {
       )}
 
       {/* Logout Button */}
-      <TouchableOpacity style={styles.logoutButton} onPress={() => navigation.navigate('Login')}>
+      <TouchableOpacity style={styles.logoutButton} onPress={() => navigation.replace('Login')}>
         <Text style={styles.logoutButtonText}>Logout</Text>
       </TouchableOpacity>
     </View>
@@ -55,14 +89,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 20,
   },
-  headerTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginLeft: 10,
-  },
   iconContainer: {
     alignItems: 'center',
     marginVertical: 20,
+  },
+  profileImage: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    borderWidth: 2,
+    borderColor: '#ccc',
   },
   userInfoContainer: {
     alignItems: 'center',
@@ -73,7 +109,17 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#333',
   },
+  userId: {
+    fontSize: 16,
+    color: '#555',
+    marginTop: 8,
+  },
   userEmail: {
+    fontSize: 16,
+    color: '#555',
+    marginTop: 8,
+  },
+  userPoints: {
     fontSize: 16,
     color: '#555',
     marginTop: 8,

@@ -187,6 +187,52 @@ const commonStyles = StyleSheet.create({
 		flex: 1,
 		padding: 12,
 	},
+  modalOverlay: {
+		flex: 1,
+		justifyContent: 'center',
+		alignItems: 'center',
+		backgroundColor: 'rgba(0, 0, 0, 0.5)',
+	},
+	modalContainer: {
+		width: 300,
+		padding: 20,
+		backgroundColor: 'white',
+		borderRadius: 10,
+		alignItems: 'center',
+	},
+	modalTitle: {
+		fontSize: 18,
+		fontWeight: 'bold',
+		marginBottom: 20,
+	},
+	input: {
+		width: '100%',
+		padding: 10,
+		borderColor: '#ddd',
+		borderWidth: 1,
+		borderRadius: 5,
+		marginBottom: 10,
+		textAlign: 'center',
+	},
+	modalButton: {
+		width: '100%',
+		padding: 10,
+		backgroundColor: '#007BFF',
+		borderRadius: 5,
+		marginBottom: 10,
+		alignItems: 'center',
+	},
+	modalButtonText: {
+		color: 'white',
+		fontSize: 16,
+	},
+	modalCloseButton: {
+		marginTop: 10,
+	},
+	modalCloseButtonText: {
+		color: '#007BFF',
+		fontSize: 16,
+	},
 
   //미션 페이지에서 사용되는 스타일.
   missionItem: {

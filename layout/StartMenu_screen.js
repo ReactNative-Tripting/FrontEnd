@@ -192,27 +192,27 @@ const StartMenuScreen = ({ navigation }) => {
 				animationType="slide"
 				onRequestClose={() => setIndividualModalVisible(false)}
 			>
-				<View style={styles.modalOverlay}>
-					<View style={styles.modalContainer}>
-						<Text style={styles.modalTitle}>개인 레이싱 옵션</Text>
+				<View style={commonStyles.modalOverlay}>
+					<View style={commonStyles.modalContainer}>
+						<Text style={commonStyles.modalTitle}>개인 레이싱 옵션</Text>
 
-						<TouchableOpacity style={styles.modalButton} onPress={handleCreateIndividualRoom}>
-							<Text style={styles.modalButtonText}>방 만들기</Text>
+						<TouchableOpacity style={commonStyles.modalButton} onPress={handleCreateIndividualRoom}>
+							<Text style={commonStyles.modalButtonText}>방 만들기</Text>
 						</TouchableOpacity>
 
 						<TextInput
-							style={styles.input}
+							style={commonStyles.input}
 							placeholder="참가 코드 입력"
 							value={joinRoomCode}
 							onChangeText={setJoinRoomCode}
 							keyboardType="numeric"
 						/>
-						<TouchableOpacity style={styles.modalButton} onPress={() => handleJoinRoom('individual')}>
-							<Text style={styles.modalButtonText}>참가</Text>
+						<TouchableOpacity style={commonStyles.modalButton} onPress={() => handleJoinRoom('individual')}>
+							<Text style={commonStyles.modalButtonText}>참가</Text>
 						</TouchableOpacity>
 
-						<TouchableOpacity style={styles.modalCloseButton} onPress={() => setIndividualModalVisible(false)}>
-							<Text style={styles.modalCloseButtonText}>닫기</Text>
+						<TouchableOpacity style={commonStyles.modalCloseButton} onPress={() => setIndividualModalVisible(false)}>
+							<Text style={commonStyles.modalCloseButtonText}>닫기</Text>
 						</TouchableOpacity>
 					</View>
 				</View>
@@ -225,27 +225,27 @@ const StartMenuScreen = ({ navigation }) => {
 				animationType="slide"
 				onRequestClose={() => setTeamModalVisible(false)}
 			>
-				<View style={styles.modalOverlay}>
-					<View style={styles.modalContainer}>
-						<Text style={styles.modalTitle}>팀 레이싱 옵션</Text>
+				<View style={commonStyles.modalOverlay}>
+					<View style={commonStyles.modalContainer}>
+						<Text style={commonStyles.modalTitle}>팀 레이싱 옵션</Text>
 
-						<TouchableOpacity style={styles.modalButton} onPress={handleCreateTeamRoom}>
-							<Text style={styles.modalButtonText}>방 만들기</Text>
+						<TouchableOpacity style={commonStyles.modalButton} onPress={handleCreateTeamRoom}>
+							<Text style={commonStyles.modalButtonText}>방 만들기</Text>
 						</TouchableOpacity>
 
 						<TextInput
-							style={styles.input}
+							style={commonStyles.input}
 							placeholder="참가 코드 입력"
 							value={joinRoomCode}
 							onChangeText={setJoinRoomCode}
 							keyboardType="numeric"
 						/>
-						<TouchableOpacity style={styles.modalButton} onPress={() => handleJoinRoom('team')}>
-							<Text style={styles.modalButtonText}>참가</Text>
+						<TouchableOpacity style={commonStyles.modalButton} onPress={() => handleJoinRoom('team')}>
+							<Text style={commonStyles.modalButtonText}>참가</Text>
 						</TouchableOpacity>
 
-						<TouchableOpacity style={styles.modalCloseButton} onPress={() => setTeamModalVisible(false)}>
-							<Text style={styles.modalCloseButtonText}>닫기</Text>
+						<TouchableOpacity style={commonStyles.modalCloseButton} onPress={() => setTeamModalVisible(false)}>
+							<Text style={commonStyles.modalCloseButtonText}>닫기</Text>
 						</TouchableOpacity>
 					</View>
 				</View>
@@ -256,55 +256,5 @@ const StartMenuScreen = ({ navigation }) => {
 		</View>
 	);
 };
-
-
-const styles = StyleSheet.create({
-	modalOverlay: {
-		flex: 1,
-		justifyContent: 'center',
-		alignItems: 'center',
-		backgroundColor: 'rgba(0, 0, 0, 0.5)',
-	},
-	modalContainer: {
-		width: 300,
-		padding: 20,
-		backgroundColor: 'white',
-		borderRadius: 10,
-		alignItems: 'center',
-	},
-	modalTitle: {
-		fontSize: 18,
-		fontWeight: 'bold',
-		marginBottom: 20,
-	},
-	input: {
-		width: '100%',
-		padding: 10,
-		borderColor: '#ddd',
-		borderWidth: 1,
-		borderRadius: 5,
-		marginBottom: 10,
-		textAlign: 'center',
-	},
-	modalButton: {
-		width: '100%',
-		padding: 10,
-		backgroundColor: '#007BFF',
-		borderRadius: 5,
-		marginBottom: 10,
-		alignItems: 'center',
-	},
-	modalButtonText: {
-		color: 'white',
-		fontSize: 16,
-	},
-	modalCloseButton: {
-		marginTop: 10,
-	},
-	modalCloseButtonText: {
-		color: '#007BFF',
-		fontSize: 16,
-	},
-});
 
 export default StartMenuScreen;
