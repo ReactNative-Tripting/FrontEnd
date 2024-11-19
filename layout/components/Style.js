@@ -71,11 +71,11 @@ const commonStyles = StyleSheet.create({
     width: 120,
     marginRight: 10,
   },
- /* eventImage: {
+  eventImage: {
     width: '100%',
     height: 80,
     borderRadius: 8,
-  },*/
+  },
   eventImage: {
     width: 100,
     height: 80,

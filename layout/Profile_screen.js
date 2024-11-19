@@ -13,7 +13,7 @@ const UserProfileScreen = ({ navigation }) => {
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <IconAnt name="arrowleft" size={24} color="black" />
         </TouchableOpacity>
-        <View style={{ width: 24 }} /> {/* Placeholder for spacing */}
+        <View style={{ width: 24 }} />
       </View>
 
       {/* Profile Icon */}
