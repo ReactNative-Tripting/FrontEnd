@@ -9,8 +9,6 @@ import SplashScreen from './layout/Splash_screen';
 import LoginScreen from './layout/Login_screen';
 
 import SignUp from './layout/Signup_screen';
-import SignUp2 from './layout/Signup_screen2';
-import SignUp3 from './layout/Signup_screen3';
 
 import FindPw from './layout/FindPassword';
 import FindID from './layout/FindID';
@@ -40,8 +38,6 @@ export default function App() {
         <Stack.Screen name="Splash" component={SplashScreen} />
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="SignUp" component={SignUp} />
-        <Stack.Screen name="SignUp2" component={SignUp2} />
-        <Stack.Screen name="SignUp3" component={SignUp3} />
         <Stack.Screen name="FindPw" component={FindPw} />
         <Stack.Screen name="FindID" component={FindID} />
         <Stack.Screen name="Main" component={Main} />

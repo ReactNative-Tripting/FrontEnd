@@ -233,6 +233,112 @@ const commonStyles = StyleSheet.create({
   navItem: {
     alignItems: 'center',
   },
+  //회원가입
+  navBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee',
+  },
+  navTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginLeft: 16,
+  },
+  content: {
+    flex: 1,
+    paddingHorizontal: 20,
+    paddingTop: 40,
+  },
+  subtitle: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    marginBottom: 8,
+  },
+  description: {
+    fontSize: 16,
+    color: '#000000',
+    marginBottom: 30,
+  },
+  label: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 8,
+  },
+  input: {
+    height: 40,
+    borderBottomWidth: 1,
+    borderBottomColor: '#C4C4C4',
+    marginBottom: 20,
+    fontSize: 16,
+    color: '#000000',
+  },
+  buttonContainer: {
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    backgroundColor: '#FFFFFF',
+  },
+  button: {
+    backgroundColor: '#A6D8FF',
+    paddingVertical: 12,
+    borderRadius: 5,
+    alignItems: 'center',
+    marginHorizontal: 20,
+    marginBottom: 20,
+  },
+  buttonText: {
+    color: '#FFFFFF',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  genderContainer: {
+    marginBottom: 20,
+  },
+  genderSelect: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  genderButton: {
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    backgroundColor: '#f1f1f1',
+    borderRadius: 5,
+    alignItems: 'center',
+    flex: 1,
+    marginRight: 10,
+  },
+  selectedGenderButton: {
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderWidth: 1,
+    borderColor: '#00aaff',
+    backgroundColor: '#00aaff',
+    borderRadius: 5,
+    alignItems: 'center',
+    flex: 1,
+    marginRight: 10,
+  }, genderText: {
+    color: '#000',
+    fontSize: 16,
+  },
+  selectedGenderText: {
+    color: '#fff',
+    fontSize: 16,
+  },
+  checkboxContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  checkboxLabel: {
+    marginLeft: 10,
+    fontSize: 16,
+    color: '#000',
+  },
 });
 
 export default commonStyles;
