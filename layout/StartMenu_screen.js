@@ -14,15 +14,12 @@ const menuItems = [
 	{ id: '7', label: '사용자 설정', image: require('./image/editing.png') },
 ];
 
-// 방 코드 생성 함수
-const generateRoomCode = () => {
-	return Math.floor(100000 + Math.random() * 900000).toString();
-};
-
+// 방 코드 생성 함수 없이 백엔드에서 호출
 const StartMenuScreen = ({ navigation }) => {
 	const [isIndividualModalVisible, setIndividualModalVisible] = useState(false);
 	const [isTeamModalVisible, setTeamModalVisible] = useState(false);
 	const [joinRoomCode, setJoinRoomCode] = useState('');
+	const [userId, setUserId] = useState('');
 
 	// 메뉴 아이템 클릭 처리
 	const handleMenuPress = (item) => {
@@ -45,29 +42,121 @@ const StartMenuScreen = ({ navigation }) => {
 		}
 	};
 
-	// 개인 방 생성 버튼 처리
-	const handleCreateIndividualRoom = () => {
-		const roomCode = generateRoomCode();
-		setIndividualModalVisible(false);
-		navigation.navigate('RoomP', { roomCode });
+	// 개인 방 생성 버튼 처리 (백엔드 호출)
+	const handleCreateIndividualRoom = async () => {
+		try {
+			const response = await fetch('http://localhost:8080/rooms/create', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({
+					roomName: '개인 레이싱 방', // 필요하면 동적으로 설정 가능
+				}),
+			});
+
+			if (response.ok) {
+				const data = await response.json();
+				console.log('방 생성 성공:', data);
+
+				setIndividualModalVisible(false);
+
+				// RoomP 화면으로 이동하며 데이터 전달
+				navigation.navigate('RoomP', {
+					roomCode: data.inviteCode,
+					roomName: data.roomName,
+					members: data.members,
+				});
+			} else {
+				const error = await response.json();
+				console.error('방 생성 실패:', error);
+				alert(`방 생성 실패: ${error.message || '알 수 없는 오류'}`);
+			}
+		} catch (error) {
+			console.error('네트워크 오류:', error);
+			alert('방 생성 중 네트워크 오류가 발생했습니다.');
+		}
 	};
 
-	// 팀 방 생성 버튼 처리
-	const handleCreateTeamRoom = () => {
-		const roomCode = generateRoomCode();
-		setTeamModalVisible(false);
-		navigation.navigate('RoomT', { roomCode });
+	// 팀 방 생성 버튼 처리 (백엔드 호출)
+	const handleCreateTeamRoom = async () => {
+		try {
+			const response = await fetch('http://localhost:8080/rooms/create', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({
+					roomName: '팀 레이싱 방', // 필요하면 동적으로 설정 가능
+				}),
+			});
+
+			if (response.ok) {
+				const data = await response.json();
+				console.log('방 생성 성공:', data);
+
+				setTeamModalVisible(false);
+
+				// RoomT 화면으로 이동하며 데이터 전달
+				navigation.navigate('RoomT', {
+					roomCode: data.inviteCode,
+					roomName: data.roomName,
+					members: data.members,
+				});
+			} else {
+				const error = await response.json();
+				console.error('방 생성 실패:', error);
+				alert(`방 생성 실패: ${error.message || '알 수 없는 오류'}`);
+			}
+		} catch (error) {
+			console.error('네트워크 오류:', error);
+			alert('방 생성 중 네트워크 오류가 발생했습니다.');
+		}
 	};
 
 	// 참가 버튼 처리
-	const handleJoinRoom = (roomType) => {
-		if (joinRoomCode) {
-			const destination = roomType === 'individual' ? 'RoomP' : 'RoomT';
-			setIndividualModalVisible(false);
-			setTeamModalVisible(false);
-			navigation.navigate(destination, { roomCode: joinRoomCode });
-		} else {
+	const handleJoinRoom = async (roomType) => {
+		if (!joinRoomCode) {
 			alert("참가 코드를 입력해주세요.");
+			return;
+		}
+
+		try {
+			const response = await fetch('http://localhost:8080/rooms/join', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({
+					userId: userId, // 사용자 ID를 동적으로 가져올 수 있도록 수정 가능
+					inviteCode: joinRoomCode,
+				}),
+			});
+
+			if (response.ok) {
+				const data = await response.json();
+
+				// 방 이름 및 멤버 정보를 로그에 출력 (디버깅용)
+				console.log('방 입장 성공:', data);
+
+				const destination = roomType === 'individual' ? 'RoomP' : 'RoomT';
+				setIndividualModalVisible(false);
+				setTeamModalVisible(false);
+
+				// 방 화면으로 이동하며 데이터 전달
+				navigation.navigate(destination, {
+					roomCode: data.inviteCode,
+					roomName: data.roomName,
+					members: data.members,
+				});
+			} else {
+				const error = await response.json();
+				console.error('방 입장 실패:', error);
+				alert(`방 입장 실패: ${error.message || '알 수 없는 오류'}`);
+			}
+		} catch (error) {
+			console.error('네트워크 오류:', error);
+			alert('방 입장 중 네트워크 오류가 발생했습니다.');
 		}
 	};
 
@@ -163,12 +252,11 @@ const StartMenuScreen = ({ navigation }) => {
 			</Modal>
 
 			{/* Bottom Navigation */}
-			<View style={commonStyles.bottomNavContainer}>
-				<BottomNavigation navigation={navigation} />
-			</View>
+			<BottomNavigation />
 		</View>
 	);
 };
+
 
 const styles = StyleSheet.create({
 	modalOverlay: {
