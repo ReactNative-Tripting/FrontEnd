@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import {
   View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Switch, ScrollView,
@@ -9,28 +8,76 @@ import commonStyles from './components/Style';
 export default function SignUpScreen({ navigation }) {
   const [step, setStep] = useState(1); // 현재 단계
   const [signupData, setSignupData] = useState({
-    email: '', // 이메일 추가
-    name: '',
+    userId: '',
+    userName: '',
     password: '',
     pwcheck: '',
-    phoneNumber: '',
-    gender: 'male',
+    phoneNum: '',
+    sex: 'male',
     termsAccepted: false,
     privacyAccepted: false,
   });
+  const [isUserIdValid, setIsUserIdValid] = useState(true); // 아이디 유효성 상태
 
   const isPasswordMatch = signupData.password === signupData.pwcheck || signupData.pwcheck === '';
-  const isEmailValid = /\S+@\S+\.\S+/.test(signupData.email); // 이메일 유효성 검사 정규 표현식
+
+  // 아이디 중복 검사 함수
+  const checkUserIdAvailability = async (userId) => {
+    try {
+      const response = await fetch(`http://localhost:8080/users/userid/${userId}/exists`);
+      const data = await response.json();
+      if (response.ok) {
+        setIsUserIdValid(!data.exists); // 중복된 아이디가 있으면 false, 없으면 true
+        if (!data.exists) {
+          Alert.alert('아이디 확인', '사용 가능한 아이디입니다.');
+        } else {
+          Alert.alert('아이디 중복', '이미 사용 중인 아이디입니다.');
+        }
+      } else {
+        throw new Error(data.message || '아이디 확인에 실패했습니다.');
+      }
+    } catch (error) {
+      Alert.alert('오류', error.message || '아이디 확인 도중 문제가 발생했습니다.');
+    }
+  };
+
+  const handleSubmit = async () => {
+    if (signupData.termsAccepted && signupData.privacyAccepted) {
+      // 회원가입 데이터 API로 전송
+      try {
+        const response = await fetch('http://localhost:8080/users', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            userId: signupData.userId,
+            userName: signupData.userName,
+            password: signupData.password,
+            phoneNum: signupData.phoneNum,
+            email: `${signupData.userId}@gmail.com`, // 기본 이메일 형식
+            sex: signupData.sex.charAt(0).toUpperCase() + signupData.sex.slice(1), // 대소문자 처리
+          }),
+        });
+
+        const data = await response.json();
+        if (response.ok) {
+          Alert.alert('회원가입 성공', '회원가입이 완료되었습니다.');
+          navigation.navigate('Main'); // 회원가입 완료 후 메인 화면으로 이동
+        } else {
+          throw new Error(data.message || '회원가입에 실패했습니다.');
+        }
+      } catch (error) {
+        Alert.alert('오류', error.message || '회원가입 도중 문제가 발생했습니다.');
+      }
+    } else {
+      Alert.alert('주의', '이용약관 및 개인정보 처리방침에 동의해 주세요.');
+    }
+  };
 
   const handleNextStep = () => {
     if (step === 3) {
-      if (signupData.termsAccepted && signupData.privacyAccepted) {
-        console.log('회원가입 데이터:', signupData); // 회원가입 데이터 출력
-        Alert.alert('회원가입 성공', '회원가입이 완료되었습니다.');
-        navigation.navigate('Main'); // 회원가입 완료 후 메인 화면으로 이동
-      } else {
-        Alert.alert('주의', '이용약관 및 개인정보 처리방침에 동의해 주세요.');
-      }
+      handleSubmit(); // 마지막 단계에서 데이터 전송
     } else {
       setStep(step + 1);
     }
@@ -42,18 +89,19 @@ export default function SignUpScreen({ navigation }) {
         return (
           <>
             <Text style={commonStyles.subtitle}>여행{'\n'}그 시작을 함께 해볼까요?</Text>
-            <Text style={commonStyles.description}>먼저 이메일을 입력해주세요.</Text>
+            <Text style={commonStyles.description}>먼저 아이디가 필요해요.</Text>
 
-            <Text style={commonStyles.label}>이메일</Text>
+            <Text style={commonStyles.label}>아이디</Text>
             <TextInput
               style={commonStyles.input}
-              placeholder="이메일을 입력해주세요."
+              placeholder="아이디를 입력해주세요."
               placeholderTextColor="#C4C4C4"
-              value={signupData.email}
-              onChangeText={(text) => setSignupData({ ...signupData, email: text })}
+              value={signupData.userId}
+              onChangeText={(text) => setSignupData({ ...signupData, userId: text })}
+              onBlur={() => checkUserIdAvailability(signupData.userId)} // 아이디 입력 후 확인
             />
-            {!isEmailValid && signupData.email !== '' && (
-              <Text style={commonStyles.errorText}>유효한 이메일 주소를 입력해주세요.</Text>
+            {!isUserIdValid && (
+              <Text style={commonStyles.errorText}>이미 사용 중인 아이디입니다.</Text>
             )}
 
             <Text style={commonStyles.label}>이름</Text>
@@ -61,8 +109,8 @@ export default function SignUpScreen({ navigation }) {
               style={commonStyles.input}
               placeholder="이름을 입력해주세요."
               placeholderTextColor="#C4C4C4"
-              value={signupData.name}
-              onChangeText={(text) => setSignupData({ ...signupData, name: text })}
+              value={signupData.userName}
+              onChangeText={(text) => setSignupData({ ...signupData, userName: text })}
             />
           </>
         );
@@ -103,8 +151,8 @@ export default function SignUpScreen({ navigation }) {
               placeholder="전화번호를 입력해주세요."
               placeholderTextColor="#C4C4C4"
               keyboardType="phone-pad"
-              value={signupData.phoneNumber}
-              onChangeText={(text) => setSignupData({ ...signupData, phoneNumber: text })}
+              value={signupData.phoneNum}
+              onChangeText={(text) => setSignupData({ ...signupData, phoneNum: text })}
             />
 
             <View style={commonStyles.genderContainer}>
@@ -112,15 +160,15 @@ export default function SignUpScreen({ navigation }) {
               <View style={commonStyles.genderSelect}>
                 <TouchableOpacity
                   style={
-                    signupData.gender === 'male'
+                    signupData.sex === 'male'
                       ? commonStyles.selectedGenderButton
                       : commonStyles.genderButton
                   }
-                  onPress={() => setSignupData({ ...signupData, gender: 'male' })}
+                  onPress={() => setSignupData({ ...signupData, sex: 'male' })}
                 >
                   <Text
                     style={
-                      signupData.gender === 'male'
+                      signupData.sex === 'male'
                         ? commonStyles.selectedGenderText
                         : commonStyles.genderText
                     }
@@ -130,15 +178,15 @@ export default function SignUpScreen({ navigation }) {
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={
-                    signupData.gender === 'female'
+                    signupData.sex === 'female'
                       ? commonStyles.selectedGenderButton
                       : commonStyles.genderButton
                   }
-                  onPress={() => setSignupData({ ...signupData, gender: 'female' })}
+                  onPress={() => setSignupData({ ...signupData, sex: 'female' })}
                 >
                   <Text
                     style={
-                      signupData.gender === 'female'
+                      signupData.sex === 'female'
                         ? commonStyles.selectedGenderText
                         : commonStyles.genderText
                     }
@@ -190,18 +238,17 @@ export default function SignUpScreen({ navigation }) {
       </View>
 
       {/* 단계별 콘텐츠 */}
-      <ScrollView contentContainerStyle={commonStyles.content}>{renderStepContent()}</ScrollView>
+      <ScrollView contentContainerStyle={commonStyles.content}>
+        {renderStepContent()}
+      </ScrollView>
 
-      {/* 하단 버튼 */}
-      <TouchableOpacity
-        style={commonStyles.button}
-        onPress={handleNextStep}
-        disabled={!isPasswordMatch && step === 2} // 비밀번호가 일치하지 않으면 버튼 비활성화
-      >
+      {/* 다음 단계 버튼 */}
+      <TouchableOpacity style={commonStyles.button} onPress={handleNextStep}>
         <Text style={commonStyles.buttonText}>
-          {step === 3 ? '회원가입 완료' : '계속하기'}
+          {step === 3 ? '회원가입 완료' : '다음'}
         </Text>
       </TouchableOpacity>
     </View>
   );
 }
+
