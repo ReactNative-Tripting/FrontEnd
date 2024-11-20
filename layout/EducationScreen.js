@@ -1,31 +1,30 @@
 import React, { useState, useRef } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Animated, PanResponder, Dimensions, Image } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Animated, PanResponder, Dimensions, Image, ScrollView } from 'react-native';
 
 export default function HealingScreen() {
-  const [selectedTab, setSelectedTab] = useState('교육'); // 현재 선택된 탭 상태 관리
-  const screenHeight = Dimensions.get('window').height; // 화면 높이를 가져옴
-  const slideAnim = useRef(new Animated.Value(0)).current; // 슬라이딩 애니메이션 값 (0에서 시작)
-  const [checkedItems, setCheckedItems] = useState([false, false, false, false]); // 각 레이스 항목에 대한 체크 상태 관리
+  const [selectedTab, setSelectedTab] = useState('교육');
+  const screenHeight = Dimensions.get('window').height;
+  const slideAnim = useRef(new Animated.Value(0)).current;
+  const [checkedItems, setCheckedItems] = useState([false, false, false, false]);
 
   // PanResponder 생성
   const panResponder = useRef(
     PanResponder.create({
       onStartShouldSetPanResponder: () => true,
       onPanResponderMove: (e, gestureState) => {
-        // 슬라이드 애니메이션 값 업데이트 (드래그하는 위치에 따라)
         slideAnim.setValue(gestureState.dy);
       },
       onPanResponderRelease: (_, gestureState) => {
         let finalPosition = slideAnim._value;
 
-        // 최종 위치가 너무 위나 아래로 가지 않도록 제한
+        // 슬라이드 최대 높이 제한
         if (finalPosition < -screenHeight + 200) {
-          finalPosition = -screenHeight + 200; // 너무 위로 올라가지 않도록 제한
+          finalPosition = -screenHeight + 200; // 너무 위로 올라가지 않도록
         } else if (finalPosition > 0) {
           finalPosition = 0; // 화면 하단을 넘지 않도록
         }
 
-        // 패널을 드래그가 끝난 위치에서 멈춤
+        // 애니메이션 종료 후 위치 업데이트
         Animated.timing(slideAnim, {
           toValue: finalPosition,
           duration: 200,
@@ -66,7 +65,6 @@ export default function HealingScreen() {
 
   return (
     <View style={styles.container}>
-      {/* 전체 화면을 차지하는 지도 배경 */}
       <View style={styles.mapContainer}>
         <Text style={styles.title}>일정 설정</Text>
         <View style={styles.mapSpace}>
@@ -79,15 +77,9 @@ export default function HealingScreen() {
 
       {/* 슬라이딩 패널 섹션 */}
       <Animated.View
-        style={[
-          styles.slidingPanel,
-          {
-            transform: [{ translateY: slideAnim }],
-          },
-        ]}
+        style={[styles.slidingPanel, { transform: [{ translateY: slideAnim }] }]}
         {...panResponder.panHandlers}
       >
-        {/* 드래그 핸들 */}
         <View style={styles.handleContainer}>
           <View style={styles.handleBar} />
         </View>
@@ -99,8 +91,8 @@ export default function HealingScreen() {
           </TouchableOpacity>
         </View>
 
-        {/* 레이스 리스트 */}
-        <View style={styles.raceList}>
+        {/* 레이스 리스트를 ScrollView로 감싸서 스크롤 가능하도록 변경 */}
+        <ScrollView style={styles.raceList}>
           {raceData.map((race, index) => (
             <View key={index} style={styles.raceItem}>
               <Image source={race.image} style={styles.raceImage} />
@@ -116,7 +108,7 @@ export default function HealingScreen() {
               </TouchableOpacity>
             </View>
           ))}
-        </View>
+        </ScrollView>
       </Animated.View>
     </View>
   );
@@ -217,7 +209,7 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     marginRight: 15,
-    borderRadius: 25, // 이미지 둥글게
+    borderRadius: 25,
   },
   raceTextContainer: {
     flex: 1,

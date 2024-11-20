@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import {
-  View,Text,TextInput,TouchableOpacity, StyleSheet, Alert,Switch, ScrollView,} from 'react-native';
+  View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Switch, ScrollView,
+} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import commonStyles from './components/Style';
+
 export default function SignUpScreen({ navigation }) {
   const [step, setStep] = useState(1); // 현재 단계
   const [signupData, setSignupData] = useState({
@@ -21,6 +23,7 @@ export default function SignUpScreen({ navigation }) {
   const handleNextStep = () => {
     if (step === 3) {
       if (signupData.termsAccepted && signupData.privacyAccepted) {
+        console.log('회원가입 데이터:', signupData); // 회원가입 데이터 출력
         Alert.alert('회원가입 성공', '회원가입이 완료되었습니다.');
         navigation.navigate('Main'); // 회원가입 완료 후 메인 화면으로 이동
       } else {
@@ -185,8 +188,14 @@ export default function SignUpScreen({ navigation }) {
       <ScrollView contentContainerStyle={commonStyles.content}>{renderStepContent()}</ScrollView>
 
       {/* 하단 버튼 */}
-      <TouchableOpacity style={commonStyles.button} onPress={handleNextStep}>
-        <Text style={commonStyles.buttonText}>{step === 3 ? '회원가입 완료' : '계속하기'}</Text>
+      <TouchableOpacity
+        style={commonStyles.button}
+        onPress={handleNextStep}
+        disabled={!isPasswordMatch && step === 2} // Disable button if passwords don't match
+      >
+        <Text style={commonStyles.buttonText}>
+          {step === 3 ? '회원가입 완료' : '계속하기'}
+        </Text>
       </TouchableOpacity>
     </View>
   );
