@@ -385,6 +385,20 @@ const commonStyles = StyleSheet.create({
     fontSize: 16,
     color: '#000',
   },
+  checkButton: {
+    marginLeft: 8,
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    backgroundColor: '#00aaff',
+    borderRadius: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  checkButtonText: {
+    color: '#fff',
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
 });
 
 export default commonStyles;

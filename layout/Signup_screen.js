@@ -100,6 +100,12 @@ export default function SignUpScreen({ navigation }) {
               onChangeText={(text) => setSignupData({ ...signupData, userId: text })}
               onBlur={() => checkUserIdAvailability(signupData.userId)} // 아이디 입력 후 확인
             />
+
+            <TouchableOpacity style={commonStyles.checkButton} onPress={() => checkUserIdAvailability(signupData.userId)} /* 중복확인 함수 호출*/ >
+              <Text style={commonStyles.checkButtonText}>중복확인</Text>
+            </TouchableOpacity>
+
+
             {!isUserIdValid && (
               <Text style={commonStyles.errorText}>이미 사용 중인 아이디입니다.</Text>
             )}
