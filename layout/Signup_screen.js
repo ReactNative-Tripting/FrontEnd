@@ -8,55 +8,27 @@ import commonStyles from './components/Style';
 export default function SignUpScreen({ navigation }) {
   const [step, setStep] = useState(1); // 현재 단계
   const [signupData, setSignupData] = useState({
-    userId: '',
-    userName: '',
+    id: '',
+    name: '',
     password: '',
     pwcheck: '',
-    phoneNum: '',
-    sex: 'male',
+    phoneNumber: '',
+    gender: 'male',
     termsAccepted: false,
     privacyAccepted: false,
   });
 
   const isPasswordMatch = signupData.password === signupData.pwcheck || signupData.pwcheck === '';
 
-  const handleSubmit = async () => {
-    if (signupData.termsAccepted && signupData.privacyAccepted) {
-      // 회원가입 데이터 API로 전송
-      try {
-        const response = await fetch('http://localhost:8080/users', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            userId: signupData.userId,
-            userName: signupData.userName,
-            password: signupData.password,
-            phoneNum: signupData.phoneNum,
-            email: `${signupData.userId}@gmail.com`, // 기본 이메일 형식
-            sex: signupData.sex.charAt(0).toUpperCase() + signupData.sex.slice(1), // 대소문자 처리
-          }),
-        });
-
-        const data = await response.json();
-        if (response.ok) {
-          Alert.alert('회원가입 성공', '회원가입이 완료되었습니다.');
-          navigation.navigate('Main'); // 회원가입 완료 후 메인 화면으로 이동
-        } else {
-          throw new Error(data.message || '회원가입에 실패했습니다.');
-        }
-      } catch (error) {
-        Alert.alert('오류', error.message || '회원가입 도중 문제가 발생했습니다.');
-      }
-    } else {
-      Alert.alert('주의', '이용약관 및 개인정보 처리방침에 동의해 주세요.');
-    }
-  };
-
   const handleNextStep = () => {
     if (step === 3) {
-      handleSubmit(); // 마지막 단계에서 데이터 전송
+      if (signupData.termsAccepted && signupData.privacyAccepted) {
+        console.log('회원가입 데이터:', signupData); // 회원가입 데이터 출력
+        Alert.alert('회원가입 성공', '회원가입이 완료되었습니다.');
+        navigation.navigate('Main'); // 회원가입 완료 후 메인 화면으로 이동
+      } else {
+        Alert.alert('주의', '이용약관 및 개인정보 처리방침에 동의해 주세요.');
+      }
     } else {
       setStep(step + 1);
     }
@@ -75,8 +47,8 @@ export default function SignUpScreen({ navigation }) {
               style={commonStyles.input}
               placeholder="아이디를 입력해주세요."
               placeholderTextColor="#C4C4C4"
-              value={signupData.userId}
-              onChangeText={(text) => setSignupData({ ...signupData, userId: text })}
+              value={signupData.id}
+              onChangeText={(text) => setSignupData({ ...signupData, id: text })}
             />
 
             <Text style={commonStyles.label}>이름</Text>
@@ -84,8 +56,8 @@ export default function SignUpScreen({ navigation }) {
               style={commonStyles.input}
               placeholder="이름을 입력해주세요."
               placeholderTextColor="#C4C4C4"
-              value={signupData.userName}
-              onChangeText={(text) => setSignupData({ ...signupData, userName: text })}
+              value={signupData.name}
+              onChangeText={(text) => setSignupData({ ...signupData, name: text })}
             />
           </>
         );
@@ -126,8 +98,8 @@ export default function SignUpScreen({ navigation }) {
               placeholder="전화번호를 입력해주세요."
               placeholderTextColor="#C4C4C4"
               keyboardType="phone-pad"
-              value={signupData.phoneNum}
-              onChangeText={(text) => setSignupData({ ...signupData, phoneNum: text })}
+              value={signupData.phoneNumber}
+              onChangeText={(text) => setSignupData({ ...signupData, phoneNumber: text })}
             />
 
             <View style={commonStyles.genderContainer}>
@@ -135,15 +107,15 @@ export default function SignUpScreen({ navigation }) {
               <View style={commonStyles.genderSelect}>
                 <TouchableOpacity
                   style={
-                    signupData.sex === 'male'
+                    signupData.gender === 'male'
                       ? commonStyles.selectedGenderButton
                       : commonStyles.genderButton
                   }
-                  onPress={() => setSignupData({ ...signupData, sex: 'male' })}
+                  onPress={() => setSignupData({ ...signupData, gender: 'male' })}
                 >
                   <Text
                     style={
-                      signupData.sex === 'male'
+                      signupData.gender === 'male'
                         ? commonStyles.selectedGenderText
                         : commonStyles.genderText
                     }
@@ -153,15 +125,15 @@ export default function SignUpScreen({ navigation }) {
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={
-                    signupData.sex === 'female'
+                    signupData.gender === 'female'
                       ? commonStyles.selectedGenderButton
                       : commonStyles.genderButton
                   }
-                  onPress={() => setSignupData({ ...signupData, sex: 'female' })}
+                  onPress={() => setSignupData({ ...signupData, gender: 'female' })}
                 >
                   <Text
                     style={
-                      signupData.sex === 'female'
+                      signupData.gender === 'female'
                         ? commonStyles.selectedGenderText
                         : commonStyles.genderText
                     }
