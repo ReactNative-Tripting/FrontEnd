@@ -24,22 +24,29 @@ export default function SignUpScreen({ navigation }) {
   // 아이디 중복 검사 함수
   const checkUserIdAvailability = async (userId) => {
     try {
+  
       const response = await fetch(`http://localhost:8080/users/userid/${userId}/exists`);
-      const data = await response.json();
+  
       if (response.ok) {
-        setIsUserIdValid(!data.exists); // 중복된 아이디가 있으면 false, 없으면 true
-        if (!data.exists) {
-          Alert.alert('아이디 확인', '사용 가능한 아이디입니다.');
-        } else {
+        const exists = await response.json(); // Boolean 값 직접 사용
+        console.log('UserId exists:', exists); // 응답 값 확인
+        setIsUserIdValid(!exists); // 존재 여부에 따라 유효성 설정
+  
+        if (exists) {
           Alert.alert('아이디 중복', '이미 사용 중인 아이디입니다.');
+        } else {
+          Alert.alert('아이디 확인', '사용 가능한 아이디입니다.');
         }
       } else {
-        throw new Error(data.message || '아이디 확인에 실패했습니다.');
+        throw new Error('아이디 확인에 실패했습니다.');
       }
     } catch (error) {
+      console.error('Error during userId availability check:', error); // 에러 로그 출력
       Alert.alert('오류', error.message || '아이디 확인 도중 문제가 발생했습니다.');
     }
   };
+  
+
 
   const handleSubmit = async () => {
     if (signupData.termsAccepted && signupData.privacyAccepted) {
