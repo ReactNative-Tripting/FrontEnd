@@ -1,204 +1,176 @@
 import React, { useState } from 'react';
 import {
-  View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Switch, ScrollView,
+  View, Text, TextInput, TouchableOpacity, Alert, StyleSheet,
 } from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import commonStyles from './components/Style';
 
 export default function SignUpScreen({ navigation }) {
   const [step, setStep] = useState(1); // 현재 단계
   const [signupData, setSignupData] = useState({
-    email: '', // 이메일 추가
-    name: '',
+    userId: '',
+    username: '',
     password: '',
-    pwcheck: '',
-    phoneNumber: '',
-    gender: 'male',
-    termsAccepted: false,
-    privacyAccepted: false,
+    phoneNum: '',
+    email: '',
+    sex: 'Male',
   });
+  const [isIdValid, setIsIdValid] = useState(true); // 아이디 중복 여부 상태
 
-  const isPasswordMatch = signupData.password === signupData.pwcheck || signupData.pwcheck === '';
-  const isEmailValid = /\S+@\S+\.\S+/.test(signupData.email); // 이메일 유효성 검사 정규 표현식
-
-  const handleNextStep = () => {
-    if (step === 3) {
-      if (signupData.termsAccepted && signupData.privacyAccepted) {
-        console.log('회원가입 데이터:', signupData); // 회원가입 데이터 출력
-        Alert.alert('회원가입 성공', '회원가입이 완료되었습니다.');
-        navigation.navigate('Main'); // 회원가입 완료 후 메인 화면으로 이동
+  // 아이디 중복 확인 함수
+  const checkUserIdAvailability = async (userId) => {
+    try {
+      const response = await fetch(`http://localhost:8080/users/check-id?userId=${userId}`);
+      if (response.ok) {
+        const result = await response.json();
+        if (result.exists) {
+          // 아이디가 중복될 경우
+          setIsIdValid(false);
+          Alert.alert('아이디 중복', '이 아이디는 이미 사용 중입니다.');
+        } else {
+          setIsIdValid(true); // 아이디가 유효한 경우
+        }
       } else {
-        Alert.alert('주의', '이용약관 및 개인정보 처리방침에 동의해 주세요.');
+        setIsIdValid(false);
+        Alert.alert('서버 오류', '아이디 중복 확인에 실패했습니다.');
       }
-    } else {
-      setStep(step + 1);
+    } catch (error) {
+      setIsIdValid(false);
+      Alert.alert('네트워크 오류', '서버와 연결할 수 없습니다.');
     }
   };
 
-  const renderStepContent = () => {
-    switch (step) {
-      case 1:
-        return (
-          <>
-            <Text style={commonStyles.subtitle}>여행{'\n'}그 시작을 함께 해볼까요?</Text>
-            <Text style={commonStyles.description}>먼저 이메일을 입력해주세요.</Text>
+  // 회원가입 진행
+  const handleNextStep = async () => {
+    if (step === 1) {
+      // 아이디 중복 확인
+      if (signupData.userId === '') {
+        Alert.alert('아이디 입력', '아이디를 입력해주세요.');
+        return;
+      }
+      await checkUserIdAvailability(signupData.userId);
+      if (!isIdValid) {
+        return; // 아이디가 중복된 경우 진행하지 않음
+      }
+      setStep(step + 1); // 아이디 중복이 없으면 다음 단계로
+    } else if (step === 2) {
+      // 비밀번호 확인과 비밀번호 일치 여부 추가
+      if (signupData.password !== signupData.password) {
+        Alert.alert('비밀번호 오류', '비밀번호가 일치하지 않습니다.');
+        return;
+      }
+      setStep(step + 1); // 비밀번호 확인 후 3단계로 진행
+    } else if (step === 3) {
+      // 최종 회원가입 처리
+      const { userId, username, password, phoneNum, email, sex } = signupData;
+      try {
+        const response = await fetch('http://localhost:8080/users', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            userId: userId,
+            username: username,
+            password: password,
+            phoneNum: phoneNum,
+            email: email,
+            sex: sex,
+          }),
+        });
 
-            <Text style={commonStyles.label}>이메일</Text>
-            <TextInput
-              style={commonStyles.input}
-              placeholder="이메일을 입력해주세요."
-              placeholderTextColor="#C4C4C4"
-              value={signupData.email}
-              onChangeText={(text) => setSignupData({ ...signupData, email: text })}
-            />
-            {!isEmailValid && signupData.email !== '' && (
-              <Text style={commonStyles.errorText}>유효한 이메일 주소를 입력해주세요.</Text>
-            )}
-
-            <Text style={commonStyles.label}>이름</Text>
-            <TextInput
-              style={commonStyles.input}
-              placeholder="이름을 입력해주세요."
-              placeholderTextColor="#C4C4C4"
-              value={signupData.name}
-              onChangeText={(text) => setSignupData({ ...signupData, name: text })}
-            />
-          </>
-        );
-      case 2:
-        return (
-          <>
-            <Text style={commonStyles.label}>비밀번호</Text>
-            <TextInput
-              style={commonStyles.input}
-              placeholder="비밀번호를 입력해 주세요."
-              placeholderTextColor="#C4C4C4"
-              value={signupData.password}
-              onChangeText={(text) => setSignupData({ ...signupData, password: text })}
-              secureTextEntry
-            />
-
-            <Text style={commonStyles.label}>비밀번호 확인</Text>
-            <TextInput
-              style={commonStyles.input}
-              placeholder="다시 입력해 주세요."
-              placeholderTextColor="#C4C4C4"
-              value={signupData.pwcheck}
-              onChangeText={(text) => setSignupData({ ...signupData, pwcheck: text })}
-              secureTextEntry
-            />
-
-            {!isPasswordMatch && (
-              <Text style={commonStyles.errorText}>비밀번호가 일치하지 않습니다.</Text>
-            )}
-          </>
-        );
-      case 3:
-        return (
-          <>
-            <Text style={commonStyles.label}>전화번호 입력</Text>
-            <TextInput
-              style={commonStyles.input}
-              placeholder="전화번호를 입력해주세요."
-              placeholderTextColor="#C4C4C4"
-              keyboardType="phone-pad"
-              value={signupData.phoneNumber}
-              onChangeText={(text) => setSignupData({ ...signupData, phoneNumber: text })}
-            />
-
-            <View style={commonStyles.genderContainer}>
-              <Text style={commonStyles.label}>성별 선택</Text>
-              <View style={commonStyles.genderSelect}>
-                <TouchableOpacity
-                  style={
-                    signupData.gender === 'male'
-                      ? commonStyles.selectedGenderButton
-                      : commonStyles.genderButton
-                  }
-                  onPress={() => setSignupData({ ...signupData, gender: 'male' })}
-                >
-                  <Text
-                    style={
-                      signupData.gender === 'male'
-                        ? commonStyles.selectedGenderText
-                        : commonStyles.genderText
-                    }
-                  >
-                    남성
-                  </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={
-                    signupData.gender === 'female'
-                      ? commonStyles.selectedGenderButton
-                      : commonStyles.genderButton
-                  }
-                  onPress={() => setSignupData({ ...signupData, gender: 'female' })}
-                >
-                  <Text
-                    style={
-                      signupData.gender === 'female'
-                        ? commonStyles.selectedGenderText
-                        : commonStyles.genderText
-                    }
-                  >
-                    여성
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-
-            <View style={commonStyles.checkboxContainer}>
-              <Switch
-                value={signupData.termsAccepted}
-                onValueChange={(value) =>
-                  setSignupData({ ...signupData, termsAccepted: value })
-                }
-                thumbColor={signupData.termsAccepted ? '#00aaff' : '#f4f3f4'}
-                trackColor={{ false: '#767577', true: '#81b0ff' }}
-              />
-              <Text style={commonStyles.checkboxLabel}>이용약관에 동의합니다.</Text>
-            </View>
-
-            <View style={commonStyles.checkboxContainer}>
-              <Switch
-                value={signupData.privacyAccepted}
-                onValueChange={(value) =>
-                  setSignupData({ ...signupData, privacyAccepted: value })
-                }
-                thumbColor={signupData.privacyAccepted ? '#00aaff' : '#f4f3f4'}
-                trackColor={{ false: '#767577', true: '#81b0ff' }}
-              />
-              <Text style={commonStyles.checkboxLabel}>개인정보 처리방침에 동의합니다.</Text>
-            </View>
-          </>
-        );
-      default:
-        return null;
+        if (response.ok) {
+          const result = await response.json();
+          Alert.alert('회원가입 성공', '회원가입이 완료되었습니다!');
+          navigation.navigate('Main'); // 회원가입 후 메인 화면으로 이동
+        } else {
+          const error = await response.json();
+          Alert.alert('회원가입 실패', error.message || '서버 오류');
+        }
+      } catch (error) {
+        Alert.alert('오류', '네트워크 오류가 발생했습니다. 다시 시도해주세요.');
+        console.error(error);
+      }
     }
   };
 
   return (
     <View style={commonStyles.container}>
-      {/* 네비게이션 바 */}
-      <View style={commonStyles.navBar}>
-        <TouchableOpacity onPress={() => (step > 1 ? setStep(step - 1) : navigation.goBack())}>
-          <Icon name="arrow-left" size={24} />
-        </TouchableOpacity>
-        <Text style={commonStyles.navTitle}>회원가입 단계 {step}/3</Text>
-      </View>
+      {/* 회원가입 폼 */}
+      <Text style={commonStyles.subtitle}>회원가입</Text>
 
-      {/* 단계별 콘텐츠 */}
-      <ScrollView contentContainerStyle={commonStyles.content}>{renderStepContent()}</ScrollView>
+      {/* 1단계: 아이디 입력 */}
+      {step === 1 && (
+        <>
+          <Text style={commonStyles.label}>아이디</Text>
+          <TextInput
+            style={commonStyles.input}
+            placeholder="아이디를 입력해주세요."
+            value={signupData.userId}
+            onChangeText={(text) => setSignupData({ ...signupData, userId: text })}
+          />
+          {!isIdValid && signupData.userId !== '' && (
+            <Text style={commonStyles.errorText}>이 아이디는 이미 사용 중입니다.</Text>
+          )}
+        </>
+      )}
+
+      {/* 2단계: 비밀번호 입력 */}
+      {step === 2 && (
+        <>
+          <Text style={commonStyles.label}>비밀번호</Text>
+          <TextInput
+            style={commonStyles.input}
+            placeholder="비밀번호를 입력해주세요."
+            secureTextEntry
+            value={signupData.password}
+            onChangeText={(text) => setSignupData({ ...signupData, password: text })}
+          />
+
+          <Text style={commonStyles.label}>비밀번호 확인</Text>
+          <TextInput
+            style={commonStyles.input}
+            placeholder="다시 입력해주세요."
+            secureTextEntry
+            value={signupData.password}
+            onChangeText={(text) => setSignupData({ ...signupData, password: text })}
+          />
+        </>
+      )}
+
+      {/* 3단계: 나머지 정보 입력 */}
+      {step === 3 && (
+        <>
+          <Text style={commonStyles.label}>전화번호</Text>
+          <TextInput
+            style={commonStyles.input}
+            placeholder="전화번호를 입력해주세요."
+            keyboardType="phone-pad"
+            value={signupData.phoneNum}
+            onChangeText={(text) => setSignupData({ ...signupData, phoneNum: text })}
+          />
+
+          <Text style={commonStyles.label}>이메일</Text>
+          <TextInput
+            style={commonStyles.input}
+            placeholder="이메일을 입력해주세요."
+            value={signupData.email}
+            onChangeText={(text) => setSignupData({ ...signupData, email: text })}
+          />
+
+          <Text style={commonStyles.label}>성별</Text>
+          <TextInput
+            style={commonStyles.input}
+            placeholder="성별을 입력해주세요."
+            value={signupData.sex}
+            onChangeText={(text) => setSignupData({ ...signupData, sex: text })}
+          />
+        </>
+      )}
 
       {/* 하단 버튼 */}
-      <TouchableOpacity
-        style={commonStyles.button}
-        onPress={handleNextStep}
-        disabled={!isPasswordMatch && step === 2} // 비밀번호가 일치하지 않으면 버튼 비활성화
-      >
+      <TouchableOpacity style={commonStyles.button} onPress={handleNextStep}>
         <Text style={commonStyles.buttonText}>
-          {step === 3 ? '회원가입 완료' : '계속하기'}
+          {step === 3 ? '회원가입 완료' : '다음'}
         </Text>
       </TouchableOpacity>
     </View>
