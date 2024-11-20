@@ -8,7 +8,7 @@ import commonStyles from './components/Style';
 export default function SignUpScreen({ navigation }) {
   const [step, setStep] = useState(1); // 현재 단계
   const [signupData, setSignupData] = useState({
-    id: '',
+    email: '', // 이메일 추가
     name: '',
     password: '',
     pwcheck: '',
@@ -19,6 +19,7 @@ export default function SignUpScreen({ navigation }) {
   });
 
   const isPasswordMatch = signupData.password === signupData.pwcheck || signupData.pwcheck === '';
+  const isEmailValid = /\S+@\S+\.\S+/.test(signupData.email); // 이메일 유효성 검사 정규 표현식
 
   const handleNextStep = () => {
     if (step === 3) {
@@ -40,16 +41,19 @@ export default function SignUpScreen({ navigation }) {
         return (
           <>
             <Text style={commonStyles.subtitle}>여행{'\n'}그 시작을 함께 해볼까요?</Text>
-            <Text style={commonStyles.description}>먼저 아이디가 필요해요.</Text>
+            <Text style={commonStyles.description}>먼저 이메일을 입력해주세요.</Text>
 
-            <Text style={commonStyles.label}>아이디</Text>
+            <Text style={commonStyles.label}>이메일</Text>
             <TextInput
               style={commonStyles.input}
-              placeholder="아이디를 입력해주세요."
+              placeholder="이메일을 입력해주세요."
               placeholderTextColor="#C4C4C4"
-              value={signupData.id}
-              onChangeText={(text) => setSignupData({ ...signupData, id: text })}
+              value={signupData.email}
+              onChangeText={(text) => setSignupData({ ...signupData, email: text })}
             />
+            {!isEmailValid && signupData.email !== '' && (
+              <Text style={commonStyles.errorText}>유효한 이메일 주소를 입력해주세요.</Text>
+            )}
 
             <Text style={commonStyles.label}>이름</Text>
             <TextInput
@@ -191,7 +195,7 @@ export default function SignUpScreen({ navigation }) {
       <TouchableOpacity
         style={commonStyles.button}
         onPress={handleNextStep}
-        disabled={!isPasswordMatch && step === 2} // Disable button if passwords don't match
+        disabled={!isPasswordMatch && step === 2} // 비밀번호가 일치하지 않으면 버튼 비활성화
       >
         <Text style={commonStyles.buttonText}>
           {step === 3 ? '회원가입 완료' : '계속하기'}
