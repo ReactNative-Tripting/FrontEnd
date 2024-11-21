@@ -17,7 +17,8 @@ import Main from './layout/Main_screen';
 import Event from './layout/Event_screen';
 import Store from './layout/Store_Screen';
   import Product from './layout/Product_screen';
-import Mission from './layout/Mission_screen';
+  import Storage from './layout/Storage_screen'
+  import Mission from './layout/Mission_screen';
   import MissionDetail from './layout/MissionDetail_screen';
 import StartMenu from './layout/StartMenu_screen';
 import RoomScreenP from './layout/Room_screen_P';
@@ -35,15 +36,16 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Splash" screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="Splash" component={SplashScreen} />
-        <Stack.Screen name="Login" component={LoginScreen} />
-        <Stack.Screen name="SignUp" component={SignUp} />
-        <Stack.Screen name="FindPw" component={FindPw} />
-        <Stack.Screen name="FindID" component={FindID} />
-        <Stack.Screen name="Main" component={Main} />
-        <Stack.Screen name="Event" component={Event} />
-        <Stack.Screen name="Store" component={Store} />
-        <Stack.Screen name="Product" component={Product} />
+        <Stack.Screen name="Splash" component={SplashScreen}/>
+        <Stack.Screen name="Login" component={LoginScreen}/>
+        <Stack.Screen name="SignUp" component={SignUp}/>
+        <Stack.Screen name="FindPw" component={FindPw}/>
+        <Stack.Screen name="FindID" component={FindID}/>
+        <Stack.Screen name="Main" component={Main}/>
+        <Stack.Screen name="Event" component={Event}/>
+        <Stack.Screen name="Store" component={Store}/>
+        <Stack.Screen name="Product" component={Product}/>
+        <Stack.Screen name="Storage" component={Storage}/>
         <Stack.Screen name="StartMenu" component={StartMenu}/>
         <Stack.Screen name="Mission" component={Mission}/>
         <Stack.Screen name="MissionDetail" component={MissionDetail}/>
