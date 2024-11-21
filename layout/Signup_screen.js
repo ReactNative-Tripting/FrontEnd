@@ -70,7 +70,7 @@ export default function SignUpScreen({ navigation }) {
         const data = await response.json();
         if (response.ok) {
           Alert.alert('회원가입 성공', '회원가입이 완료되었습니다.');
-          navigation.navigate('Main'); // 회원가입 완료 후 메인 화면으로 이동
+          navigation.replace('Main'); // 회원가입 완료 후 메인 화면으로 이동
         } else {
           throw new Error(data.message || '회원가입에 실패했습니다.');
         }
@@ -83,6 +83,39 @@ export default function SignUpScreen({ navigation }) {
   };
 
   const handleNextStep = () => {
+    if (step === 1) {
+      if (!signupData.userId) {
+        Alert.alert('경고', '아이디를 입력해주세요.');
+        return;
+      }
+      if (!isUserIdValid) {
+        Alert.alert('경고', '아이디 중복 확인을 완료해주세요.');
+        return;
+      }
+      if (!signupData.userName) {
+        Alert.alert('경고', '이름을 입력해주세요.');
+        return;
+      }
+    } else if (step === 2) {
+      if (!signupData.password || !signupData.pwcheck) {
+        Alert.alert('경고', '비밀번호와 확인 비밀번호를 입력해주세요.');
+        return;
+      }
+      if (!isPasswordMatch) {
+        Alert.alert('경고', '비밀번호가 일치하지 않습니다.');
+        return;
+      }
+    } else if (step === 3) {
+      if (!signupData.phoneNum) {
+        Alert.alert('경고', '전화번호를 입력해주세요.');
+        return;
+      }
+      if (!signupData.termsAccepted || !signupData.privacyAccepted) {
+        Alert.alert('경고', '이용약관 및 개인정보 처리방침에 동의해주세요.');
+        return;
+      }
+    }
+  
     if (step === 3) {
       handleSubmit(); // 마지막 단계에서 데이터 전송
     } else {

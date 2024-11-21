@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Image, Alert } from 'react-native';
 import IconAnt from 'react-native-vector-icons/AntDesign';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { launchImageLibrary } from 'react-native-image-picker';
 
 const UserProfileScreen = ({ navigation }) => {
@@ -11,7 +12,65 @@ const UserProfileScreen = ({ navigation }) => {
     points: 1200,
     joinDate: '2023-06-01',
     profileImage: null,
+    name: '',
+    id: '',
+
   });
+
+  const [loading, setLoading] = useState(true); // 로딩 상태 관리
+
+  // 사용자 정보 가져오기
+  const fetchUserData = async (token) => {
+    try {
+      const response = await fetch('http://localhost:8080/users/profile', {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        // 응답이 200이 아닌 경우, 오류 메시지 출력
+        const errorData = await response.json();
+        console.error('Error response:', errorData);
+        Alert.alert('오류', '사용자 정보를 불러오는 중 오류가 발생했습니다.');
+        return;
+      }
+
+      const data = await response.json();
+      console.log('User data fetched:', data);  // 성공적으로 받은 사용자 데이터
+      setUser({
+        name: data.name,
+        id: data.id,
+        });
+    } catch (error) {
+      console.error('Error fetching user data:', error); // catch 된 에러 콘솔에 출력
+      Alert.alert('오류', '서버와의 통신 중 문제가 발생했습니다.');
+    } finally {
+      setLoading(false); // 로딩 종료
+    }
+  };
+
+  useEffect(() => {
+    const getTokenAndFetchData = async () => {
+      try {
+        const token = await AsyncStorage.getItem('userToken');
+        if (token) {
+          console.log('Token retrieved:', token); // 토큰이 성공적으로 로드되었을 때
+          fetchUserData(token); // 토큰이 있으면 사용자 정보 불러오기
+        } else {
+          console.log('No token found, redirecting to login'); // 토큰이 없으면 로그인 화면으로 이동
+          Alert.alert('로그인 필요', '로그인이 필요합니다.');
+          navigation.replace('Login'); // 로그인 화면으로 이동
+        }
+      } catch (error) {
+        console.error('Error retrieving token from AsyncStorage:', error); // AsyncStorage에서 토큰을 가져오는 중 에러가 발생한 경우
+        Alert.alert('오류', '토큰을 가져오는 중 오류가 발생했습니다.');
+      }
+    };
+
+    getTokenAndFetchData();
+  }, [navigation]);
 
   // 프로필 이미지 변경
   const handleImageChange = () => {
@@ -22,11 +81,14 @@ const UserProfileScreen = ({ navigation }) => {
 
     launchImageLibrary(options, (response) => {
       if (response.didCancel) {
+        console.log('Image picker cancelled');
         Alert.alert('취소됨', '이미지 선택이 취소되었습니다.');
       } else if (response.errorCode) {
+        console.error('Image picker error:', response.errorMessage); // 이미지 선택 중 오류 발생
         Alert.alert('오류', `이미지를 불러오는 중 오류가 발생했습니다: ${response.errorMessage}`);
       } else if (response.assets) {
         const source = { uri: response.assets[0].uri };
+        console.log('Image selected:', source); // 선택된 이미지 URI 출력
         setUser({ ...user, profileImage: source });
       }
     });
@@ -37,6 +99,10 @@ const UserProfileScreen = ({ navigation }) => {
     setUser({ ...user, profileImage: null });
     Alert.alert('초기화 완료', '프로필 이미지가 초기화되었습니다.');
   };
+
+  if (loading) {
+    return <Text>로딩 중...</Text>; // 로딩 중일 때 표시할 UI
+  }
 
   return (
     <View style={styles.container}>

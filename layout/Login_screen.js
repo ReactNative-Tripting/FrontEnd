@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Switch, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 export default function LoginScreen() {
   const [rememberMe, setRememberMe] = useState(false);
@@ -22,19 +24,30 @@ export default function LoginScreen() {
           password,
         }),
       });
-
+  
       if (response.ok) {
         const data = await response.json();
+        const { token } = data; // API 응답에서 토큰 추출
+  
+        console.log('Response Data:', data);
+  
+        // 토큰 AsyncStorage에 저장
+        await AsyncStorage.setItem('userToken', token);
+        console.log('Token saved to AsyncStorage:', token);
+  
         Alert.alert('로그인 성공', `환영합니다, ${userId}!`);
-        navigation.navigate('Main'); // 로그인 성공 시 메인 화면으로 이동
+        navigation.replace('Main'); // 로그인 성공 시 메인 화면으로 이동
       } else {
         const error = await response.json();
+        console.log('Error Response:', error);
         Alert.alert('로그인 실패', error.message || '아이디 또는 비밀번호를 확인하세요.');
       }
     } catch (error) {
+      console.error('Error during login:', error);
       Alert.alert('오류 발생', '서버와 통신 중 문제가 발생했습니다.');
     }
   };
+  
 
   return (
     <View style={styles.container}>
