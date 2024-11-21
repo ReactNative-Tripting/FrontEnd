@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, Image, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import IconAnt from 'react-native-vector-icons/AntDesign';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import BottomNavigation from './components/BottomNavigation';
 import commonStyles from './components/Style';
 
@@ -16,9 +16,22 @@ export default function MainScreen({ navigation }) {
       {/* 헤더, 우측 버튼 회원가입 버튼으로 디버깅*/}
       
       <View style={commonStyles.header}>
-        <TouchableOpacity onPress={() => navigation.navigate('SignUp')}>
-          <Icon name="menu" size={28} color="black" />
-        </TouchableOpacity>
+      <TouchableOpacity onPress={async () => {
+  try {
+    const token = await AsyncStorage.getItem('userToken');
+    const userData = await AsyncStorage.getItem('userData');
+    if (token && userData) {
+      console.log('Stored Token:', token);
+      console.log('Stored userData:', userData);
+    } else {
+      console.log('No token found');
+    }
+  } catch (error) {
+    console.error('Error retrieving token:', error);
+  }
+}}>
+  <Icon name="menu" size={28} color="black" />
+</TouchableOpacity>
         <Text style={commonStyles.headerTitle}>트립팅</Text>
         <TouchableOpacity onPress={() => navigation.navigate('User')}>
           <IconAnt name="user" size={28} color="black" />

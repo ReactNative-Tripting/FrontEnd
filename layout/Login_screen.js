@@ -27,13 +27,15 @@ export default function LoginScreen() {
   
       if (response.ok) {
         const data = await response.json();
-        const { token } = data; // API 응답에서 토큰 추출
+        const { token, userData } = data; // API 응답에서 토큰 추출
   
         console.log('Response Data:', data);
   
         // 토큰 AsyncStorage에 저장
         await AsyncStorage.setItem('userToken', token);
+        await AsyncStorage.setItem('userData', JSON.stringify(userData));
         console.log('Token saved to AsyncStorage:', token);
+        console.log('Userdata saved to AsyncStorage:',userData);
   
         Alert.alert('로그인 성공', `환영합니다, ${userId}!`);
         navigation.replace('Main'); // 로그인 성공 시 메인 화면으로 이동
