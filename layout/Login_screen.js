@@ -14,6 +14,7 @@ export default function LoginScreen() {
 
   const handleLogin = async () => {
     try {
+      console.log('로그인 시도 중...');
       const response = await fetch('http://localhost:8080/users/login', {
         method: 'POST',
         headers: {
@@ -27,18 +28,33 @@ export default function LoginScreen() {
   
       if (response.ok) {
         const data = await response.json();
-        const { token, userData } = data; // API 응답에서 토큰 추출
+        console.log('API 응답 데이터:', data);
   
-        console.log('Response Data:', data);
+        const { token, user } = data; // API 응답에 맞게 구조 분해
+        if (token && user) {
+          // 토큰 저장
+          await AsyncStorage.setItem('userToken', token);
   
-        // 토큰 AsyncStorage에 저장
-        await AsyncStorage.setItem('userToken', token);
-        await AsyncStorage.setItem('userData', JSON.stringify(userData));
-        console.log('Token saved to AsyncStorage:', token);
-        console.log('Userdata saved to AsyncStorage:',userData);
-  
-        Alert.alert('로그인 성공', `환영합니다, ${userId}!`);
-        navigation.replace('Main'); // 로그인 성공 시 메인 화면으로 이동
+          // 사용자 정보를 분할하여 저장
+          await AsyncStorage.setItem('userId', user.userId); // 사용자 ID
+          await AsyncStorage.setItem('username', user.username); // 사용자 이름
+          await AsyncStorage.setItem('userEmail', user.email); // 이메일
+          await AsyncStorage.setItem('userPhoneNum', user.phoneNum.toString()); // 전화번호
+          await AsyncStorage.setItem('userSex', user.sex); // 성별
+          await AsyncStorage.setItem('userRoles', JSON.stringify(user.roles)); // 역할 (배열은 JSON 문자열로 저장)
+          await AsyncStorage.setItem('userAccountNonExpired', JSON.stringify(user.accountNonExpired)); // 계정 만료 여부
+          await AsyncStorage.setItem('userAccountNonLocked', JSON.stringify(user.accountNonLocked)); // 계정 잠금 여부
+          await AsyncStorage.setItem('userCredentialsNonExpired', JSON.stringify(user.credentialsNonExpired)); // 자격증명 만료 여부
+          await AsyncStorage.setItem('userEnabled', JSON.stringify(user.enabled)); // 계정 활성화 여부
+          
+          console.log('Id 저장값',userId);
+
+          Alert.alert('로그인 성공', `환영합니다, ${user.username}!`); // 사용자 이름을 표시
+          navigation.replace('Main');
+        } else {
+          console.error('API에서 token 또는 user가 누락되었습니다.');
+          Alert.alert('로그인 실패', '서버에서 유효한 데이터를 받지 못했습니다.');
+        }
       } else {
         const error = await response.json();
         console.log('Error Response:', error);
@@ -50,7 +66,7 @@ export default function LoginScreen() {
     }
   };
   
-
+  
   return (
     <View style={styles.container}>
       <Text style={styles.title}>안녕하세요.</Text>

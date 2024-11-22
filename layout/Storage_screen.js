@@ -29,7 +29,7 @@ const StorageScreen = ({ navigation }) => {
           <Icon name="arrow-back" size={24} color="black" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>보관함</Text>
-        <Icon name="" size={24} color="black" />
+        <Icon size={24} color="black" />
       </View>
 
       {/* Title */}
