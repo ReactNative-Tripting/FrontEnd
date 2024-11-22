@@ -11,10 +11,11 @@ const ProductContent = ({ item, setStorageItems, currentPoints, setCurrentPoints
       Alert.alert('구매 실패', '포인트가 부족합니다.');
       return;
     }
-
+/*
     setRemainingPoints(currentPoints - item.points); // 포인트 차감
     setCurrentPoints(currentPoints - item.points); // 상태 업데이트
     setStorageItems(prevItems => [...prevItems, item]); // 품목 추가
+    */
     setModalVisible(true); // 모달 표시
   };
 

@@ -271,7 +271,7 @@ const StartMenuScreen = ({ navigation }) => {
 			</Modal>
 
 			{/* Bottom Navigation */}
-			<BottomNavigation />
+			<BottomNavigation navigation={navigation}/>
 		</View>
 	);
 };

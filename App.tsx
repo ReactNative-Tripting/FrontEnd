@@ -6,29 +6,29 @@ import 'react-native-gesture-handler';
 //스크린 임포팅
 
 import SplashScreen from './layout/Splash_screen';
-import LoginScreen from './layout/Login_screen';
+import LoginScreen from './layout/ACCOUNT_Login_screen';
 
-import SignUp from './layout/Signup_screen';
+import SignUp from './layout/ACTIVITY_Signup_screen';
 
-import FindPw from './layout/FindPassword';
-import FindID from './layout/FindID';
+import FindPw from './layout/ACCOUNT_FindPassword';
+import FindID from './layout/ACCOUNT_FindID';
 
-import Main from './layout/Main_screen';
-import Event from './layout/Event_screen';
-import Store from './layout/Store_Screen';
-  import Product from './layout/Product_screen';
-  import Storage from './layout/Storage_screen'
-  import Mission from './layout/Mission_screen';
-  import MissionDetail from './layout/MissionDetail_screen';
-import StartMenu from './layout/StartMenu_screen';
-import RoomScreenP from './layout/Room_screen_P';
-import RoomScreenT from './layout/Room_screen_T';
-import UserProfileScreen from './layout/Profile_screen';
+import Main from './layout/MAIN_Main_screen';
+import Event from './layout/MAIN_Event_screen';
+import Store from './layout/MAIN_ITEM_Store_Screen';
+  import Product from './layout/MAIN_ITEM_Product_screen';
+  import Storage from './layout/ITEM_Storage_screen'
+  import Mission from './layout/MAIN_Mission_screen';
+  import MissionDetail from './layout/MAIN_MissionDetail_screen';
+import StartMenu from './layout/MAIN_StartMenu_screen';
+import RoomScreenP from './layout/ACTIVITY_Room_screen_P';
+import RoomScreenT from './layout/ACTIVITY_Room_screen_T';
+import UserProfileScreen from './layout/ACCOUNT_Profile_screen';
 
-import HealingScreen from './layout/HealingScreen';
-import EducationScreen from './layout/EducationScreen';
-import FoodScreen from './layout/FoodScreen';
-import MountainScreen from './layout/MountainScreen';
+import HealingScreen from './layout/ACTIVITY_Healing_Screen';
+import EducationScreen from './layout/ACTIVITY_Education_Screen';
+import FoodScreen from './layout/ACTIVITY_Food_Screen';
+import MountainScreen from './layout/ACTIVITY_Mountain_Screen';
 
 const Stack = createStackNavigator();
 
