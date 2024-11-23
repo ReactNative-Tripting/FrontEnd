@@ -25,16 +25,16 @@ export default function LoginScreen() {
           password,
         }),
       });
-  
+
       if (response.ok) {
         const data = await response.json();
         console.log('API 응답 데이터:', data);
-  
+
         const { token, user } = data; // API 응답에 맞게 구조 분해
         if (token && user) {
           // 토큰 저장
           await AsyncStorage.setItem('userToken', token);
-  
+
           // 사용자 정보를 분할하여 저장
           await AsyncStorage.setItem('userId', user.userId); // 사용자 ID
           await AsyncStorage.setItem('username', user.username); // 사용자 이름
@@ -46,7 +46,7 @@ export default function LoginScreen() {
           await AsyncStorage.setItem('userAccountNonLocked', JSON.stringify(user.accountNonLocked)); // 계정 잠금 여부
           await AsyncStorage.setItem('userCredentialsNonExpired', JSON.stringify(user.credentialsNonExpired)); // 자격증명 만료 여부
           await AsyncStorage.setItem('userEnabled', JSON.stringify(user.enabled)); // 계정 활성화 여부
-          
+
           console.log('Id 저장값',userId);
 
           Alert.alert('로그인 성공', `환영합니다, ${user.username}!`); // 사용자 이름을 표시
@@ -65,8 +65,8 @@ export default function LoginScreen() {
       Alert.alert('오류 발생', '서버와 통신 중 문제가 발생했습니다.');
     }
   };
-  
-  
+
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>안녕하세요.</Text>

@@ -1,5 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Animated, PanResponder, Dimensions, Image } from 'react-native';
+import { html } from './API_KakaoMapsAPI';
+import { WebView } from 'react-native-webview'
 
 export default function HealingScreen() {
   const [selectedTab, setSelectedTab] = useState('힐링'); // 현재 선택된 탭 상태 관리
@@ -70,7 +72,9 @@ export default function HealingScreen() {
       <View style={styles.mapContainer}>
         <Text style={styles.title}>일정 설정</Text>
         <View style={styles.mapSpace}>
-          {/* 지도가 들어갈 공간 */}
+          <WebView
+            source={{ html: html }}
+          />
         </View>
         <TouchableOpacity style={styles.startButton}>
           <Text style={styles.startButtonText}>시작</Text>
