@@ -74,6 +74,29 @@ const ProductContent = ({ item, setStorageItems, currentPoints, setCurrentPoints
       if (response.ok) {
         setRemainingPoints(remainingPoints - pointsRequired);  // 남은 포인트 업데이트
         setModalVisible(true);
+  
+        // 구매한 아이템을 저장소에 추가하는 API 호출
+        const storageRequestBody = {
+          userId: userId,
+          items: [item?.name], // 구매한 상품의 이름을 배열로 전달 (배열로 전달)
+        };
+  
+        console.log('저장소 요청 본문:', storageRequestBody);
+  
+        const storageResponse = await fetch('http://localhost:8080/storage/add', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(storageRequestBody),
+        });
+  
+        if (storageResponse.ok) {
+          console.log('아이템이 저장소에 추가되었습니다.');
+        } else {
+          console.error('저장소에 아이템을 추가하는 데 실패했습니다.');
+          Alert.alert('오류', '저장소에 아이템을 추가하는 데 실패했습니다.');
+        }
       } else {
         Alert.alert('구매 실패', '포인트 차감에 실패했습니다.');
       }
