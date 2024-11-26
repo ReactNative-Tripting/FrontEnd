@@ -29,6 +29,7 @@ import HealingScreen from './layout/ACTIVITY_Healing_Screen';
 import EducationScreen from './layout/ACTIVITY_Education_Screen';
 import FoodScreen from './layout/ACTIVITY_Food_Screen';
 import MountainScreen from './layout/ACTIVITY_Mountain_Screen';
+import Usersetting from './layout/ACTIVITY_UserSetting_Screen';
 
 const Stack = createStackNavigator();
 
@@ -55,6 +56,7 @@ export default function App() {
         <Stack.Screen name="Education" component={EducationScreen}/>
         <Stack.Screen name="Food" component={FoodScreen}/>
         <Stack.Screen name="Mountain" component={MountainScreen}/>
+        <Stack.Screen name="UserSettings" component={Usersetting}/>
         <Stack.Screen name="User" component={UserProfileScreen}/>
        </Stack.Navigator>
     </NavigationContainer>

@@ -17,21 +17,21 @@ export default function MainScreen({ navigation }) {
       
       <View style={commonStyles.header}>
       <TouchableOpacity onPress={async () => {
-  try {
-    const token = await AsyncStorage.getItem('userToken');
-    const userData = await AsyncStorage.getItem('userData');
-    if (token && userData) {
-      console.log('Stored Token:', token);
-      console.log('Stored userData:', userData);
-    } else {
-      console.log('No token found');
-    }
-  } catch (error) {
-    console.error('Error retrieving token:', error);
-  }
-}}>
-  <Icon name="menu" size={28} color="black" />
-</TouchableOpacity>
+        try {
+          const token = await AsyncStorage.getItem('userToken');
+          const userData = await AsyncStorage.getItem('userData');
+          if (token && userData) {
+            console.log('Stored Token:', token);
+            console.log('Stored userData:', userData);
+          } else {
+            console.log('No token found');
+          }
+        } catch (error) {
+          console.error('Error retrieving token:', error);
+        }
+      }}>
+        <Icon name="menu" size={28} color="black" />
+      </TouchableOpacity>
         <Text style={commonStyles.headerTitle}>트립팅</Text>
         <TouchableOpacity onPress={() => navigation.navigate('User')}>
           <IconAnt name="user" size={28} color="black" />

@@ -77,7 +77,7 @@ const RoomScreenP = ({ route, navigation }) => {
             <View style={styles.roomContent}>
                 <Text>참여자 리스트가 여기에 표시됩니다.</Text>
             </View>
-
+            <Button title="시작" />
             {/* 방 나가기 버튼 */}
             <Button title="나가기" onPress={handleExitRoom} />
         </View>
