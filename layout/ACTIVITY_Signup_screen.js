@@ -70,6 +70,7 @@ export default function SignUpScreen({ navigation }) {
         const data = await response.json();
         if (response.ok) {
           Alert.alert('회원가입 성공', '회원가입이 완료되었습니다.');
+          earnWelcomePoints(signupData.userId);
           navigation.replace('Main'); // 회원가입 완료 후 메인 화면으로 이동
         } else {
           throw new Error(data.message || '회원가입에 실패했습니다.');
@@ -81,6 +82,30 @@ export default function SignUpScreen({ navigation }) {
       Alert.alert('주의', '이용약관 및 개인정보 처리방침에 동의해 주세요.');
     }
   };
+
+  const earnWelcomePoints = async (userId) => {
+    try {
+      const response = await fetch('http://localhost:8080/point/earn', {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userId: userId, // userId 필드 추가
+          point: 1, // 지급할 포인트
+        }),
+      });
+  
+      if (response.ok) {
+        console.log("포인트 지급 완료");
+      } else {
+        console.error("포인트 지급 실패");
+      }
+    } catch (error) {
+      console.error("포인트 지급 중 오류 발생:", error);
+    }
+  };
+  
 
   const handleNextStep = () => {
     if (step === 1) {
