@@ -70,7 +70,7 @@ export default function SignUpScreen({ navigation }) {
         const data = await response.json();
         if (response.ok) {
           Alert.alert('회원가입 성공', '회원가입이 완료되었습니다.');
-          navigation.replace('Main'); // 회원가입 완료 후 메인 화면으로 이동
+          navigation.replace('Login'); // 회원가입 완료 후 메인 화면으로 이동
         } else {
           throw new Error(data.message || '회원가입에 실패했습니다.');
         }
