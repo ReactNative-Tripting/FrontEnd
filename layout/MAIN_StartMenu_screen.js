@@ -70,7 +70,7 @@ const StartMenuScreen = ({ navigation }) => {
 		},
 		body: JSON.stringify({
 		  roomName: 'Test Room',
-		  userId: '1123', // userId 전달
+		  userId: userId, // userId 전달
 		}),
 	  });
   
@@ -107,6 +107,7 @@ const StartMenuScreen = ({ navigation }) => {
         },
         body: JSON.stringify({
           roomName: '팀 레이싱 방', // 필요하면 동적으로 설정 가능
+          userId: userId, // userId 전달
         }),
       });
 
