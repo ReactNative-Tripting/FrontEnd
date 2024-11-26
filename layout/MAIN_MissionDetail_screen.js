@@ -1,16 +1,51 @@
-import React, { useState } from 'react';
-import { View, Text, Image, TouchableOpacity, StyleSheet, Alert } from 'react-native';
-import { useRoute } from '@react-navigation/native';
-import { useNavigation } from '@react-navigation/native';
+import React, { useEffect, useState } from 'react';
+import { View, Text, Image, TouchableOpacity, Alert, StyleSheet, KeyboardAvoidingView, ScrollView } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useRoute, useNavigation } from '@react-navigation/native';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
-import commonStyles from './components/Style';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import commonStyles from './components/Style';
 
 const MissionDetail = () => {
   const route = useRoute();
-  const { missionId } = route.params; // 미션 아이디를 받아옵니다.
   const navigation = useNavigation();
+  const { missionId } = route.params;
+  const [mission, setMission] = useState(null);
   const [imageUri, setImageUri] = useState(null);
+
+  // 미션 로드
+  const fetchMissionDetail = async () => {
+    try {
+      const storedMissions = await AsyncStorage.getItem('missions');
+      const parsedMissions = storedMissions ? JSON.parse(storedMissions) : [];
+      const missionDetail = parsedMissions.find((m) => m.id === missionId);
+      if (missionDetail) {
+        setMission(missionDetail);
+      } else {
+        Alert.alert('오류', '미션을 찾을 수 없습니다.');
+      }
+    } catch (error) {
+      console.error('미션 로드 중 오류:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchMissionDetail();
+  }, []);
+
+  // 미션 완료 처리
+  const handleCompleteMission = async () => {
+    try {
+      const storedMissions = await AsyncStorage.getItem('missions');
+      const parsedMissions = storedMissions ? JSON.parse(storedMissions) : [];
+      const updatedMissions = parsedMissions.filter((m) => m.id !== missionId);
+      await AsyncStorage.setItem('missions', JSON.stringify(updatedMissions));
+      Alert.alert('미션 완료', '미션이 성공적으로 완료되었습니다.');
+      navigation.replace("Mission");
+    } catch (error) {
+      console.error('미션 삭제 중 오류:', error);
+    }
+  };
 
   // 사진 선택 (갤러리에서)
   const handleChoosePhoto = () => {
@@ -23,37 +58,6 @@ const MissionDetail = () => {
         setImageUri(response.assets[0].uri);
       }
     });
-  };
-//이미지 업로드 함수
-  const handleUploadPhoto = () => {
-    if (!imageUri) {
-      Alert.alert('업로드 실패', '선택한 이미지가 없습니다.');
-      return;
-    }
-
-    const formData = new FormData();
-    formData.append('image', {
-      uri: imageUri,
-      type: 'image/jpeg', // 이미지 타입 설정 (예: 'image/jpeg', 'image/png')
-      name: `mission_${missionId}.jpg`, // 파일 이름 생성
-    });
-
-    // 서버 URL (이 부분은 서버 API 엔드포인트로 대체)
-    fetch('https://your-server.com/upload', {
-      method: 'POST',
-      body: formData,
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    })
-      .then(response => response.json())
-      .then(data => {
-        Alert.alert('업로드 성공', '이미지가 성공적으로 업로드되었습니다.');
-      })
-      .catch(error => {
-        console.error('업로드 실패:', error);
-        Alert.alert('오류', '이미지 업로드 중 오류가 발생했습니다.');
-      });
   };
 
   // 사진 촬영 (카메라)
@@ -69,61 +73,107 @@ const MissionDetail = () => {
     });
   };
 
+  if (!mission) {
+    return (
+      <View style={commonStyles.container}>
+        <Text>로딩 중...</Text>
+      </View>
+    );
+  }
+
   return (
-    <View style={commonStyles.container}>
-      {/* 헤더 */}
-      <View style={commonStyles.header}>
-      <Icon name="arrow-back" size={24} color="black" onPress={() => navigation.goBack()} />
-        <Text style={commonStyles.headerTitle}>미션</Text>
-        <Icon name="search" size={24} color="black" />
-      </View>
-
-      <Text style={commonStyles.title}>미션 {missionId} 세부 내용</Text>
-
-      {/* 사진 선택 및 업로드 */}
-      <View style={styles.photoSection}>
-        <Text style={styles.subtitle}>미션: 특정 장소에 가서 사진 찍기</Text>
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.button} onPress={handleChoosePhoto}>
-            <Text style={styles.buttonText}>사진 선택</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.button} onPress={handleTakePhoto}>
-            <Text style={styles.buttonText}>사진 촬영</Text>
-          </TouchableOpacity>
+    <KeyboardAvoidingView style={commonStyles.container} behavior="padding">
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+        {/* 헤더 */}
+        <View style={commonStyles.header}>
+          <Icon name="arrow-back" size={24} color="black" onPress={() => navigation.goBack()} />
+          <Text style={commonStyles.headerTitle}>미션 세부 정보</Text>
+          <Icon name="" size={24} />
         </View>
-        {imageUri && (
-          <Image source={{ uri: imageUri }} style={styles.previewImage} />
-        )}
+
+        {/* 미션 제목 및 설명 */}
+        <View style={styles.missionInfo}>
+          <Text style={styles.title}>{mission.title}</Text>
+          <Text style={styles.missionDescription}>{mission.description}</Text>
+        </View>
+
+        {/* 사진 선택 및 업로드 */}
+        <View style={styles.photoSection}>
+          <Text style={styles.subtitle}>미션: 특정 장소에 가서 사진 찍기</Text>
+          <View style={styles.buttonContainer}>
+            <TouchableOpacity style={styles.button} onPress={handleChoosePhoto}>
+              <Text style={styles.buttonText}>사진 선택</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.button} onPress={handleTakePhoto}>
+              <Text style={styles.buttonText}>사진 촬영</Text>
+            </TouchableOpacity>
+          </View>
+
+          {imageUri && (
+            <Image source={{ uri: imageUri }} style={styles.previewImage} />
+          )}
+        </View>
+      </ScrollView>
+
+      {/* 미션 완료 버튼 */}
+      <View style={styles.footer}>
+        <TouchableOpacity style={styles.completeButton} onPress={handleCompleteMission}>
+          <Text style={styles.completeButtonText}>미션 완료</Text>
+        </TouchableOpacity>
       </View>
-     {/* 업로드 버튼 */}
-     <TouchableOpacity style={styles.uploadButton} onPress={handleUploadPhoto}>
-        <Text style={styles.uploadButtonText}>업로드</Text>
-      </TouchableOpacity>
-    </View>
+    </KeyboardAvoidingView>
   );
 };
 
 const styles = StyleSheet.create({
-  photoSection: {
+  missionDescription: {
+    fontSize: 16,
+    color: '#555',
+    marginTop: 10,
+    textAlign: 'center',
+    paddingHorizontal: 20,
+  },
+  missionInfo: {
     marginTop: 20,
+    paddingHorizontal: 20,
     alignItems: 'center',
   },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#333',
+  },
   subtitle: {
+    fontSize: 18,
+    color: '#333',
+    marginTop: 20,
+    textAlign: 'center',
+  },
+  completeButton: {
+    backgroundColor: '#4CAF50',
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+    alignItems: 'center',
+    marginTop: 30,
+  },
+  completeButtonText: {
+    color: '#FFFFFF',
     fontSize: 16,
-    marginBottom: 10,
-    color: '#555',
+    fontWeight: 'bold',
   },
   buttonContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
-    width: '80%',
-    marginBottom: 20,
+    justifyContent: 'space-between',
+    marginTop: 20,
   },
   button: {
     backgroundColor: '#A6D8FF',
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 5,
+    width: '45%',
+    alignItems: 'center',
   },
   buttonText: {
     color: '#FFFFFF',
@@ -131,23 +181,19 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   previewImage: {
-    width: 200,
-    height: 200,
+    width: 250,
+    height: 250,
     borderRadius: 10,
     marginTop: 20,
+    alignSelf: 'center',
   },
-  uploadButton: {
-    backgroundColor: '#FFA500', // 주황색 배경
-    paddingVertical: 12,
+  footer: {
+    position: 'absolute',
+    bottom: 20,
+    left: 0,
+    right: 0,
     paddingHorizontal: 20,
-    borderRadius: 5,
     alignItems: 'center',
-    marginTop: 20,
-  },
-  uploadButtonText: {
-    color: '#FFFFFF',
-    fontSize: 16,
-    fontWeight: 'bold',
   },
 });
 

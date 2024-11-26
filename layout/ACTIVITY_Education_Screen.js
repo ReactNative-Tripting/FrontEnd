@@ -1,100 +1,104 @@
 import React, { useState, useRef } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Animated, PanResponder, Dimensions, Image, ScrollView } from 'react-native';
+import { 
+  View, 
+  Text, 
+  TouchableOpacity, 
+  StyleSheet, 
+  Animated, 
+  Dimensions, 
+  Image, 
+  ScrollView 
+} from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function HealingScreen() {
-  const [selectedTab, setSelectedTab] = useState('교육');
-  const screenHeight = Dimensions.get('window').height;
-  const slideAnim = useRef(new Animated.Value(0)).current;
   const [checkedItems, setCheckedItems] = useState([false, false, false, false]);
-
-  // PanResponder 생성
-  const panResponder = useRef(
-    PanResponder.create({
-      onStartShouldSetPanResponder: () => true,
-      onPanResponderMove: (e, gestureState) => {
-        slideAnim.setValue(gestureState.dy);
-      },
-      onPanResponderRelease: (_, gestureState) => {
-        let finalPosition = slideAnim._value;
-
-        // 슬라이드 최대 높이 제한
-        if (finalPosition < -screenHeight + 200) {
-          finalPosition = -screenHeight + 200; // 너무 위로 올라가지 않도록
-        } else if (finalPosition > 0) {
-          finalPosition = 0; // 화면 하단을 넘지 않도록
-        }
-
-        // 애니메이션 종료 후 위치 업데이트
-        Animated.timing(slideAnim, {
-          toValue: finalPosition,
-          duration: 200,
-          useNativeDriver: false,
-        }).start();
-      },
-    })
-  ).current;
+  const [isPanelVisible, setIsPanelVisible] = useState(false); // 패널 상태
+  const screenHeight = Dimensions.get('window').height;
+  const slideAnim = useRef(new Animated.Value(screenHeight - 80)).current; // 초기 위치 설정
 
   const raceData = [
     {
+      id: '1',
       title: '미니 마라톤',
       description: '온양온천의 주요 명소를 연결하는 미니 마라톤 레이스입니다.',
       image: require('./image/event1.png'),
     },
     {
+      id: '2',
       title: '온천열차 레이스',
       description: '온양온천역에서 출발하는 열차를 타고 지정된 명소에 도착하세요.',
       image: require('./image/event1.png'),
     },
     {
+      id: '3',
       title: '온천 역사 퀴즈 레이스',
       description: '온양박물관, 현충사 등을 지나며 퀴즈를 풉니다.',
       image: require('./image/event1.png'),
     },
     {
+      id: '4',
       title: '온천 보트 레이싱',
       description: '신정호수에서 소형 보트를 타고 경쟁하는 레이스!',
       image: require('./image/event1.png'),
     },
   ];
 
+  // 체크박스 상태 관리
   const handleCheckBoxToggle = (index) => {
     const updatedCheckedItems = [...checkedItems];
     updatedCheckedItems[index] = !updatedCheckedItems[index];
     setCheckedItems(updatedCheckedItems);
   };
 
+  // 미션 저장 함수
+  const handleConfirm = async () => {
+    try {
+      const selectedMissions = raceData.filter((_, index) => checkedItems[index]);
+      if (selectedMissions.length === 0) {
+        alert('미션을 선택해주세요!');
+        return;
+      }
+
+      await AsyncStorage.setItem('missions', JSON.stringify(selectedMissions));
+      alert('선택된 미션이 저장되었습니다.');
+    } catch (error) {
+      console.error('미션 저장 오류:', error);
+    }
+  };
+
+  // 패널 보이기/숨기기
+  const togglePanel = () => {
+    const toValue = isPanelVisible ? screenHeight - 80 : screenHeight - 400; // 위/아래 위치 설정
+    Animated.timing(slideAnim, {
+      toValue,
+      duration: 300,
+      useNativeDriver: false,
+    }).start();
+    setIsPanelVisible(!isPanelVisible); // 상태 토글
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.mapContainer}>
         <Text style={styles.title}>일정 설정</Text>
-        <View style={styles.mapSpace}>
-          {/* 지도가 들어갈 공간 */}
-        </View>
-        <TouchableOpacity style={styles.startButton}>
-          <Text style={styles.startButtonText}>시작</Text>
+        <View style={styles.mapSpace} />
+        <TouchableOpacity style={styles.startButton} onPress={handleConfirm}>
+          <Text style={styles.startButtonText}>미션 저장</Text>
         </TouchableOpacity>
       </View>
 
       {/* 슬라이딩 패널 섹션 */}
       <Animated.View
         style={[styles.slidingPanel, { transform: [{ translateY: slideAnim }] }]}
-        {...panResponder.panHandlers}
       >
         <View style={styles.handleContainer}>
-          <View style={styles.handleBar} />
+          <TouchableOpacity style={styles.panelToggleButton} onPress={togglePanel}/>
         </View>
 
-        {/* 힐링 탭 */}
-        <View style={styles.tabsContainerSingle}>
-          <TouchableOpacity style={styles.tabButtonSingle}>
-            <Text style={styles.tabTextSingle}>힐링</Text>
-          </TouchableOpacity>
-        </View>
-
-        {/* 레이스 리스트를 ScrollView로 감싸서 스크롤 가능하도록 변경 */}
         <ScrollView style={styles.raceList}>
           {raceData.map((race, index) => (
-            <View key={index} style={styles.raceItem}>
+            <View key={race.id} style={styles.raceItem}>
               <Image source={race.image} style={styles.raceImage} />
               <View style={styles.raceTextContainer}>
                 <Text style={styles.raceTitle}>{race.title}</Text>
@@ -115,50 +119,42 @@ export default function HealingScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
+  container: { 
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#FFFFFF' 
   },
-  mapContainer: {
-    flex: 1,
-    backgroundColor: '#e6e6e6',
-    justifyContent: 'flex-start',
+  mapContainer: { 
+    flex: 1, 
+    backgroundColor: '#e6e6e6', 
     alignItems: 'center',
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
   },
   title: {
     fontSize: 20,
-    fontWeight: 'bold',
-    marginTop: 40,
-    marginBottom: 10,
+    fontWeight: 'bold', 
+    marginTop: 40, 
+    marginBottom: 10 
   },
   mapSpace: {
-    width: '90%',
-    height: '80%',
-    backgroundColor: '#d3d3d3',
-    borderRadius: 10,
-    marginBottom: 20,
+    width: '90%', 
+    height: '75%', 
+    backgroundColor: '#d3d3d3', 
+    borderRadius: 10, 
+    
   },
   startButton: {
-    backgroundColor: '#A6D8FF',
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 25,
-    alignItems: 'center',
-    alignSelf: 'center',
+    backgroundColor: '#A6D8FF', 
+    padding: 12, 
+    borderRadius: 25, 
+    marginTop: 20,
+    
   },
-  startButtonText: {
-    color: '#FFFFFF',
-    fontSize: 16,
-    fontWeight: 'bold',
+  startButtonText: { 
+    color: '#FFF', 
+    fontSize: 16, 
+    fontWeight: 'bold' 
   },
   slidingPanel: {
     position: 'absolute',
-    bottom: -370,
     left: 0,
     right: 0,
     height: 400,
@@ -167,74 +163,51 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 20,
     padding: 20,
   },
-  handleContainer: {
-    alignItems: 'center',
-    marginBottom: 10,
+  handleContainer: { 
+    alignItems: 'center', 
+    marginBottom: 10 
   },
-  handleBar: {
-    width: 80,
-    height: 8,
-    backgroundColor: '#888',
-    borderRadius: 4,
+  panelToggleButton: {
+    padding: 10,
+    backgroundColor: '#CCCCCC',
+    borderRadius: 20,
+    alignSelf: 'center',
   },
-  tabsContainerSingle: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    marginBottom: 20,
+  raceList: { 
+    marginTop: 10 
   },
-  tabButtonSingle: {
-    paddingVertical: 10,
-    paddingHorizontal: 15,
-    backgroundColor: '#e0e0e0',
-    borderRadius: 15,
+  raceItem: { 
+    flexDirection: 'row', 
+    alignItems: 'center', 
+    padding: 15, 
+    borderBottomWidth: 1 
   },
-  tabTextSingle: {
-    color: '#000',
-    fontWeight: 'bold',
+  raceImage: { 
+    width: 50, 
+    height: 50, 
+    marginRight: 15 
   },
-  raceList: {
-    marginTop: 10,
+  raceTextContainer: { 
+    flex: 1 
   },
-  raceItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ddd',
-    marginBottom: 10,
-    backgroundColor: 'transparent',
-    borderRadius: 10,
+  raceTitle: { 
+    fontSize: 18, 
+    fontWeight: 'bold' 
   },
-  raceImage: {
-    width: 50,
-    height: 50,
-    marginRight: 15,
-    borderRadius: 25,
+  raceDescription: { 
+    color: '#777' 
   },
-  raceTextContainer: {
-    flex: 1,
+  checkBox: { 
+    width: 24, 
+    height: 24, 
+    borderWidth: 2, 
+    borderColor: '#A6D8FF', 
+    borderRadius: 4 
   },
-  raceTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  raceDescription: {
-    marginTop: 5,
-    color: '#777',
-  },
-  checkBox: {
-    width: 24,
-    height: 24,
-    borderWidth: 2,
-    borderColor: '#A6D8FF',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 4,
-  },
-  checkedBox: {
-    width: 16,
-    height: 16,
-    backgroundColor: '#A6D8FF',
-    borderRadius: 2,
+  checkedBox: { 
+    width: 16, 
+    height: 16, 
+    backgroundColor: '#A6D8FF', 
+    borderRadius: 2 
   },
 });
