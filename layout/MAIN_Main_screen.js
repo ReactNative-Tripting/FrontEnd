@@ -10,7 +10,7 @@ import event1Image from './image/event1.png';
 import event2Image from './image/event2.png';
 
 export default function MainScreen({ route, navigation }) {
-  const eventList  = route.params.getEventList;
+  const eventList = route.params.getEventList;
 
   return (
     <View style={styles.container}>
@@ -60,7 +60,6 @@ export default function MainScreen({ route, navigation }) {
           />
           <View style={styles.eventDescription}>
             <Text style={styles.eventTextTitle}>{eventList[0].title}</Text>
-            <Text style={styles.eventTextDetail}>생성형 AI 작품 공유 전시</Text>
           </View>
         </View>
         <View style={styles.eventItem}>
