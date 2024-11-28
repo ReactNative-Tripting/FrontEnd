@@ -32,7 +32,7 @@ const RoomScreenP = ({ route, navigation }) => {
 
         try {
             // 템플릿 리터럴을 사용하여 URL에 변수 삽입
-            const response = await fetch(`http://localhost:8080/rooms/exit?inviteCode=${roomCode}&userId=${userId}`, {
+            const response = await fetch(`http://localhost:8080/Tripting/rooms/exit?inviteCode=${roomCode}&userId=${userId}`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
