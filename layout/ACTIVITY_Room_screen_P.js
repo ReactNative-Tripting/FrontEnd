@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Button, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, Button, StyleSheet, TouchableOpacity, Alert, FlatList } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import commonStyles from './components/Style';
 import AsyncStorage from '@react-native-async-storage/async-storage';  // AsyncStorage import
@@ -7,6 +7,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';  // AsyncS
 const RoomScreenP = ({ route, navigation }) => {
     const { roomCode } = route.params;  // roomCode는 다른 화면에서 전달되어야 합니다.
     const [userId, setUserId] = useState(null);  // userId 상태 관리
+    const [participants, setParticipants] = useState([]);  // 참여자 리스트 상태 관리
 
     useEffect(() => {
         // AsyncStorage에서 userId 가져오기
@@ -23,6 +24,29 @@ const RoomScreenP = ({ route, navigation }) => {
 
         fetchUserId();  // 컴포넌트 마운트 시 userId 가져오기
     }, []);
+
+    useEffect(() => {
+        if (roomCode && userId) {
+            // 방에 입장할 때 참여자 리스트 가져오기
+            const fetchParticipants = async () => {
+                try {
+                    const response = await fetch(`http://localhost:8080/rooms/list?inviteCode=${roomCode}`);
+                    if (response.ok) {
+                        const data = await response.json();
+                        setParticipants(data.members);  // 데이터에서 members 배열만 가져옴
+                    } else {
+                        console.error('참여자 리스트를 가져오는 중 오류 발생');
+                        Alert.alert('참여자 리스트 오류', '참여자 리스트를 불러오는 중 문제가 발생했습니다.');
+                    }
+                } catch (error) {
+                    console.error('네트워크 오류:', error);
+                    Alert.alert('네트워크 오류', '참여자 리스트를 불러오는 중 문제가 발생했습니다.');
+                }
+            };
+
+            fetchParticipants();  // 참여자 리스트 가져오기
+        }
+    }, [roomCode, userId]);
 
     const handleExitRoom = async () => {
         if (!userId) {
@@ -58,6 +82,13 @@ const RoomScreenP = ({ route, navigation }) => {
         }
     };
 
+    // 참여자 목록을 FlatList로 표시
+    const renderParticipant = ({ item }) => (
+        <View style={styles.participantItem}>
+            <Text style={styles.participantText}>{item}</Text>  {/* 참가자 이름 표시 */}
+        </View>
+    );
+
     return (
         <View style={commonStyles.container}>
             {/* Header */}
@@ -73,11 +104,15 @@ const RoomScreenP = ({ route, navigation }) => {
             <Text style={styles.title}>방에 입장했습니다!</Text>
             <Text style={styles.roomCode}>방 코드: {roomCode}</Text>
 
-            {/* Participants List and other room features */}
-            <View style={styles.roomContent}>
-                <Text>참여자 리스트가 여기에 표시됩니다.</Text>
-            </View>
-            <Button title="시작" />
+            {/* 참여자 리스트 표시 */}
+            <FlatList
+                data={participants}
+                renderItem={renderParticipant}
+                keyExtractor={(item, index) => index.toString()}  // 참여자 이름을 key로 사용 (여기서는 index 사용)
+                ListEmptyComponent={<Text>참여자가 없습니다.</Text>}  // 참여자가 없을 경우 메시지 표시
+            />
+
+            <Button title="시작" onPress={navigation.navigate('UserSettings')}/>
             {/* 방 나가기 버튼 */}
             <Button title="나가기" onPress={handleExitRoom} />
         </View>
@@ -100,11 +135,15 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         marginBottom: 40,
     },
-    roomContent: {
+    participantItem: {
+        padding: 10,
+        borderBottomWidth: 1,
+        borderBottomColor: '#ccc',
         width: '100%',
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
+    },
+    participantText: {
+        fontSize: 18,
+        color: '#333',
     },
 });
 

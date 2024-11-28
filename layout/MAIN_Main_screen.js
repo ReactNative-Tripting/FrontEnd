@@ -13,7 +13,7 @@ export default function MainScreen({ navigation }) {
   return (
     <View style={styles.container}>
       {/* 헤더 */}
-      <View style={styles.header}>
+      <View style={commonStyles.header}>
         <TouchableOpacity onPress={async () => {
           try {
             const token = await AsyncStorage.getItem('userToken');
@@ -61,6 +61,7 @@ export default function MainScreen({ navigation }) {
             <Text style={styles.eventTextDetail}>생성형 AI 작품 공유 전시</Text>
           </View>
         </View>
+        {/**/}
         <View style={styles.eventItem}>
           <Image
             source={event2Image}
@@ -92,7 +93,6 @@ export default function MainScreen({ navigation }) {
           <Icon name="check-box-outline-blank" size={24} color="#6e6e6e" />
         </View>
       </View>
-
       {/* 하단 네비게이션 바 */}
       <BottomNavigation navigation={navigation} />
     </View>
@@ -103,13 +103,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    paddingHorizontal: 20,
+    paddingHorizontal: 0,
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 15,
+    paddingVertical: 20,
   },
   headerTitle: {
     fontSize: 24,
@@ -134,6 +134,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
     color: '#333',
+    paddingHorizontal: 20,
   },
   moreText: {
     marginTop: 5,
@@ -151,9 +152,11 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     color: '#333',
+    paddingHorizontal: 20,
   },
   eventList: {
     marginBottom: 20,
+    paddingHorizontal: 0,
   },
   eventItem: {
     flexDirection: 'row',
@@ -182,6 +185,7 @@ const styles = StyleSheet.create({
   },
   scheduleList: {
     marginBottom: 30,
+    paddingHorizontal: 0,
   },
   scheduleItem: {
     flexDirection: 'row',
