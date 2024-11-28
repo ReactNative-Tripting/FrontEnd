@@ -97,7 +97,7 @@ const MissionDetail = () => {
           <Text style={styles.missionDescription}>{mission.description}</Text>
         </View>
 
-        {/* 사진 선택 및 업로드 */}
+        {/* 사진 선택 */}
         <View style={styles.photoSection}>
           <Text style={styles.subtitle}>미션: 특정 장소에 가서 사진 찍기</Text>
           <View style={styles.buttonContainer}>
@@ -114,6 +114,13 @@ const MissionDetail = () => {
           )}
         </View>
       </ScrollView>
+      
+      {/*업로드 버튼*/}
+      <View style={styles.uploadbutton}>
+        <TouchableOpacity style={styles.completeButton} onPress={handleCompleteMission}>
+          <Text style={styles.completeButtonText}>업로드</Text>
+        </TouchableOpacity>
+      </View>
 
       {/* 미션 완료 버튼 */}
       <View style={styles.footer}>
@@ -187,12 +194,20 @@ const styles = StyleSheet.create({
     marginTop: 20,
     alignSelf: 'center',
   },
+  uploadbutton: {
+    position: 'absolute',
+    bottom: 80,
+    left: 0,
+    right: 0,
+    padding: 20,
+    alignItems: 'center',
+  },
   footer: {
     position: 'absolute',
     bottom: 20,
     left: 0,
     right: 0,
-    paddingHorizontal: 20,
+    padding: 20,
     alignItems: 'center',
   },
 });

@@ -15,7 +15,7 @@ export default function MainScreen({ route, navigation }) {
   return (
     <View style={styles.container}>
       {/* 헤더 */}
-      <View style={styles.header}>
+      <View style={commonStyles.header}>
         <TouchableOpacity onPress={async () => {
           try {
             const token = await AsyncStorage.getItem('userToken');
@@ -62,6 +62,7 @@ export default function MainScreen({ route, navigation }) {
             <Text style={styles.eventTextTitle}>{eventList[0].title}</Text>
           </View>
         </View>
+        {/**/}
         <View style={styles.eventItem}>
           <Image
             source={{uri: eventList[1].firstimage}}
@@ -92,7 +93,6 @@ export default function MainScreen({ route, navigation }) {
           <Icon name="check-box-outline-blank" size={24} color="#6e6e6e" />
         </View>
       </View>
-
       {/* 하단 네비게이션 바 */}
       <BottomNavigation navigation={navigation} />
     </View>
@@ -103,13 +103,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    paddingHorizontal: 20,
+    paddingHorizontal: 0,
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 15,
+    paddingVertical: 20,
   },
   headerTitle: {
     fontSize: 24,
@@ -145,6 +145,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    paddingHorizontal: 20,
     marginVertical: 20,
   },
   sectionTitle: {
@@ -154,6 +155,8 @@ const styles = StyleSheet.create({
   },
   eventList: {
     marginBottom: 20,
+    paddingHorizontal: 0,
+    paddingHorizontal: 20,
   },
   eventItem: {
     flexDirection: 'row',
@@ -182,6 +185,7 @@ const styles = StyleSheet.create({
   },
   scheduleList: {
     marginBottom: 30,
+    paddingHorizontal: 20,
   },
   scheduleItem: {
     flexDirection: 'row',

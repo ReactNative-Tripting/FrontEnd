@@ -1,17 +1,12 @@
 import React, { useState, useRef } from 'react';
-import { 
-  View, 
-  Text, 
-  TouchableOpacity, 
-  StyleSheet, 
-  Animated, 
-  Dimensions, 
-  Image, 
-  ScrollView 
-} from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Animated, Dimensions, Image, ScrollView} from 'react-native';
+import { html } from './API_KakaoMapsAPI';
+import { WebView } from 'react-native-webview'
+
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function HealingScreen() {
+  const [selectedTab, setSelectedTab] = useState('교육');
   const [checkedItems, setCheckedItems] = useState([false, false, false, false]);
   const [isPanelVisible, setIsPanelVisible] = useState(false); // 패널 상태
   const screenHeight = Dimensions.get('window').height;
@@ -80,11 +75,16 @@ export default function HealingScreen() {
 
   return (
     <View style={styles.container}>
+      {/* 전체 화면을 차지하는 지도 배경 */}
       <View style={styles.mapContainer}>
         <Text style={styles.title}>일정 설정</Text>
-        <View style={styles.mapSpace} />
-        <TouchableOpacity style={styles.startButton} onPress={handleConfirm}>
-          <Text style={styles.startButtonText}>미션 저장</Text>
+        <View style={styles.mapSpace}>
+          <WebView
+            source={{ html: html }}
+          />
+        </View>
+        <TouchableOpacity style={styles.startButton}>
+          <Text style={styles.startButtonText}>시작</Text>
         </TouchableOpacity>
       </View>
 
@@ -94,6 +94,13 @@ export default function HealingScreen() {
       >
         <View style={styles.handleContainer}>
           <TouchableOpacity style={styles.panelToggleButton} onPress={togglePanel}/>
+        </View>
+
+        {/* 힐링 탭 */}
+        <View style={styles.tabsContainerSingle}>
+          <TouchableOpacity style={styles.tabButtonSingle}>
+            <Text style={styles.tabTextSingle}>교육</Text>
+          </TouchableOpacity>
         </View>
 
         <ScrollView style={styles.raceList}>
@@ -172,6 +179,22 @@ const styles = StyleSheet.create({
     backgroundColor: '#CCCCCC',
     borderRadius: 20,
     alignSelf: 'center',
+  },
+
+  tabsContainerSingle: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginBottom: 20,
+  },
+  tabButtonSingle: {
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    backgroundColor: '#e0e0e0',
+    borderRadius: 15,
+  },
+  tabTextSingle: {
+    color: '#000',
+    fontWeight: 'bold',
   },
   raceList: { 
     marginTop: 10 
