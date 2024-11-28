@@ -134,7 +134,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
     color: '#333',
-    paddingHorizontal: 20,
   },
   moreText: {
     marginTop: 5,
@@ -146,17 +145,18 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    paddingHorizontal: 20,
     marginVertical: 20,
   },
   sectionTitle: {
     fontSize: 20,
     fontWeight: 'bold',
     color: '#333',
-    paddingHorizontal: 20,
   },
   eventList: {
     marginBottom: 20,
     paddingHorizontal: 0,
+    paddingHorizontal: 20,
   },
   eventItem: {
     flexDirection: 'row',
@@ -185,7 +185,7 @@ const styles = StyleSheet.create({
   },
   scheduleList: {
     marginBottom: 30,
-    paddingHorizontal: 0,
+    paddingHorizontal: 20,
   },
   scheduleItem: {
     flexDirection: 'row',
