@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, Image, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import IconAnt from 'react-native-vector-icons/AntDesign';
@@ -9,7 +9,9 @@ import commonStyles from './components/Style';
 import event1Image from './image/event1.png';
 import event2Image from './image/event2.png';
 
-export default function MainScreen({ navigation }) {
+export default function MainScreen({ route, navigation }) {
+  const eventList  = route.params.getEventList;
+
   return (
     <View style={styles.container}>
       {/* 헤더 */}
@@ -30,7 +32,7 @@ export default function MainScreen({ navigation }) {
         }}>
           <Icon name="menu" size={28} color="black" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>트립팅</Text>
+        <Text style={styles.headerTitle}>트립팅 {eventList.length}</Text>
         <TouchableOpacity onPress={() => navigation.navigate('User')}>
           <IconAnt name="user" size={28} color="black" />
         </TouchableOpacity>
@@ -39,10 +41,10 @@ export default function MainScreen({ navigation }) {
       {/* 배너 섹션 */}
       <View style={styles.bannerContainer}>
         <Image
-          source={event1Image}
+          source={{uri: eventList[0].firstimage}}
           style={styles.bannerImage}
         />
-        <Text style={styles.bannerText}>아트밸리 아산 제3회 신정호 국제 아트페스티벌</Text>
+        <Text style={styles.bannerText}>{eventList[0].title}</Text>
         </View>
 
       {/* 행사 D-day 섹션 */}
@@ -53,22 +55,21 @@ export default function MainScreen({ navigation }) {
       <ScrollView style={styles.eventList}>
         <View style={styles.eventItem}>
           <Image
-            source={event1Image}
+            source={{uri: eventList[0].firstimage}}
             style={styles.eventImage}
           />
           <View style={styles.eventDescription}>
-            <Text style={styles.eventTextTitle}>신정호 국제 아트페스티벌 100인 100작</Text>
+            <Text style={styles.eventTextTitle}>{eventList[0].title}</Text>
             <Text style={styles.eventTextDetail}>생성형 AI 작품 공유 전시</Text>
           </View>
         </View>
         <View style={styles.eventItem}>
           <Image
-            source={event2Image}
+            source={{uri: eventList[1].firstimage}}
             style={styles.eventImage}
           />
           <View style={styles.eventDescription}>
-            <Text style={styles.eventTextTitle}>아트밸리 아산 제2회 재즈페스티벌</Text>
-            <Text style={styles.eventTextDetail}>자연과 함께하는 재즈 음악 축제</Text>
+            <Text style={styles.eventTextTitle}>{eventList[1].title}</Text>
           </View>
         </View>
       </ScrollView>

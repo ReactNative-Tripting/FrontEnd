@@ -12,10 +12,25 @@ export default function LoginScreen() {
   const [password, setPassword] = useState('');
   const navigation = useNavigation();
 
+  const getEvent = async () => {
+    const responseAPI = await fetch('http://localhost:8080/Tripting/events/eventinfo', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    const apiData = await responseAPI.json();
+    const getAPIData = apiData.eventList;
+
+    await AsyncStorage.setItem('eventlist', JSON.stringify(getAPIData));
+
+    return getAPIData;
+  }
+
   const handleLogin = async () => {
     try {
       console.log('로그인 시도 중...');
-      const response = await fetch('http://localhost:8080/users/login', {
+      const response = await fetch('http://localhost:8080/Tripting/users/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -50,7 +65,8 @@ export default function LoginScreen() {
           console.log('Id 저장값',userId);
 
           Alert.alert('로그인 성공', `환영합니다, ${user.username}!`); // 사용자 이름을 표시
-          navigation.replace('Main');
+          const getEventList = await getEvent();
+          navigation.navigate('Main', { getEventList });
         } else {
           console.error('API에서 token 또는 user가 누락되었습니다.');
           Alert.alert('로그인 실패', '서버에서 유효한 데이터를 받지 못했습니다.');
