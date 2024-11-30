@@ -8,7 +8,7 @@ import 'react-native-gesture-handler';
 import SplashScreen from './layout/Splash_screen';
 import LoginScreen from './layout/ACCOUNT_Login_screen';
 
-import SignUp from './layout/ACTIVITY_Signup_screen';
+import SignUp from './layout/ACCOUNT_Signup_screen';
 
 import FindPw from './layout/ACCOUNT_FindPassword';
 import FindID from './layout/ACCOUNT_FindID';

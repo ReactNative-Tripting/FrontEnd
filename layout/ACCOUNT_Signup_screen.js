@@ -25,7 +25,7 @@ export default function SignUpScreen({ navigation }) {
   const checkUserIdAvailability = async (userId) => {
     try {
 
-      const response = await fetch(`http://localhost:8080/users/userid/${userId}/exists`);
+      const response = await fetch(`http://localhost:8080/Tripting/users/userid/${userId}/exists`);
 
       if (response.ok) {
         const exists = await response.json(); // Boolean 값 직접 사용
@@ -52,7 +52,7 @@ export default function SignUpScreen({ navigation }) {
     if (signupData.termsAccepted && signupData.privacyAccepted) {
       // 회원가입 데이터 API로 전송
       try {
-        const response = await fetch('http://localhost:8080/users', {
+        const response = await fetch('http://localhost:8080/Tripting/users', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -85,7 +85,7 @@ export default function SignUpScreen({ navigation }) {
 
   const earnWelcomePoints = async (userId) => {
     try {
-      const response = await fetch('http://localhost:8080/point/earn', {
+      const response = await fetch('http://localhost:8080/Tripting/point/earn', {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',

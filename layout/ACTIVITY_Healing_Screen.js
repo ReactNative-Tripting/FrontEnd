@@ -1,11 +1,12 @@
 import React, { useState, useRef } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Animated, Dimensions, Image, ScrollView} from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Animated, Dimensions, Image, navigation, ScrollView} from 'react-native';
 import { html } from './API_KakaoMapsAPI';
 import { WebView } from 'react-native-webview'
-
+import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function HealingScreen() {
+  const navigation = useNavigation();
   const [selectedTab, setSelectedTab] = useState('힐링');
   const [checkedItems, setCheckedItems] = useState([false, false, false, false]);
   const [isPanelVisible, setIsPanelVisible] = useState(false); // 패널 상태
@@ -83,7 +84,10 @@ export default function HealingScreen() {
             source={{ html: html }}
           />
         </View>
-        <TouchableOpacity style={styles.startButton}>
+        <TouchableOpacity style={styles.startButton} onPress={() => {
+          handleConfirm(); // 기존 함수 호출
+          navigation.naviagte('Mission'); // 네비게이션 추가
+        }}>
           <Text style={styles.startButtonText}>시작</Text>
         </TouchableOpacity>
       </View>

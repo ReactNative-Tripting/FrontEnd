@@ -15,7 +15,7 @@ export default function LoginScreen() {
   const handleLogin = async () => {
     try {
       console.log('로그인 시도 중...');
-      const response = await fetch('http://localhost:8080/users/login', {
+      const response = await fetch('http://localhost:8080/Tripting/users/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -73,6 +73,7 @@ export default function LoginScreen() {
       <Text style={styles.subtitle}>Tripting 입니다.</Text>
       <Text style={styles.description}>먼저 로그인이 필요합니다 :)</Text>
 
+      <View style={styles.IdContainer}>
       <TextInput
         style={styles.input}
         placeholder="Enter your ID"
@@ -80,6 +81,7 @@ export default function LoginScreen() {
         value={userId}
         onChangeText={setUserId}
       />
+      </View>
 
       <View style={styles.passwordContainer}>
         <TextInput
@@ -95,46 +97,18 @@ export default function LoginScreen() {
         </TouchableOpacity>
       </View>
 
-      <View style={styles.rememberContainer}>
-        <Switch
-          value={rememberMe}
-          onValueChange={setRememberMe}
-          thumbColor={rememberMe ? '#4caf50' : '#f4f3f4'}
-          trackColor={{ false: '#767577', true: '#81b0ff' }}
-        />
-        <Text style={styles.rememberText}>기억하기</Text>
-      </View>
-
       <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
         <Text style={styles.loginText}>로그인</Text>
       </TouchableOpacity>
 
       {/* Navigation Links */}
       <View style={styles.linkContainer}>
-        <TouchableOpacity onPress={() => navigation.navigate('FindID')}>
-          <Text style={styles.linkText}>아이디 찾기</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate('FindPw')}>
-          <Text style={styles.linkText}>비밀번호 찾기</Text>
-        </TouchableOpacity>
+  
         <TouchableOpacity onPress={() => navigation.navigate('SignUp')}>
           <Text style={styles.linkText}>회원가입</Text>
         </TouchableOpacity>
       </View>
 
-      <View style={styles.divider}></View>
-
-      <Text style={styles.quickLoginText}>간편 로그인</Text>
-
-      <TouchableOpacity style={[styles.socialButton, styles.kakaoButton]}>
-        <Text style={styles.socialText}>카카오톡</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={[styles.socialButton, styles.naverButton]}>
-        <Text style={styles.socialText}>네이버</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={[styles.socialButton, styles.googleButton]}>
-        <Text style={styles.socialText}>구글</Text>
-      </TouchableOpacity>
     </View>
   );
 }
@@ -165,13 +139,18 @@ const styles = StyleSheet.create({
     marginBottom: 30,
     textAlign: 'left',
   },
-  input: {
+  IdContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
     borderWidth: 1,
     borderColor: '#ccc',
     borderRadius: 25,
-    padding: 12,
     paddingHorizontal: 20,
+    paddingVertical: 12,   
     marginBottom: 10,
+  },
+  IdInput: {
+    flex: 1,
     fontSize: 16,
   },
   passwordContainer: {

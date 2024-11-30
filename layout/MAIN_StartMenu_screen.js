@@ -63,7 +63,7 @@ const StartMenuScreen = ({ navigation }) => {
   // 개인 방 생성 버튼 처리 (백엔드 호출)
   const handleCreateIndividualRoom = async () => {
 	try {
-	  const response = await fetch('http://localhost:8080/rooms/create', {
+	  const response = await fetch('http://localhost:8080/Tripting/rooms/create', {
 		method: 'POST',
 		headers: {
 		  'Content-Type': 'application/json',
@@ -100,7 +100,7 @@ const StartMenuScreen = ({ navigation }) => {
   // 팀 방 생성 버튼 처리 (백엔드 호출)
   const handleCreateTeamRoom = async () => {
     try {
-      const response = await fetch('http://localhost:8080/rooms/create', {
+      const response = await fetch('http://localhost:8080/Tripting/rooms/create', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -142,7 +142,7 @@ const StartMenuScreen = ({ navigation }) => {
     }
 
     try {
-      const response = await fetch('http://localhost:8080/rooms/join', {
+      const response = await fetch('http://localhost:8080/Tripting/rooms/join', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -184,9 +184,9 @@ const StartMenuScreen = ({ navigation }) => {
 		<View style={commonStyles.container}>
 			{/* Header */}
 			<View style={commonStyles.header}>
-				<Icon name="menu" size={24} color="black" />
+				<Icon size={24} color="black" />
 				<Text style={commonStyles.headerTitle}>일정 선택</Text>
-				<Icon name="search" size={24} color="black" />
+				<Icon size={24} color="black" />
 			</View>
 
 			{/* Menu Items */}

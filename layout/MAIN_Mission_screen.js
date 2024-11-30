@@ -73,10 +73,14 @@ const MissionScreen = ({ navigation }) => {
     <View style={commonStyles.container}>
       {/* 헤더 */}
       <View style={commonStyles.header}>
-        <Icon name="menu" size={24} color="black" />
+        <TouchableOpacity>
+          <Icon  size={28} color="black" />
+        </TouchableOpacity>
         <Text style={commonStyles.headerTitle}>미션</Text>
-        <Icon name="search" size={24} color="black" />
-      </View>
+        <TouchableOpacity>
+          <Icon size={28} color="black" />
+        </TouchableOpacity>
+</View>
 
       {/* 미션 리스트 */}
       <ScrollView contentContainerStyle={commonStyles.scrollContainer}>

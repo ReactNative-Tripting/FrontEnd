@@ -9,39 +9,49 @@ const UserProfileScreen = ({ navigation }) => {
     id: '자료없음',
     email: 'noinfo@noinfo.com',
     points: 0,
-    joinDate: '2000-01-01',
   });
 
   const [loading, setLoading] = useState(true);
 
-  // AsyncStorage에서 사용자 정보 불러오기
-  const fetchUserDataFromStorage = async () => {
+  // AsyncStorage에서 유저 아이디와 토큰 가져오기
+  const fetchUserDataFromAPI = async () => {
     try {
-      // 각 값 가져오기
       const name = await AsyncStorage.getItem('username');
       const id = await AsyncStorage.getItem('userId');
       const email = await AsyncStorage.getItem('userEmail');
-      const points = await AsyncStorage.getItem('userPoints');
-      const joinDate = await AsyncStorage.getItem('userJoinDate');
-
-      // 값 출력 (디버깅용)
-      console.log('Fetched user data from AsyncStorage:');
-      console.log('Name:', name);
-      console.log('ID:', id);
-      console.log('Email:', email);
-      console.log('Points:', points);
-      console.log('Join Date:', joinDate);
-
-      // 데이터가 없다면 기본값 설정
-      setUser({
-        name: name || '홍길동',
-        id: id || 'unknown123',
-        email: email || 'example@example.com',
-        points: points ? parseInt(points, 10) : 0,
-        joinDate: joinDate || '2023-01-01',
+      const token = await AsyncStorage.getItem('userToken');
+  
+      if (!id || !token) {
+        Alert.alert('오류', '유저 정보가 부족합니다.');
+        return;
+      }
+  
+      // 백엔드에서 유저 포인트 값 받아오기
+      const response = await fetch(`http://localhost:8080/Tripting/point/userid/${id}/point`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${token}`,  // Authorization에 token 추가
+          'Content-Type': 'application/json',
+        },
       });
+  
+      if (response.ok) {
+        const data = await response.json();
+        console.log('Fetched user data from API:', data);  // API 응답 데이터 로그 추가
+  
+        // 받은 포인트와 유저 정보 업데이트
+        setUser((prevUser) => ({
+          ...prevUser,
+          name: name || '홍길동',
+          id: id || 'unknown123',
+          email: email || 'example@example.com',
+          points: data || 0,  // 받은 포인트를 업데이트
+        }));
+      } else {
+        throw new Error('포인트 데이터를 불러오는 중 오류가 발생했습니다.');
+      }
     } catch (error) {
-      console.error('Error loading user data:', error);
+      console.error('Error loading user data from API:', error);
       Alert.alert('오류', '사용자 데이터를 불러오는 중 문제가 발생했습니다.');
     } finally {
       setLoading(false);
@@ -49,12 +59,14 @@ const UserProfileScreen = ({ navigation }) => {
   };
 
   useEffect(() => {
-    fetchUserDataFromStorage();
+    fetchUserDataFromAPI();
   }, []);
 
   if (loading) {
     return <Text>로딩 중...</Text>;
   }
+
+  console.log('User state:', user);  // 상태값 출력, points 확인
 
   return (
     <View style={styles.container}>
@@ -72,8 +84,7 @@ const UserProfileScreen = ({ navigation }) => {
         <Text style={styles.userName}>{user.name || '이름 없음'}</Text>
         <Text style={styles.userId}>아이디: {user.id || '아이디 없음'}</Text>
         <Text style={styles.userEmail}>이메일: {user.email || '이메일 없음'}</Text>
-        <Text style={styles.userPoints}>보유 포인트: {user.points || 0} P</Text>
-        <Text style={styles.userJoinDate}>가입일: {user.joinDate || '알 수 없음'}</Text>
+        <Text style={styles.userPoints}>보유 포인트: {user.points || 0} P</Text>  
       </View>
 
       {/* Button to Storage */}
@@ -130,11 +141,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#555',
     marginTop: 8,
-  },
-  userJoinDate: {
-    fontSize: 14,
-    color: '#777',
-    marginTop: 4,
   },
   storageButton: {
     marginTop: 20,

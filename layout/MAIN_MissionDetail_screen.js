@@ -88,7 +88,7 @@ const MissionDetail = () => {
         <View style={commonStyles.header}>
           <Icon name="arrow-back" size={24} color="black" onPress={() => navigation.goBack()} />
           <Text style={commonStyles.headerTitle}>미션 세부 정보</Text>
-          <Icon name="" size={24} />
+          <Icon  size={24} />
         </View>
 
         {/* 미션 제목 및 설명 */}

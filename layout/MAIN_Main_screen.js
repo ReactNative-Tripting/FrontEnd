@@ -12,23 +12,10 @@ import event2Image from './image/event2.png';
 export default function MainScreen({ navigation }) {
   return (
     <View style={styles.container}>
-      {/* 헤더 */}
+      {/* 헤더*/}
       <View style={commonStyles.header}>
-        <TouchableOpacity onPress={async () => {
-          try {
-            const token = await AsyncStorage.getItem('userToken');
-            const userData = await AsyncStorage.getItem('userData');
-            if (token && userData) {
-              console.log('Stored Token:', token);
-              console.log('Stored userData:', userData);
-            } else {
-              console.log('No token found');
-            }
-          } catch (error) {
-            console.error('Error retrieving token:', error);
-          }
-        }}>
-          <Icon name="menu" size={28} color="black" />
+        <TouchableOpacity>
+          <Icon size={28} color="black" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>트립팅</Text>
         <TouchableOpacity onPress={() => navigation.navigate('User')}>
@@ -74,25 +61,6 @@ export default function MainScreen({ navigation }) {
         </View>
       </ScrollView>
 
-      {/* 일정 섹션 */}
-      <View style={styles.sectionHeader}>
-        <Text style={styles.sectionTitle}>설정 된 일정</Text>
-        <Icon name="arrow-forward" size={20} color="black" />
-      </View>
-      <View style={styles.scheduleList}>
-        <View style={styles.scheduleItem}>
-          <Text style={styles.scheduleText}>
-            아트밸리 아산 제23회 외암민속마을
-          </Text>
-          <Icon name="check-box" size={24} color="#6e6e6e" />
-        </View>
-        <View style={styles.scheduleItem}>
-          <Text style={styles.scheduleText}>
-            아트밸리 아산 제2회 재즈페스티벌 with 자연
-          </Text>
-          <Icon name="check-box-outline-blank" size={24} color="#6e6e6e" />
-        </View>
-      </View>
       {/* 하단 네비게이션 바 */}
       <BottomNavigation navigation={navigation} />
     </View>

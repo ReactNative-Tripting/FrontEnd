@@ -2,14 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity, Alert, Modal, Pressable } from 'react-native';
 import commonStyles from './components/Style';  // 공통 스타일을 그대로 사용
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import AsyncStorage from '@react-native-async-storage/async-storage';  // AsyncStorage 임포트
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const ProductContent = ({ item, setStorageItems, currentPoints, setCurrentPoints, navigation }) => {
   const [isModalVisible, setModalVisible] = useState(false); // 모달 상태
   const [remainingPoints, setRemainingPoints] = useState(currentPoints); // 남은 포인트
   const [userId, setUserId] = useState("");
 
-  // 사용자 데이터 로딩
   useEffect(() => {
     fetchUserDataFromStorage();
   }, []);
@@ -18,31 +17,34 @@ const ProductContent = ({ item, setStorageItems, currentPoints, setCurrentPoints
     try {
       // userId 가져오기
       const id = await AsyncStorage.getItem('userId');
-      setUserId(id || 'unknown123'); // userId가 없으면 'unknown123'로 설정
-      console.log('Loaded userId:', id);
+      const userId = id || 'unknown123'; // userId가 없으면 기본값 설정
+      setUserId(userId);
   
-      // API 호출해서 currentPoints 가져오기
-      const response = await fetch(`http://localhost:8080/point/userid/${id}/point`);
-      if (response.ok) {
-        const data = await response.text(); // 응답 본문은 문자열 형태로 받음
-        const parsedPoints = Number(data) || 0; // 숫자로 변환
-        setRemainingPoints(parsedPoints); // 상태 업데이트
-        await AsyncStorage.setItem('currentPoints', parsedPoints.toString()); // AsyncStorage에 저장
-        console.log('Loaded currentPoints from API:', parsedPoints);
-      } else {
-        console.error('Error fetching currentPoints from API');
+      console.log('Loaded userId:', userId);
+  
+      // 유저 포인트 조회 API 호출
+      const response = await fetch(`http://localhost:8080/Tripting/point/userid/${userId}/point`);
+      if (!response.ok) {
+        console.error(`Error fetching points: ${response.status} - ${response.statusText}`);
         Alert.alert('오류', '포인트 데이터를 가져오는 데 실패했습니다.');
+        return;
       }
+  
+      // 포인트 데이터 추출
+      const points = await response.text(); // 포인트는 단순 문자열 응답으로 처리
+      const parsedPoints = parseInt(points, 10) || 0; // 숫자로 변환
+      setRemainingPoints(parsedPoints);
+      await AsyncStorage.setItem('currentPoints', parsedPoints.toString());
+      console.log('Loaded currentPoints from API:', parsedPoints);
     } catch (error) {
-      console.error('Error loading user data:', error);
-      Alert.alert('오류', '사용자 데이터를 불러오는 중 문제가 발생했습니다.');
+      console.error('Error fetching user points:', error);
+      Alert.alert('오류', '포인트 데이터를 불러오는 중 문제가 발생했습니다.');
     }
   };
   
-
   const handlePurchase = async () => {
-    // item.points가 "5,000 포인트" 형식이므로, 숫자만 추출해서 사용해야 합니다.
-    const pointsRequired = parseInt(item.points.replace(/[^0-9]/g, '')); // 쉼표와 '포인트'를 제거하고 숫자만 추출
+    // 아이템 구매에 필요한 포인트 계산
+    const pointsRequired = parseInt(item.points.replace(/[^0-9]/g, '')); // "5,000 포인트" 형식에서 숫자만 추출
   
     if (remainingPoints < pointsRequired) {
       Alert.alert('구매 실패', '포인트가 부족합니다.');
@@ -51,14 +53,12 @@ const ProductContent = ({ item, setStorageItems, currentPoints, setCurrentPoints
   
     const requestBody = {
       userId: userId,
-      point: pointsRequired,  // 숫자로 변환된 포인트를 사용
+      point: pointsRequired, // 사용하려는 포인트
     };
   
     try {
-      console.log('API 요청 URL: http://localhost:8080/point/use');
-      console.log('요청 본문:', requestBody);
-  
-      const response = await fetch('http://localhost:8080/point/use', {
+      // 포인트 사용 API 호출
+      const response = await fetch('http://localhost:8080/Tripting/point/use', {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -66,61 +66,74 @@ const ProductContent = ({ item, setStorageItems, currentPoints, setCurrentPoints
         body: JSON.stringify(requestBody),
       });
   
-      console.log('응답 상태 코드:', response.status);
-  
-      const responseBody = await response.text();
-      console.log('응답 본문:', responseBody);
-  
-      if (response.ok) {
-        setRemainingPoints(remainingPoints - pointsRequired);  // 남은 포인트 업데이트
-        setModalVisible(true);
-  
-        // 구매한 아이템을 저장소에 추가하는 API 호출
-        const storageRequestBody = {
-          userId: userId,
-          items: [item?.name], // 구매한 상품의 이름을 배열로 전달 (배열로 전달)
-        };
-  
-        console.log('저장소 요청 본문:', storageRequestBody);
-  
-        const storageResponse = await fetch('http://localhost:8080/storage/add', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(storageRequestBody),
-        });
-  
-        if (storageResponse.ok) {
-          console.log('아이템이 저장소에 추가되었습니다.');
-        } else {
-          console.error('저장소에 아이템을 추가하는 데 실패했습니다.');
-          Alert.alert('오류', '저장소에 아이템을 추가하는 데 실패했습니다.');
-        }
-      } else {
+      if (!response.ok) {
+        console.error(`Error using points: ${response.status} - ${response.statusText}`);
         Alert.alert('구매 실패', '포인트 차감에 실패했습니다.');
+        return;
       }
+  
+      const responseBody = await response.json(); // 포인트 사용 후 남은 포인트를 반환한다고 가정
+      console.log('포인트 사용 성공:', responseBody);
+  
+      // 남은 포인트 업데이트
+      if (responseBody.remainingPoints !== undefined) {
+        setRemainingPoints(responseBody.remainingPoints);
+      } else {
+        setRemainingPoints(remainingPoints - pointsRequired); // 응답에 남은 포인트가 없으면 기존 로직으로 처리
+      }
+  
+      setModalVisible(true);
+  
+      // 구매한 아이템 저장소에 추가
+      await addItemToStorage(item?.name);
     } catch (error) {
-      console.error('API 요청 중 오류:', error);
-      Alert.alert('오류', 'API 요청 중 문제가 발생했습니다.');
+      console.error('Error using points:', error);
+      Alert.alert('오류', '포인트 사용 중 문제가 발생했습니다.');
     }
   };
   
+  // 구매한 아이템을 저장소에 추가
+  const addItemToStorage = async (itemName) => {
+    const requestBody = {
+      userId: userId,
+      items: [itemName],
+    };
   
+    try {
+      const response = await fetch('http://localhost:8080/Tripting/storage/add', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestBody),
+      });
   
-
+      if (response.ok) {
+        console.log('아이템이 저장소에 추가되었습니다.');
+      } else {
+        console.error('저장소에 아이템 추가 실패:', await response.text());
+        Alert.alert('오류', '저장소에 아이템을 추가하는 데 실패했습니다.');
+      }
+    } catch (error) {
+      console.error('Error adding item to storage:', error);
+      Alert.alert('오류', '저장소에 아이템을 추가하는 중 문제가 발생했습니다.');
+    }
+  };
+  
   return (
     <View style={styles.content}>
+      
+
+
       {/* 상품 이미지 */}
-      <Image 
-        source={item?.image} // item.image가 없으면 기본 이미지 사용
-        style={styles.productImage} 
-      />
+      <Image source={item?.image} style={styles.productImage} />
 
       {/* 상품 정보 */}
       <Text style={styles.productName}>{item?.name || '상품명 없음'}</Text>
-      <Text style={styles.productPoints}>필요 포인트: {item?.points || 0}</Text>
-      <Text style={styles.userPoints}>현재 포인트: {remainingPoints}</Text>
+      <Text style={styles.productPoints}>필요 포인트: {item?.points}</Text>
+      <Text style={styles.userPoints}>
+        현재 포인트: {remainingPoints || currentPoints}
+      </Text>
 
       {/* 구매 버튼 */}
       <TouchableOpacity style={styles.purchaseButton} onPress={handlePurchase}>
@@ -179,23 +192,35 @@ const ProductScreen = ({ route, navigation, storageItems, setStorageItems, curre
           <Icon size={28} color="black" />
         </TouchableOpacity>
       </View>
-
-      <ProductContent
-        item={item}
-        setStorageItems={setStorageItems}
-        currentPoints={currentPoints}
-        setCurrentPoints={setCurrentPoints}
-        navigation={navigation}
-      />
+  
+      {/* 화면 중앙에 ProductContent 배치 */}
+      <View style={commonStyles.centerContent}>
+        <ProductContent
+          item={item}
+          setStorageItems={setStorageItems}
+          currentPoints={currentPoints}
+          setCurrentPoints={setCurrentPoints}
+          navigation={navigation}
+        />
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1, // 전체 화면을 차지
+  },
+  centerContent: {
+    flex: 1, // 남은 공간을 차지
+    justifyContent: 'center', // 세로 중앙 정렬
+    alignItems: 'center', // 가로 중앙 정렬
+    paddingHorizontal: 20, // 좌우 여백을 추가할 수 있음
+  },
   content: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'space-between',
+    justifyContent: 'Spacebetween',
     paddingHorizontal: 26,
   },
   header: {
@@ -204,7 +229,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',           // 중앙 정렬
     paddingHorizontal: 16,          // 양옆 여백
     height: 60,                     // 헤더 높이
-  },
+    },
   productImage: {
     width: 200,
     height: 200,

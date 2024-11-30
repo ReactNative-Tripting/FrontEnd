@@ -15,13 +15,7 @@ export default function EventsPage({ navigation }) {
     <View style={commonStyles.container}>
       {/*헤더*/}
       <View style={commonStyles.header}>
-        <TouchableOpacity>
-          <Icon name="menu" size={28} color="black" />
-        </TouchableOpacity>
          <Text style={commonStyles.headerTitle}>트립팅</Text> 
-        <TouchableOpacity>
-          <Icon name="notifications" size={28} color="black" />
-        </TouchableOpacity>
       </View>
 
       {/* 배너 */}
