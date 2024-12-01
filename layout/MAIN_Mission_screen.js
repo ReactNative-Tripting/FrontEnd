@@ -94,7 +94,7 @@ const MissionScreen = ({ navigation }) => {
             >
               <View style={commonStyles.missionLabelContainer}>
                 {/* 미션 제목을 mission.title로 출력 */}
-                <Text style={commonStyles.missionLabel}>{mission.title}</Text>
+                <Text style={commonStyles.missionLabel}>{mission.name} 일정</Text>
               </View>
             </TouchableOpacity>
           ))

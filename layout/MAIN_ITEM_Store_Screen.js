@@ -14,15 +14,13 @@ const data = [
 ];
 
 const StoreScreen = ({ navigation }) => {
-  const [selectedCategory, setSelectedCategory] = useState('과일/채소');
-  const categories = ['정육/축산물', '과일/채소', '쌀/잡곡', '꿀/건강식품'];
-
   const renderItem = ({ item }) => (
     <TouchableOpacity
       style={commonStyles.itemContainer}
       onPress={() => navigation.navigate('Product', { item })}
     >
       <Image source={item.image} style={commonStyles.itemImage} />
+
       <Text style={commonStyles.itemName}>{item.name}</Text>
       <Text style={commonStyles.itemPoints}>{item.points}</Text>
     </TouchableOpacity>
@@ -38,17 +36,7 @@ const StoreScreen = ({ navigation }) => {
       </View>
 
       {/* Category Filters */}
-      <View style={commonStyles.filters}>
-        {categories.map((category) => (
-          <Text
-            key={category}
-            style={[commonStyles.filterItem, selectedCategory === category && commonStyles.selectedFilter]}
-            onPress={() => setSelectedCategory(category)}
-          >
-            {category}
-          </Text>
-        ))}
-      </View>
+
 
       {/* Product Grid */}
       <FlatList

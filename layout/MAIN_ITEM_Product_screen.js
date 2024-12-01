@@ -4,10 +4,20 @@ import commonStyles from './components/Style';  // 공통 스타일을 그대로
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import AsyncStorage from '@react-native-async-storage/async-storage';  // AsyncStorage 임포트
 
+const storageItems = [
+  { image: './image/item1.png' },
+  { image: './image/item2.png' },
+  { image: './image/item3.png' },
+  { image: './image/item4.png' },
+  { image: './image/item5.png' },
+  { image: './image/item6.png' },
+];
+
 const ProductContent = ({ item, setStorageItems, currentPoints, setCurrentPoints, navigation }) => {
   const [isModalVisible, setModalVisible] = useState(false); // 모달 상태
-  const [remainingPoints, setRemainingPoints] = useState(currentPoints); // 남은 포인트
-  const [userId, setUserId] = useState("");
+  const [remainingPoints, setRemainingPoints] = useState([]); // 남은 포인트
+  const [userId, setUserId] = useState([]);
+
 
   // 사용자 데이터 로딩
   useEffect(() => {
@@ -15,82 +25,93 @@ const ProductContent = ({ item, setStorageItems, currentPoints, setCurrentPoints
   }, []);
 
   const fetchUserDataFromStorage = async () => {
-    try {
-      // userId 가져오기
-      const id = await AsyncStorage.getItem('userId');
-      setUserId(id || 'unknown123'); // userId가 없으면 'unknown123'로 설정
-      console.log('Loaded userId:', id);
-  
-      // API 호출해서 currentPoints 가져오기
-      const response = await fetch(`http://localhost:8080/point/userid/${id}/point`);
-      if (response.ok) {
-        const data = await response.text(); // 응답 본문은 문자열 형태로 받음
-        const parsedPoints = Number(data) || 0; // 숫자로 변환
-        setRemainingPoints(parsedPoints); // 상태 업데이트
-        await AsyncStorage.setItem('currentPoints', parsedPoints.toString()); // AsyncStorage에 저장
-        console.log('Loaded currentPoints from API:', parsedPoints);
-      } else {
-        console.error('Error fetching currentPoints from API');
-        Alert.alert('오류', '포인트 데이터를 가져오는 데 실패했습니다.');
-      }
-    } catch (error) {
-      console.error('Error loading user data:', error);
-      Alert.alert('오류', '사용자 데이터를 불러오는 중 문제가 발생했습니다.');
-    }
+    const getPoint = await AsyncStorage.getItem('userPoints');
+    const getUserId = await AsyncStorage.getItem('userId');
+    setUserId(getUserId);
+    setRemainingPoints(getPoint); // 상태 업데이트
   };
-  
+
 
   const handlePurchase = async () => {
     // item.points가 "5,000 포인트" 형식이므로, 숫자만 추출해서 사용해야 합니다.
     const pointsRequired = parseInt(item.points.replace(/[^0-9]/g, '')); // 쉼표와 '포인트'를 제거하고 숫자만 추출
-  
+    console.log("상품 포인트 : ", pointsRequired);
+
     if (remainingPoints < pointsRequired) {
       Alert.alert('구매 실패', '포인트가 부족합니다.');
       return;
     }
-  
+
     const requestBody = {
       userId: userId,
       point: pointsRequired,  // 숫자로 변환된 포인트를 사용
     };
-  
+
     try {
-      console.log('API 요청 URL: http://localhost:8080/point/use');
       console.log('요청 본문:', requestBody);
-  
-      const response = await fetch('http://localhost:8080/point/use', {
+
+      const response = await fetch('http://localhost:8080/Tripting/point/use', {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(requestBody),
       });
-  
-      console.log('응답 상태 코드:', response.status);
-  
+
+      console.log('응답 상태 드:', response.status);
+
       const responseBody = await response.text();
       console.log('응답 본문:', responseBody);
-  
+
       if (response.ok) {
-        setRemainingPoints(remainingPoints - pointsRequired);  // 남은 포인트 업데이트
+        const responseBodyGet = JSON.parse(responseBody);
+        const responseBodyGetPoint = responseBodyGet.point
+        console.log("으흐흐 : ", responseBodyGetPoint);
+
+        setRemainingPoints(responseBodyGetPoint);  // 남은 포인트 업데이트
+        const stringResponseBodyGetPoint = responseBodyGetPoint.toString();
+        await AsyncStorage.setItem('userPoints', stringResponseBodyGetPoint);
+
         setModalVisible(true);
-  
+
+        const currentDate = new Date();
+
+        const options = { timeZone: 'Asia/Seoul', hour12: false };
+        const year = currentDate.toLocaleString('en-US', { year: 'numeric', timeZone: 'Asia/Seoul' });
+        const month = currentDate.toLocaleString('en-US', { month: '2-digit', timeZone: 'Asia/Seoul' });
+        const day = currentDate.toLocaleString('en-US', { day: '2-digit', timeZone: 'Asia/Seoul' });
+        const hour = currentDate.toLocaleString('en-US', { hour: '2-digit', ...options });
+        const minute = currentDate.toLocaleString('en-US', { minute: '2-digit', ...options });
+
+        const formattedDate = `${year}-${month}-${day} ${hour}:${minute}`;
+
+        console.log("년도 : ", year);
+        console.log("시간 : ", formattedDate);
+
         // 구매한 아이템을 저장소에 추가하는 API 호출
+        const itemimage = storageItems[item.id - 1].image;
+
         const storageRequestBody = {
           userId: userId,
-          items: [item?.name], // 구매한 상품의 이름을 배열로 전달 (배열로 전달)
+          items: [{
+            id: item?.id,
+            image: itemimage,  // item 객체의 image 속성을 안전하게 접근
+            name: item?.name,    // item 객체의 name 속성을 안전하게 접근
+            point: pointsRequired,  // item 객체의 point 속성을 안전하게 접근
+            date: formattedDate
+          }], // 구매한 상품의 이름을 배열로 전달 (배열로 전달)
         };
-  
+
         console.log('저장소 요청 본문:', storageRequestBody);
-  
-        const storageResponse = await fetch('http://localhost:8080/storage/add', {
+
+        const storageResponse = await fetch('http://localhost:8080/Tripting/storage/add', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify(storageRequestBody),
         });
-  
+
         if (storageResponse.ok) {
           console.log('아이템이 저장소에 추가되었습니다.');
         } else {
@@ -105,16 +126,16 @@ const ProductContent = ({ item, setStorageItems, currentPoints, setCurrentPoints
       Alert.alert('오류', 'API 요청 중 문제가 발생했습니다.');
     }
   };
-  
-  
-  
+
+
+
 
   return (
     <View style={styles.content}>
       {/* 상품 이미지 */}
-      <Image 
+      <Image
         source={item?.image} // item.image가 없으면 기본 이미지 사용
-        style={styles.productImage} 
+        style={styles.productImage}
       />
 
       {/* 상품 정보 */}

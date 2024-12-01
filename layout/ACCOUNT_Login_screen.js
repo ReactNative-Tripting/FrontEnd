@@ -61,6 +61,17 @@ export default function LoginScreen() {
           await AsyncStorage.setItem('userAccountNonLocked', JSON.stringify(user.accountNonLocked)); // 계정 잠금 여부
           await AsyncStorage.setItem('userCredentialsNonExpired', JSON.stringify(user.credentialsNonExpired)); // 자격증명 만료 여부
           await AsyncStorage.setItem('userEnabled', JSON.stringify(user.enabled)); // 계정 활성화 여부
+          //get point
+          const pointResponse = await fetch(`http://localhost:8080/Tripting/point/userid/${userId}/point`);
+          if (pointResponse.ok) {
+            const data = await pointResponse.text(); // 응답 본문은 문자열 형태로 받음
+            const parsedPoints = Number(data) || 0; // 숫자로 변환
+            await AsyncStorage.setItem('userPoints', parsedPoints.toString()); // AsyncStorage에 저장
+            console.log('Loaded currentPoints from API:', parsedPoints);
+          } else {
+            console.error('Error fetching currentPoints from API');
+            Alert.alert('오류', '포인트 데이터를 가져오는 데 실패했습니다.');
+          }
 
           console.log('Id 저장값',userId);
 
@@ -111,15 +122,7 @@ export default function LoginScreen() {
         </TouchableOpacity>
       </View>
 
-      <View style={styles.rememberContainer}>
-        <Switch
-          value={rememberMe}
-          onValueChange={setRememberMe}
-          thumbColor={rememberMe ? '#4caf50' : '#f4f3f4'}
-          trackColor={{ false: '#767577', true: '#81b0ff' }}
-        />
-        <Text style={styles.rememberText}>기억하기</Text>
-      </View>
+
 
       <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
         <Text style={styles.loginText}>로그인</Text>
@@ -127,30 +130,12 @@ export default function LoginScreen() {
 
       {/* Navigation Links */}
       <View style={styles.linkContainer}>
-        <TouchableOpacity onPress={() => navigation.navigate('FindID')}>
-          <Text style={styles.linkText}>아이디 찾기</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate('FindPw')}>
-          <Text style={styles.linkText}>비밀번호 찾기</Text>
-        </TouchableOpacity>
         <TouchableOpacity onPress={() => navigation.navigate('SignUp')}>
           <Text style={styles.linkText}>회원가입</Text>
         </TouchableOpacity>
       </View>
 
       <View style={styles.divider}></View>
-
-      <Text style={styles.quickLoginText}>간편 로그인</Text>
-
-      <TouchableOpacity style={[styles.socialButton, styles.kakaoButton]}>
-        <Text style={styles.socialText}>카카오톡</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={[styles.socialButton, styles.naverButton]}>
-        <Text style={styles.socialText}>네이버</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={[styles.socialButton, styles.googleButton]}>
-        <Text style={styles.socialText}>구글</Text>
-      </TouchableOpacity>
     </View>
   );
 }

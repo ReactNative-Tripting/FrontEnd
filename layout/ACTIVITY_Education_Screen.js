@@ -1,6 +1,6 @@
-import React, { useState, useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Animated, Dimensions, Image, ScrollView} from 'react-native';
-import { html } from './API_KakaoMapsAPI';
+import KakaoMapsAPI from './API_KakaoMapsAPI';
 import { WebView } from 'react-native-webview'
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -11,33 +11,21 @@ export default function HealingScreen() {
   const [isPanelVisible, setIsPanelVisible] = useState(false); // 패널 상태
   const screenHeight = Dimensions.get('window').height;
   const slideAnim = useRef(new Animated.Value(screenHeight - 80)).current; // 초기 위치 설정
+  const [routesList, setRoutesList] = useState([]);
 
-  const raceData = [
-    {
-      id: '1',
-      title: '미니 마라톤',
-      description: '온양온천의 주요 명소를 연결하는 미니 마라톤 레이스입니다.',
-      image: require('./image/event1.png'),
-    },
-    {
-      id: '2',
-      title: '온천열차 레이스',
-      description: '온양온천역에서 출발하는 열차를 타고 지정된 명소에 도착하세요.',
-      image: require('./image/event1.png'),
-    },
-    {
-      id: '3',
-      title: '온천 역사 퀴즈 레이스',
-      description: '온양박물관, 현충사 등을 지나며 퀴즈를 풉니다.',
-      image: require('./image/event1.png'),
-    },
-    {
-      id: '4',
-      title: '온천 보트 레이싱',
-      description: '신정호수에서 소형 보트를 타고 경쟁하는 레이스!',
-      image: require('./image/event1.png'),
-    },
-  ];
+  useEffect(() => {
+    getRoutes();
+  }, []);
+
+  const getRoutes = async () => {
+    const routesResponse = await fetch('http://localhost:8080/Tripting/routes/type?type=education', {
+      method: 'GET',
+    });
+
+    const data = await routesResponse.json();
+    console.log("가져온 것 : ", data);
+    setRoutesList(data);
+  }
 
   // 체크박스 상태 관리
   const handleCheckBoxToggle = (index) => {
@@ -49,7 +37,7 @@ export default function HealingScreen() {
   // 미션 저장 함수
   const handleConfirm = async () => {
     try {
-      const selectedMissions = raceData.filter((_, index) => checkedItems[index]);
+      const selectedMissions = routesList.filter((_, index) => checkedItems[index]);
       if (selectedMissions.length === 0) {
         alert('미션을 선택해주세요!');
         return;
@@ -73,6 +61,8 @@ export default function HealingScreen() {
     setIsPanelVisible(!isPanelVisible); // 상태 토글
   };
 
+  const mapHtml = KakaoMapsAPI(routesList);
+
   return (
     <View style={styles.container}>
       {/* 전체 화면을 차지하는 지도 배경 */}
@@ -80,12 +70,9 @@ export default function HealingScreen() {
         <Text style={styles.title}>일정 설정</Text>
         <View style={styles.mapSpace}>
           <WebView
-            source={{ html: html }}
+            source={{ html: mapHtml }}
           />
         </View>
-        <TouchableOpacity style={styles.startButton}>
-          <Text style={styles.startButtonText}>시작</Text>
-        </TouchableOpacity>
       </View>
 
       {/* 슬라이딩 패널 섹션 */}
@@ -98,8 +85,8 @@ export default function HealingScreen() {
 
         {/* 힐링 탭 */}
         <View style={styles.tabsContainerSingle}>
-          <TouchableOpacity style={styles.tabButtonSingle}>
-            <Text style={styles.tabTextSingle}>교육</Text>
+          <TouchableOpacity style={styles.tabButtonSingle} onPress={handleConfirm}>
+            <Text style={styles.tabTextSingle}>교육 일정 시작</Text>
           </TouchableOpacity>
         </View>
 

@@ -16,10 +16,10 @@ import FindID from './layout/ACCOUNT_FindID';
 import Main from './layout/MAIN_Main_screen';
 import Event from './layout/MAIN_Event_screen';
 import Store from './layout/MAIN_ITEM_Store_Screen';
-  import Product from './layout/MAIN_ITEM_Product_screen';
-  import Storage from './layout/ITEM_Storage_screen'
-  import Mission from './layout/MAIN_Mission_screen';
-  import MissionDetail from './layout/MAIN_MissionDetail_screen';
+import Product from './layout/MAIN_ITEM_Product_screen';
+import Storage from './layout/ITEM_Storage_screen'
+import Mission from './layout/MAIN_Mission_screen';
+import MissionDetail from './layout/MAIN_MissionDetail_screen';
 import StartMenu from './layout/MAIN_StartMenu_screen';
 import RoomScreenP from './layout/ACTIVITY_Room_screen_P';
 import RoomScreenT from './layout/ACTIVITY_Room_screen_T';
@@ -30,6 +30,8 @@ import EducationScreen from './layout/ACTIVITY_Education_Screen';
 import FoodScreen from './layout/ACTIVITY_Food_Screen';
 import MountainScreen from './layout/ACTIVITY_Mountain_Screen';
 import Usersetting from './layout/ACTIVITY_UserSetting_Screen';
+
+import MissionSelect from './layout/MAIN_MissionSelect_screen';
 
 const Stack = createStackNavigator();
 
@@ -58,6 +60,7 @@ export default function App() {
         <Stack.Screen name="Mountain" component={MountainScreen}/>
         <Stack.Screen name="UserSettings" component={Usersetting}/>
         <Stack.Screen name="User" component={UserProfileScreen}/>
+        <Stack.Screen name="MissionSelect" component={MissionSelect}/>
        </Stack.Navigator>
     </NavigationContainer>
   );

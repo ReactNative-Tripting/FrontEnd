@@ -30,12 +30,7 @@ function BottomNavigation({ navigation }) {
           <Icon name="add-circle-outline" size={24} color="black" />
           <Text style={commonStyles.navText}>추가</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={commonStyles.navItem} onPress={() => {
-          navigation.navigate('Event', { getEventList });
-        }}>
-          <Icon name="event" size={24} color="black" />
-          <Text style={commonStyles.navTsssext}>행사</Text>
-        </TouchableOpacity>
+
         <TouchableOpacity style={commonStyles.navItem} onPress={() => navigation.replace('Store')}>
           <Icon name="store" size={24} color="black" />
           <Text style={commonStyles.navText}>상점</Text>

@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, Image, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import BottomNavigation from './components/BottomNavigation';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const storageItems = [
   { id: '1', name: '금위버섯', date: '~2025-12-31', image: require('./image/item1.png') },
@@ -12,14 +13,50 @@ const storageItems = [
   { id: '6', name: '외암 연엽주', date: '~2025-12-31', image: require('./image/item6.png') },
 ];
 
+const storageItemMap = storageItems.reduce((acc, item) => {
+  acc[item.id] = item;
+  return acc;
+}, {});
+
 const StorageScreen = ({ navigation }) => {
-  const renderItem = ({ item }) => (
-    <View style={styles.itemContainer}>
-      <Image source={item.image} style={styles.itemImage} />
-      <Text style={styles.itemName}>{item.name}</Text>
-      <Text style={styles.itemPoints}>{item.date}</Text>
-    </View>
-  );
+  const [storageItemList, setStorageItemList] = useState([]);
+
+  useEffect(() => {
+    getStorageItems();
+  }, []);
+
+  const getStorageItems = async () => {
+    const getUserId = await AsyncStorage.getItem('userId');
+    console.log("유저ID:", getUserId);
+    const storageResponse = await fetch('http://localhost:8080/Tripting/storage/select', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ userId: getUserId }),
+    });
+
+    if(storageResponse.ok) {
+      const data = await storageResponse.json();
+      console.log("가져온 것 : ", data);
+      setStorageItemList(data);
+    } else {
+      console.log("요청 실패");
+    }
+  }
+
+  const renderItem = ({ item }) => {
+    const image = storageItemMap[item.id]; // 변수 선언을 return 외부에서 먼저 해야 한다
+
+    return (
+      <View style={styles.itemContainer}>
+        <Image source={image.image} style={styles.itemImage} />
+        <Text style={styles.itemName}>상품명 : {item.name}</Text>
+        <Text style={styles.itemPoints}>구매일 : {item.date}</Text>
+        <Text style={styles.itemPoints}>구매 포인트 : {item.point}</Text>
+      </View>
+    );
+  };
 
   return (
     <View style={styles.container}>
@@ -37,7 +74,7 @@ const StorageScreen = ({ navigation }) => {
 
       {/* Item Grid */}
       <FlatList
-        data={storageItems}
+        data={storageItemList}
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
         numColumns={2}

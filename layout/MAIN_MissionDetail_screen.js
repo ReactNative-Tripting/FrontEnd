@@ -5,6 +5,7 @@ import { useRoute, useNavigation } from '@react-navigation/native';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import commonStyles from './components/Style';
+import axios from 'axios';
 
 const MissionDetail = () => {
   const route = useRoute();
@@ -12,8 +13,13 @@ const MissionDetail = () => {
   const { missionId } = route.params;
   const [mission, setMission] = useState(null);
   const [imageUri, setImageUri] = useState(null);
+  const [imageFile, setImageFile] = useState(null);
 
-  // 미션 로드
+  const customVisionEndpoint = "https://customvisiontripting-prediction.cognitiveservices.azure.com/customvision/v3.0/Prediction/ec56b14e-0c38-4424-95d8-fd423dff805f/classify/iterations/Iteration3/image";
+  const customVisionApiKey = "4BoNZBWyOr7WlGsLIMD9WfHjjO6XLMqTJkpaTrau5c1eBAp3WOOVJQQJ99AJACYeBjFXJ3w3AAAIACOGbNIB";
+  const computerVisionEndpoint = "https://tripting003033.cognitiveservices.azure.com/vision/v3.2/ocr";
+  const computerVisionApiKey = "818b99a3710e4c6f9d20ce56f4ba8ebb";
+
   const fetchMissionDetail = async () => {
     try {
       const storedMissions = await AsyncStorage.getItem('missions');
@@ -33,7 +39,6 @@ const MissionDetail = () => {
     fetchMissionDetail();
   }, []);
 
-  // 미션 완료 처리
   const handleCompleteMission = async () => {
     try {
       const storedMissions = await AsyncStorage.getItem('missions');
@@ -47,7 +52,6 @@ const MissionDetail = () => {
     }
   };
 
-  // 사진 선택 (갤러리에서)
   const handleChoosePhoto = () => {
     launchImageLibrary({ mediaType: 'photo' }, (response) => {
       if (response.didCancel) {
@@ -56,11 +60,15 @@ const MissionDetail = () => {
         Alert.alert('오류', `사진 선택 중 오류가 발생했습니다: ${response.errorMessage}`);
       } else if (response.assets) {
         setImageUri(response.assets[0].uri);
+        setImageFile({
+          uri: response.assets[0].uri,
+          name: response.assets[0].fileName || "photo.jpg",
+          type: response.assets[0].type || "image/jpeg",
+        });
       }
     });
   };
 
-  // 사진 촬영 (카메라)
   const handleTakePhoto = () => {
     launchCamera({ mediaType: 'photo' }, (response) => {
       if (response.didCancel) {
@@ -69,8 +77,85 @@ const MissionDetail = () => {
         Alert.alert('오류', `사진 촬영 중 오류가 발생했습니다: ${response.errorMessage}`);
       } else if (response.assets) {
         setImageUri(response.assets[0].uri);
+        setImageFile({
+          uri: response.assets[0].uri,
+          name: response.assets[0].fileName || "photo.jpg",
+          type: response.assets[0].type || "image/jpeg",
+        });
       }
     });
+  };
+
+  const submitToApi = async () => {
+    if (!imageFile) {
+      Alert.alert("이미지를 선택해주세요!");
+      return;
+    }
+
+    try {
+      let endpoint = customVisionEndpoint;
+      let apiKey = customVisionApiKey;
+      let headers = {
+        "Content-Type": "multipart/form-data",
+        "Prediction-Key": apiKey,
+      };
+
+      if (mission && mission.description.includes('영수증')) {
+        endpoint = computerVisionEndpoint;
+        apiKey = computerVisionApiKey;
+        headers = {
+          "Content-Type": "multipart/form-data",
+          "Ocp-Apim-Subscription-Key": apiKey,
+        };
+      }
+
+      const formData = new FormData();
+      formData.append("file", {
+        uri: imageFile.uri,
+        name: imageFile.name,
+        type: imageFile.type,
+      });
+
+      const response = await axios.post(endpoint, formData, { headers });
+
+      if (endpoint === customVisionEndpoint) {
+        const predictions = response.data.predictions;
+        if (predictions && predictions.length > 0) {
+          const bestPrediction = predictions.reduce((max, prediction) =>
+            prediction.probability > max.probability ? prediction : max
+          );
+          if (bestPrediction.tagName.toLowerCase() === "negative") {
+            Alert.alert(
+              "미션 실패",
+              `태그: ${bestPrediction.tagName}\n확률: ${(bestPrediction.probability * 100).toFixed(2)}%`
+            );
+          } else {
+            Alert.alert(
+              "미션 성공",
+              `태그: ${bestPrediction.tagName}\n확률: ${(bestPrediction.probability * 100).toFixed(2)}%`
+            );
+            handleCompleteMission();
+          }
+        } else {
+          Alert.alert("분석 결과", "적합한 예측 결과가 없습니다.");
+        }
+      } else {
+        const { analyzeResult } = response.data;
+        if (analyzeResult && analyzeResult.readResults.length > 0) {
+          const words = analyzeResult.readResults.flatMap(result =>
+            result.lines.flatMap(line =>
+              line.words.map(word => word.text)
+            )
+          );
+          Alert.alert("영수증 분석 결과", `분석된 텍스트: ${words.join(', ')}`);
+        } else {
+          Alert.alert("분석 결과", "텍스트를 감지할 수 없습니다.");
+        }
+      }
+    } catch (error) {
+      console.error("API 호출 오류:", error.response?.data || error.message);
+      Alert.alert("오류 발생", "이미지 업로드에 실패했습니다.");
+    }
   };
 
   if (!mission) {
@@ -84,20 +169,15 @@ const MissionDetail = () => {
   return (
     <KeyboardAvoidingView style={commonStyles.container} behavior="padding">
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-        {/* 헤더 */}
         <View style={commonStyles.header}>
           <Icon name="arrow-back" size={24} color="black" onPress={() => navigation.goBack()} />
           <Text style={commonStyles.headerTitle}>미션 세부 정보</Text>
           <Icon name="" size={24} />
         </View>
-
-        {/* 미션 제목 및 설명 */}
         <View style={styles.missionInfo}>
           <Text style={styles.title}>{mission.title}</Text>
           <Text style={styles.missionDescription}>{mission.description}</Text>
         </View>
-
-        {/* 사진 선택 */}
         <View style={styles.photoSection}>
           <Text style={styles.subtitle}>미션: 특정 장소에 가서 사진 찍기</Text>
           <View style={styles.buttonContainer}>
@@ -108,21 +188,16 @@ const MissionDetail = () => {
               <Text style={styles.buttonText}>사진 촬영</Text>
             </TouchableOpacity>
           </View>
-
           {imageUri && (
             <Image source={{ uri: imageUri }} style={styles.previewImage} />
           )}
         </View>
       </ScrollView>
-      
-      {/*업로드 버튼*/}
       <View style={styles.uploadbutton}>
-        <TouchableOpacity style={styles.completeButton} onPress={handleCompleteMission}>
+        <TouchableOpacity style={styles.completeButton} onPress={submitToApi}>
           <Text style={styles.completeButtonText}>업로드</Text>
         </TouchableOpacity>
       </View>
-
-      {/* 미션 완료 버튼 */}
       <View style={styles.footer}>
         <TouchableOpacity style={styles.completeButton} onPress={handleCompleteMission}>
           <Text style={styles.completeButtonText}>미션 완료</Text>

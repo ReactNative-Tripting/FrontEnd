@@ -49,8 +49,8 @@ export default function MainScreen({ route, navigation }) {
 
       {/* 행사 D-day 섹션 */}
       <View style={styles.sectionHeader}>
-        <Text style={styles.sectionTitle}>행사 D-day</Text>
-        <Icon name="arrow-forward" size={20} color="black" />
+        <Text style={styles.sectionTitle}>행사 List</Text>
+
       </View>
       <ScrollView style={styles.eventList}>
         <View style={styles.eventItem}>
@@ -73,26 +73,6 @@ export default function MainScreen({ route, navigation }) {
           </View>
         </View>
       </ScrollView>
-
-      {/* 일정 섹션 */}
-      <View style={styles.sectionHeader}>
-        <Text style={styles.sectionTitle}>설정 된 일정</Text>
-        <Icon name="arrow-forward" size={20} color="black" />
-      </View>
-      <View style={styles.scheduleList}>
-        <View style={styles.scheduleItem}>
-          <Text style={styles.scheduleText}>
-            아트밸리 아산 제23회 외암민속마을
-          </Text>
-          <Icon name="check-box" size={24} color="#6e6e6e" />
-        </View>
-        <View style={styles.scheduleItem}>
-          <Text style={styles.scheduleText}>
-            아트밸리 아산 제2회 재즈페스티벌 with 자연
-          </Text>
-          <Icon name="check-box-outline-blank" size={24} color="#6e6e6e" />
-        </View>
-      </View>
       {/* 하단 네비게이션 바 */}
       <BottomNavigation navigation={navigation} />
     </View>

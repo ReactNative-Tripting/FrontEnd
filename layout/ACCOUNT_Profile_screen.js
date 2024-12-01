@@ -9,7 +9,6 @@ const UserProfileScreen = ({ navigation }) => {
     id: '자료없음',
     email: 'noinfo@noinfo.com',
     points: 0,
-    joinDate: '2000-01-01',
   });
 
   const [loading, setLoading] = useState(true);
@@ -22,7 +21,6 @@ const UserProfileScreen = ({ navigation }) => {
       const id = await AsyncStorage.getItem('userId');
       const email = await AsyncStorage.getItem('userEmail');
       const points = await AsyncStorage.getItem('userPoints');
-      const joinDate = await AsyncStorage.getItem('userJoinDate');
 
       // 값 출력 (디버깅용)
       console.log('Fetched user data from AsyncStorage:');
@@ -30,7 +28,6 @@ const UserProfileScreen = ({ navigation }) => {
       console.log('ID:', id);
       console.log('Email:', email);
       console.log('Points:', points);
-      console.log('Join Date:', joinDate);
 
       // 데이터가 없다면 기본값 설정
       setUser({
@@ -38,7 +35,6 @@ const UserProfileScreen = ({ navigation }) => {
         id: id || 'unknown123',
         email: email || 'example@example.com',
         points: points ? parseInt(points, 10) : 0,
-        joinDate: joinDate || '2023-01-01',
       });
     } catch (error) {
       console.error('Error loading user data:', error);
@@ -73,7 +69,6 @@ const UserProfileScreen = ({ navigation }) => {
         <Text style={styles.userId}>아이디: {user.id || '아이디 없음'}</Text>
         <Text style={styles.userEmail}>이메일: {user.email || '이메일 없음'}</Text>
         <Text style={styles.userPoints}>보유 포인트: {user.points || 0} P</Text>
-        <Text style={styles.userJoinDate}>가입일: {user.joinDate || '알 수 없음'}</Text>
       </View>
 
       {/* Button to Storage */}
