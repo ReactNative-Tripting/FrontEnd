@@ -33,6 +33,8 @@ import Usersetting from './layout/ACTIVITY_UserSetting_Screen';
 
 import MissionSelect from './layout/MAIN_MissionSelect_screen';
 
+import EventDetail from './layout/MAIN_EventDetail_screen';
+
 const Stack = createStackNavigator();
 
 export default function App() {
@@ -61,6 +63,7 @@ export default function App() {
         <Stack.Screen name="UserSettings" component={Usersetting}/>
         <Stack.Screen name="User" component={UserProfileScreen}/>
         <Stack.Screen name="MissionSelect" component={MissionSelect}/>
+        <Stack.Screen name="EventDetail" component={EventDetail}/>
        </Stack.Navigator>
     </NavigationContainer>
   );
