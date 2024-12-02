@@ -30,7 +30,7 @@ const RoomScreenP = ({ route, navigation }) => {
             // 방에 입장할 때 참여자 리스트 가져오기
             const fetchParticipants = async () => {
                 try {
-                    const response = await fetch(`http://localhost:8080/rooms/list?inviteCode=${roomCode}`);
+                    const response = await fetch(`http://localhost:8080/Tripting/rooms/list?inviteCode=${roomCode}`);
                     if (response.ok) {
                         const data = await response.json();
                         setParticipants(data.members);  // 데이터에서 members 배열만 가져옴
@@ -101,7 +101,7 @@ const RoomScreenP = ({ route, navigation }) => {
             </View>
 
             {/* Content */}
-            <Text style={styles.title}>방에 입장했습니다!</Text>
+            <Text style={styles.title}>방에ㅋ 입장했습니다!</Text>
             <Text style={styles.roomCode}>방 코드: {roomCode}</Text>
 
             {/* 참여자 리스트 표시 */}

@@ -91,12 +91,12 @@ export default function HealingScreen() {
         </View>
 
         <ScrollView style={styles.raceList}>
-          {raceData.map((race, index) => (
-            <View key={race.id} style={styles.raceItem}>
-              <Image source={race.image} style={styles.raceImage} />
+          {routesList.map((routesList, index) => (
+            <View key={routesList.id} style={styles.raceItem}>
+              <Image source={{uri: routesList.url}} style={styles.raceImage} />
               <View style={styles.raceTextContainer}>
-                <Text style={styles.raceTitle}>{race.title}</Text>
-                <Text style={styles.raceDescription}>{race.description}</Text>
+                <Text style={styles.raceTitle}>{routesList.name}</Text>
+                <Text style={styles.raceDescription}>{routesList.info}</Text>
               </View>
               <TouchableOpacity
                 style={styles.checkBox}

@@ -10,8 +10,9 @@ import axios from 'axios';
 const MissionDetail = () => {
   const route = useRoute();
   const navigation = useNavigation();
-  const { missionId } = route.params;
-  const [mission, setMission] = useState(null);
+  const { missionname, sendMissionList } = route.params;
+  const mission = sendMissionList[0].title;
+  console.log("미션 이름 : ", mission);
   const [imageUri, setImageUri] = useState(null);
   const [imageFile, setImageFile] = useState(null);
 
@@ -19,38 +20,6 @@ const MissionDetail = () => {
   const customVisionApiKey = "4BoNZBWyOr7WlGsLIMD9WfHjjO6XLMqTJkpaTrau5c1eBAp3WOOVJQQJ99AJACYeBjFXJ3w3AAAIACOGbNIB";
   const computerVisionEndpoint = "https://tripting003033.cognitiveservices.azure.com/vision/v3.2/ocr";
   const computerVisionApiKey = "818b99a3710e4c6f9d20ce56f4ba8ebb";
-
-  const fetchMissionDetail = async () => {
-    try {
-      const storedMissions = await AsyncStorage.getItem('missions');
-      const parsedMissions = storedMissions ? JSON.parse(storedMissions) : [];
-      const missionDetail = parsedMissions.find((m) => m.id === missionId);
-      if (missionDetail) {
-        setMission(missionDetail);
-      } else {
-        Alert.alert('오류', '미션을 찾을 수 없습니다.');
-      }
-    } catch (error) {
-      console.error('미션 로드 중 오류:', error);
-    }
-  };
-
-  useEffect(() => {
-    fetchMissionDetail();
-  }, []);
-
-  const handleCompleteMission = async () => {
-    try {
-      const storedMissions = await AsyncStorage.getItem('missions');
-      const parsedMissions = storedMissions ? JSON.parse(storedMissions) : [];
-      const updatedMissions = parsedMissions.filter((m) => m.id !== missionId);
-      await AsyncStorage.setItem('missions', JSON.stringify(updatedMissions));
-      Alert.alert('미션 완료', '미션이 성공적으로 완료되었습니다.');
-      navigation.replace("Mission");
-    } catch (error) {
-      console.error('미션 삭제 중 오류:', error);
-    }
-  };
 
   const handleChoosePhoto = () => {
     launchImageLibrary({ mediaType: 'photo' }, (response) => {
@@ -100,7 +69,7 @@ const MissionDetail = () => {
         "Prediction-Key": apiKey,
       };
 
-      if (mission && mission.description.includes('영수증')) {
+      if (mission && sendMissionList[0].description.includes('영수증')) {
         endpoint = computerVisionEndpoint;
         apiKey = computerVisionApiKey;
         headers = {
@@ -134,7 +103,6 @@ const MissionDetail = () => {
               "미션 성공",
               `태그: ${bestPrediction.tagName}\n확률: ${(bestPrediction.probability * 100).toFixed(2)}%`
             );
-            handleCompleteMission();
           }
         } else {
           Alert.alert("분석 결과", "적합한 예측 결과가 없습니다.");
@@ -175,11 +143,10 @@ const MissionDetail = () => {
           <Icon name="" size={24} />
         </View>
         <View style={styles.missionInfo}>
-          <Text style={styles.title}>{mission.title}</Text>
+          <Text style={styles.title}>{mission}</Text>
           <Text style={styles.missionDescription}>{mission.description}</Text>
         </View>
         <View style={styles.photoSection}>
-          <Text style={styles.subtitle}>미션: 특정 장소에 가서 사진 찍기</Text>
           <View style={styles.buttonContainer}>
             <TouchableOpacity style={styles.button} onPress={handleChoosePhoto}>
               <Text style={styles.buttonText}>사진 선택</Text>
@@ -196,11 +163,6 @@ const MissionDetail = () => {
       <View style={styles.uploadbutton}>
         <TouchableOpacity style={styles.completeButton} onPress={submitToApi}>
           <Text style={styles.completeButtonText}>업로드</Text>
-        </TouchableOpacity>
-      </View>
-      <View style={styles.footer}>
-        <TouchableOpacity style={styles.completeButton} onPress={handleCompleteMission}>
-          <Text style={styles.completeButtonText}>미션 완료</Text>
         </TouchableOpacity>
       </View>
     </KeyboardAvoidingView>

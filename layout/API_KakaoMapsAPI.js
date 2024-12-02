@@ -40,6 +40,14 @@ export default function KakaoMapsAPI(routesList){
                 {
                   content: '${points[1].name}',
                   latlng: new kakao.maps.LatLng(${points[1].latlng.latitude}, ${points[1].latlng.longitude})
+                },
+                {
+                  content: '${points[2].name}',
+                  latlng: new kakao.maps.LatLng(${points[2].latlng.latitude}, ${points[2].latlng.longitude})
+                },
+                {
+                  content: '${points[3].name}',
+                  latlng: new kakao.maps.LatLng(${points[1].latlng.latitude}, ${points[3].latlng.longitude})
                 }
               ];
 

@@ -79,7 +79,7 @@ export default function HealingScreen() {
     <View style={styles.container}>
       {/* 전체 화면을 차지하는 지도 배경 */}
       <View style={styles.mapContainer}>
-        <Text style={styles.title}>일정 설정</Text>
+        <Text style={styles.title}>일정 설정ㅋ</Text>
         <View style={styles.mapSpace}>
           <WebView
             source={{ html: html }}

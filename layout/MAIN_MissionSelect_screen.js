@@ -4,31 +4,41 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import commonStyles from './components/Style';
 import BottomNavigation from './components/BottomNavigation';
-import KakaoMapsAPI from './API_KakaoMapsAPI';
-import { WebView } from 'react-native-webview';
 
-const MissionSelect = ({ navigation }) => {
-  const [missions, setMissions] = useState([]);
-  const [newMissionLabel, setNewMissionLabel] = useState('');  // 추가할 미션 이름을 위한 상태
-  const array = [
-    {
-      latlng: {
-        latitude: "36.79876109631288",
-        longitude: "127.07585238863194"
-      },
-      name: "공학관"
-    },
-    {
-      latlng: {
-        latitude: "36.7946574500278",
-        longitude: "127.10436919388525"
-      },
-      name: "아산역"
+const MissionSelect = ({ route, navigation }) => {
+  const getRoute = route.params;
+  const missionname = getRoute.missionname;
+  console.log("test",missionname);
+  const [missionList, setMissionList] = useState([]);
+  const [missionList2, setMissionList2] = useState([]);
+
+  useEffect(() => {
+    getMissionList();
+  }, []);
+
+  const getMissionList = async () => {
+    const missionResponse = await fetch(`http://localhost:8080/Tripting/missions/miss?type=ocr&area=${missionname}`, {
+      method: 'GET'
+    });
+
+    if(!missionResponse.ok) {
+      console.log("요청 실패");
     }
-  ];
+    const data = await missionResponse.json();
+    console.log("가져온 것 : ", data);
+    setMissionList(data);
 
-  const mapHtml = KakaoMapsAPI(array);
-  console.log("test ", mapHtml);
+    const missionResponse2 = await fetch(`http://localhost:8080/Tripting/missions/miss?type=cus&area=${missionname}`, {
+      method: 'GET'
+    });
+
+    if(!missionResponse2.ok) {
+      console.log("요청 실패");
+    }
+    const data2 = await missionResponse2.json();
+    console.log("2가져온 것 : ", data2);
+    setMissionList2(data2);
+  }
 
   return (
     <View style={commonStyles.container}>
@@ -41,14 +51,28 @@ const MissionSelect = ({ navigation }) => {
 
       {/* 미션 리스트 */}
       <ScrollView contentContainerStyle={commonStyles.scrollContainer}>
-        <View style={styles.mapContainer}>
-          <Text style={styles.title}>일정 설정</Text>
-          <View style={styles.mapSpace}>
-            <WebView
-              source={{ html: mapHtml }}
-            />
-          </View>
-        </View>
+        {missionList.length > 0 && missionList2.length > 0 ? (
+          <>
+            <TouchableOpacity style={commonStyles.navItem} onPress={() => {
+                const sendMissionList = missionList;
+                console.log(sendMissionList);
+                navigation.navigate('MissionDetail', { missionname, sendMissionList });}}>
+              <View style={commonStyles.missionLabelContainer}>
+                <Text>{missionList[0].title}</Text>
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity style={commonStyles.navItem} onPress={() => {
+                const sendMissionList = missionList2;
+                console.log('확인 : ', sendMissionList);
+                navigation.navigate('MissionDetail', { missionname, sendMissionList });}}>
+              <View style={commonStyles.missionLabelContainer}>
+                <Text>{missionList2[0].title}</Text>
+              </View>
+            </TouchableOpacity>
+          </>
+        ) : (
+          <Text>미션 데이터 없음</Text>
+        )}
       </ScrollView>
 
       {/* 하단 네비게이션 바 */}
