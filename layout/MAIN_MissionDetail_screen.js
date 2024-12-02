@@ -14,7 +14,6 @@ const MissionDetail = () => {
   const [mission, setMission] = useState(null);
   const [imageUri, setImageUri] = useState(null);
   const [imageFile, setImageFile] = useState(null);
-  const [isMissionSuccessful, setIsMissionSuccessful] = useState(false); // 미션 성공 여부 상태 추가
 
   const customVisionEndpoint = "https://customvisiontripting-prediction.cognitiveservices.azure.com/customvision/v3.0/Prediction/ec56b14e-0c38-4424-95d8-fd423dff805f/classify/iterations/Iteration4/image";
   const customVisionApiKey = "4BoNZBWyOr7WlGsLIMD9WfHjjO6XLMqTJkpaTrau5c1eBAp3WOOVJQQJ99AJACYeBjFXJ3w3AAAIACOGbNIB";
@@ -39,24 +38,6 @@ const MissionDetail = () => {
   useEffect(() => {
     fetchMissionDetail();
   }, []);
-
-  const handleCompleteMission = async () => {
-    if (!isMissionSuccessful) {
-      Alert.alert("미션 완료 불가", "아직 미션이 완료되지 않았습니다! 다시한번 확인해주세요.");
-      return;
-    }
-
-    try {
-      const storedMissions = await AsyncStorage.getItem('missions');
-      const parsedMissions = storedMissions ? JSON.parse(storedMissions) : [];
-      const updatedMissions = parsedMissions.filter((m) => m.id !== missionId);
-      await AsyncStorage.setItem('missions', JSON.stringify(updatedMissions));
-      Alert.alert('미션 완료', '미션이 성공적으로 완료되었습니다.');
-      navigation.replace("Mission");
-    } catch (error) {
-      console.error('미션 삭제 중 오류:', error);
-    }
-  };
 
   const handleCancelMission = async () => {
     Alert.alert(
@@ -130,7 +111,6 @@ const MissionDetail = () => {
 
     try {
       if (mission.description.includes("영수증")) {
-        // Computer Vision (OCR) API 호출
         const imageData = new FormData();
         imageData.append("file", {
           uri: imageFile.uri,
@@ -155,29 +135,13 @@ const MissionDetail = () => {
             .flatMap((line) => line.words)
             .map((word) => word.text);
 
-          if (texts.length === 0) {
-            setIsMissionSuccessful(false);
-            Alert.alert("결과", "영수증이 아닙니다! 다시 한번 확인해주세요!");
-            return;
-          }
-
-          const missionLocation = mission.title.split("에서")[0].trim();
-          
-          const isSuccessful = texts.some(text => text.includes(missionLocation));
-
-          if (isSuccessful) {
-            setIsMissionSuccessful(true);
-            Alert.alert("미션 성공!", "미션 완료버튼을 눌러주세요!");
+          if (texts.some(text => text.includes(mission.title.split("에서")[0].trim()))) {
+            await completeMissionAndRedirect();
           } else {
-            setIsMissionSuccessful(false);
-            Alert.alert("미션 실패!", "다른 가게 거나 사진이 잘 보이지 않습니다 다시 시도해주세요!");
+            Alert.alert("미션 실패!", "다른 가게거나 사진이 잘 보이지 않습니다. 다시 시도해주세요!");
           }
-        } else {
-          setIsMissionSuccessful(false);
-          Alert.alert("결과", "영수증이 아닙니다! 다시 한번 확인해주세요!");
         }
       } else {
-        // Custom Vision API 호출
         const formData = new FormData();
         formData.append("file", {
           uri: imageFile.uri,
@@ -192,31 +156,43 @@ const MissionDetail = () => {
           },
         });
 
-        if (response.data && response.data.predictions && response.data.predictions.length > 0) {
-          const highestPrediction = response.data.predictions.reduce((prev, current) => {
-            return (prev.probability > current.probability) ? prev : current;
-          });
+        if (response.data && response.data.predictions) {
+          console.log("Custom Vision 응답:", response.data.predictions);
 
-          if (highestPrediction.tagName.toLowerCase() === "negative" ||
-              highestPrediction.tagName !== mission.title) {
-            // 미션 실패 조건: 'negative'이거나 미션 제목과 일치하지 않음
-            setIsMissionSuccessful(false);
-            Alert.alert("결과", "분석 결과가 기준을 충족하지 못했습니다. 다시 시도해주세요.");
+          const highestPrediction = response.data.predictions.reduce((prev, current) =>
+            prev.probability > current.probability ? prev : current
+          );
+
+          console.log("가장 높은 예측:", highestPrediction);
+
+          if (highestPrediction.tagName === mission.title && highestPrediction.probability >= 0.8) {
+            await completeMissionAndRedirect();
           } else {
-            setIsMissionSuccessful(true);
             Alert.alert(
-              "결과",
-              `가장 높은 예측: ${highestPrediction.tagName} (${(highestPrediction.probability * 100).toFixed(2)}%)`
+              "미션 실패!",
+              `예측 결과: ${highestPrediction.tagName} (${(highestPrediction.probability * 100).toFixed(2)}%)`
             );
           }
         } else {
-          setIsMissionSuccessful(false);
-          Alert.alert("결과", "분석 결과를 찾을 수 없습니다.");
+          Alert.alert("미션 실패!", "분석 결과를 찾을 수 없습니다. 다시 시도해주세요.");
         }
       }
     } catch (error) {
-      console.error("API 호출 오류:", error.response?.data || error.message);
+      console.error("API 호출 오류:", error);
       Alert.alert("오류 발생", "이미지 업로드에 실패했습니다.");
+    }
+  };
+
+  const completeMissionAndRedirect = async () => {
+    try {
+      const storedMissions = await AsyncStorage.getItem('missions');
+      const parsedMissions = storedMissions ? JSON.parse(storedMissions) : [];
+      const updatedMissions = parsedMissions.filter((m) => m.id !== missionId);
+      await AsyncStorage.setItem('missions', JSON.stringify(updatedMissions));
+      Alert.alert("미션 성공!", "미션이 성공적으로 완료되었습니다.");
+      navigation.replace("Mission");
+    } catch (error) {
+      console.error('미션 처리 중 오류:', error);
     }
   };
 
@@ -234,7 +210,6 @@ const MissionDetail = () => {
         <View style={commonStyles.header}>
           <Icon name="arrow-back" size={24} color="black" onPress={() => navigation.goBack()} />
           <Text style={commonStyles.headerTitle}>미션 세부 정보</Text>
-          <Icon name="" size={24} />
         </View>
         <View style={styles.missionInfo}>
           <Text style={styles.title}>{mission.title}</Text>
@@ -251,26 +226,21 @@ const MissionDetail = () => {
             </TouchableOpacity>
           </View>
           {imageUri && (
-            <Image source={{ uri: imageUri }} style={styles.previewImage} />
+            <>
+              <Image source={{ uri: imageUri }} style={styles.previewImage} />
+              <TouchableOpacity style={styles.completeButton} onPress={submitToApi}>
+                <Text style={styles.completeButtonText}>성공?실패?</Text>
+              </TouchableOpacity>
+            </>
           )}
         </View>
-      </ScrollView>
-      <View style={styles.footer}>
-        <TouchableOpacity style={styles.completeButton} onPress={submitToApi}>
-          <Text style={styles.completeButtonText}>성공?실패?</Text>
+        <TouchableOpacity
+          style={[styles.completeButton, styles.cancelButton]}
+          onPress={handleCancelMission}
+        >
+          <Text style={styles.completeButtonText}>미션 포기</Text>
         </TouchableOpacity>
-        <View style={styles.footerActions}>
-          <TouchableOpacity style={styles.completeButton} onPress={handleCompleteMission}>
-            <Text style={styles.completeButtonText}>미션 완료</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.completeButton, styles.cancelButton]}
-            onPress={handleCancelMission}
-          >
-            <Text style={styles.completeButtonText}>미션 포기</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
+      </ScrollView>
     </KeyboardAvoidingView>
   );
 };
@@ -339,21 +309,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginTop: 20,
     alignSelf: 'center',
-  },
-  footer: {
-    flexDirection: 'column',
-    alignItems: 'center',
-    position: 'absolute',
-    bottom: 20,
-    left: 0,
-    right: 0,
-    padding: 20,
-  },
-  footerActions: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginTop: 10,
-    width: '100%',
   },
 });
 
