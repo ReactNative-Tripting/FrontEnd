@@ -8,7 +8,7 @@ import BottomNavigation from './components/BottomNavigation';
 const MissionSelect = ({ route, navigation }) => {
   const getRoute = route.params;
   const missionname = getRoute.missionname;
-  console.log("test",missionname);
+  const namename = missionname.name;
   const [missionList, setMissionList] = useState([]);
   const [missionList2, setMissionList2] = useState([]);
 
@@ -17,7 +17,7 @@ const MissionSelect = ({ route, navigation }) => {
   }, []);
 
   const getMissionList = async () => {
-    const missionResponse = await fetch(`http://localhost:8080/Tripting/missions/miss?type=ocr&area=${missionname}`, {
+    const missionResponse = await fetch(`http://localhost:8080/Tripting/missions/miss?type=ocr&area=${namename}`, {
       method: 'GET'
     });
 
@@ -28,7 +28,7 @@ const MissionSelect = ({ route, navigation }) => {
     console.log("가져온 것 : ", data);
     setMissionList(data);
 
-    const missionResponse2 = await fetch(`http://localhost:8080/Tripting/missions/miss?type=cus&area=${missionname}`, {
+    const missionResponse2 = await fetch(`http://localhost:8080/Tripting/missions/miss?type=cus&area=${namename}`, {
       method: 'GET'
     });
 
