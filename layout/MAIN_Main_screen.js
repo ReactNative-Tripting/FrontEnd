@@ -1,17 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet, FlatList } from 'react-native';
 import Swiper from 'react-native-swiper';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import IconAnt from 'react-native-vector-icons/AntDesign';
 import BottomNavigation from './components/BottomNavigation';
-import commonStyles from './components/Style';
-
-import event1Image from './image/event1.png';
-import event2Image from './image/event2.png';
 
 export default function MainScreen({ route, navigation }) {
   const eventLists = route.params.getEventList;
   const eventList = eventLists.map((event, index) => ({
+    eventadress: event.addr1,
     eventenddate: event.eventenddate,
     eventstartdate: event.eventstartdate,
     firstimage: event.firstimage,
@@ -23,17 +20,21 @@ export default function MainScreen({ route, navigation }) {
   }));
 
   const renderEventItem = ({ item }) => (
-    <View style={styles.eventItem}>
-      <Image source={{uri: item.firstimage}} style={styles.eventImage} />
+    <TouchableOpacity
+      style={styles.eventItem}
+      onPress={() => navigation.navigate('EventDetail', { eventId: item.id, eventData: item })}
+    >
+      <Image source={{ uri: item.firstimage }} style={styles.eventImage} />
       <View style={styles.eventDescription}>
         <Text style={styles.eventTextTitle}>{item.title}</Text>
         <Text style={styles.eventTextDetail}>행사 시작일 : {item.eventstartdate}</Text>
         <Text style={styles.eventTextDetail}>행사 종료일 : {item.eventenddate}</Text>
         <Text style={styles.eventTextDetail}>행사 관련 전화번호 : {item.tel}</Text>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 
+  // 배너 클릭 시 이벤트 디테일로 이동
   const renderBanner = () => (
     <View style={styles.eventItem}>
       <Swiper
@@ -45,9 +46,13 @@ export default function MainScreen({ route, navigation }) {
         activeDotStyle={styles.activeDotStyle}
       >
         {eventList.map((event) => (
-          <View key={event.id} style={styles.bannerItem}>
-            <Image source={{ uri: event .firstimage }} style={styles.bannerImage} resizeMode="cover" />
-          </View>
+          <TouchableOpacity
+            key={event.id}
+            style={styles.bannerItem}
+            onPress={() => navigation.navigate('EventDetail', { eventId: event.id, eventData: event })}
+          >
+            <Image source={{ uri: event.firstimage }} style={styles.bannerImage} resizeMode="cover" />
+          </TouchableOpacity>
         ))}
       </Swiper>
     </View>
@@ -68,7 +73,6 @@ export default function MainScreen({ route, navigation }) {
 
       {/* 배너 섹션 */}
       {renderBanner()}
-
 
       {/* 행사 D-day 섹션 */}
       <View style={styles.sectionHeader}>
@@ -96,7 +100,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 20,
-    zIndex: 2, // 헤더가 다른 요소들보다 위로 오도록 설정
+    zIndex: 2,
     backgroundColor: '#fff',
     height: 60,
   },
@@ -104,13 +108,6 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     color: '#333',
-  },
-  scrollView: {
-    marginTop: 0
-  },
-  bannerContainer: {
-    width: '100%',
-    height: 280,
   },
   swiperContainer: {
     height: 250,
@@ -124,13 +121,6 @@ const styles = StyleSheet.create({
   bannerImage: {
     width: '100%',
     height: 320,
-  },
-  bannerText: {
-    marginTop: 10,
-    fontSize: 16,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    color: '#333',
   },
   sectionHeader: {
     flexDirection: 'row',
