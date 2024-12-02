@@ -110,7 +110,7 @@ const styles = StyleSheet.create({
   },
   bannerContainer: {
     width: '100%',
-    height: 250,
+    height: 280,
   },
   swiperContainer: {
     height: 250,
@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
   },
   bannerImage: {
     width: '100%',
-    height: 250,
+    height: 320,
   },
   bannerText: {
     marginTop: 10,

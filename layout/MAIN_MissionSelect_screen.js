@@ -4,15 +4,11 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import commonStyles from './components/Style';
 import BottomNavigation from './components/BottomNavigation';
-import KakaoMapsAPI from './API_KakaoMapsAPI_Mission';
 
 const MissionSelect = ({ route, navigation }) => {
   const getRoute = route.params;
-  const routes = getRoute.missionname;
-  missionname = routes.name;
-
-
-  console.log("missionname:", missionname);
+  const missionname = getRoute.missionname;
+  console.log("test",missionname);
   const [missionList, setMissionList] = useState([]);
   const [missionList2, setMissionList2] = useState([]);
 
@@ -29,7 +25,7 @@ const MissionSelect = ({ route, navigation }) => {
       console.log("요청 실패");
     }
     const data = await missionResponse.json();
-    console.log("ocr 가져온 것 : ", data);
+    console.log("가져온 것 : ", data);
     setMissionList(data);
 
     const missionResponse2 = await fetch(`http://localhost:8080/Tripting/missions/miss?type=cus&area=${missionname}`, {
@@ -40,11 +36,9 @@ const MissionSelect = ({ route, navigation }) => {
       console.log("요청 실패");
     }
     const data2 = await missionResponse2.json();
-    console.log("cus 가져온 것 : ", data2);
+    console.log("2가져온 것 : ", data2);
     setMissionList2(data2);
   }
-
-  const mapHtml = KakaoMapsAPI(routes);
 
   return (
     <View style={commonStyles.container}>
@@ -53,68 +47,76 @@ const MissionSelect = ({ route, navigation }) => {
         <Icon name="menu" size={24} color="black" />
         <Text style={commonStyles.headerTitle}>미션</Text>
         <Icon name="search" size={24} color="black" />
-        <View style={styles.mapSpace}>
-          
-        </View>
       </View>
-
+  
       {/* 미션 리스트 */}
-      <ScrollView contentContainerStyle={commonStyles.scrollContainer}>
+      <ScrollView contentContainerStyle={styles.missionContainer}>
         {missionList.length > 0 && missionList2.length > 0 ? (
           <>
-            <TouchableOpacity style={commonStyles.navItem} onPress={() => {
+            <TouchableOpacity
+              style={styles.missionButton}
+              onPress={() => {
                 const sendMissionList = missionList;
                 console.log(sendMissionList);
-                navigation.navigate('MissionDetail', { missionname, sendMissionList });}}>
-              <View style={commonStyles.missionLabelContainer}>
-                <Text>{missionList[0].title}</Text>
-              </View>
+                navigation.navigate('MissionDetail', { missionname, sendMissionList });
+              }}
+            >
+              <Text style={styles.missionButtonText}>{missionList[0].title}</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={commonStyles.navItem} onPress={() => {
+            <TouchableOpacity
+              style={styles.missionButton}
+              onPress={() => {
                 const sendMissionList = missionList2;
-                navigation.navigate('MissionDetail', { missionname, sendMissionList });}}>
-              <View style={commonStyles.missionLabelContainer}>
-                <Text>{missionList2[0].title}</Text>
-              </View>
+                console.log('확인 : ', sendMissionList);
+                navigation.navigate('MissionDetail', { missionname, sendMissionList });
+              }}
+            >
+              <Text style={styles.missionButtonText}>{missionList2[0].title}</Text>
             </TouchableOpacity>
           </>
         ) : (
-          <Text>미션 데이터 없음</Text>
+          <Text style={styles.noMissionsText}>미션 데이터 없음</Text>
         )}
       </ScrollView>
-
+  
       {/* 하단 네비게이션 바 */}
       <BottomNavigation navigation={navigation} />
     </View>
   );
+  
 };
 
 const styles = StyleSheet.create({
-  addMissionContainer: {
-    padding: 16,
-    backgroundColor: '#f4f4f4',
-    borderBottomWidth: 1,
-    borderColor: '#ddd',
-  },
-  input: {
-    height: 40,
-    borderColor: '#ddd',
-    borderWidth: 1,
-    borderRadius: 5,
-    marginBottom: 8,
-    paddingLeft: 10,
-  },
-  noMissionsContainer: {
-    flex: 1,
+  missionContainer: {
+    flexGrow: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 50,
+    padding: 20,
+  },
+  missionButton: {
+    width: '80%',
+    paddingVertical: 20,
+    marginVertical: 10,
+    backgroundColor: '#4CAF50',
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 3,
+    elevation: 5,
+  },
+  missionButtonText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#FFF',
   },
   noMissionsText: {
-    fontSize: 18,
-    color: '#aaa',
-    textAlign: 'center',
+    fontSize: 16,
+    color: '#999',
   },
 });
+
 
 export default MissionSelect;
