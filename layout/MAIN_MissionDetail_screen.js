@@ -9,8 +9,10 @@ import axios from 'axios';
 
 const MissionDetail = () => {
   const route = useRoute();
-  const navigation = useNavigation();
   const { missionname, sendMissionList } = route.params;
+  const mission = sendMissionList[0].description;
+  const navigation = useNavigation();
+  const { missionId } = route.params;
   const [imageUri, setImageUri] = useState(null);
   const [imageFile, setImageFile] = useState(null);
 
@@ -18,6 +20,36 @@ const MissionDetail = () => {
   const customVisionApiKey = "4BoNZBWyOr7WlGsLIMD9WfHjjO6XLMqTJkpaTrau5c1eBAp3WOOVJQQJ99AJACYeBjFXJ3w3AAAIACOGbNIB";
   const computerVisionEndpoint = "https://tripting003033.cognitiveservices.azure.com/vision/v3.2/ocr";
   const computerVisionApiKey = "FiT3qKeYV32sXVEzJzOBvLb9TB1DhHEr0FkQU8V48bkqzu9GPBixJQQJ99ALACYeBjFXJ3w3AAAFACOGvqCc";
+
+  const handleCancelMission = async () => {
+    Alert.alert(
+      "미션 포기",
+      "미션을 포기하시겠습니까?",
+      [
+        {
+          text: "아니오",
+          style: "cancel",
+        },
+        {
+          text: "예",
+          onPress: async () => {
+            try {
+              const storedMissions = await AsyncStorage.getItem('missions');
+              const parsedMissions = storedMissions ? JSON.parse(storedMissions) : [];
+              const updatedMissions = parsedMissions.filter((m) => m.id !== missionId);
+              await AsyncStorage.setItem('missions', JSON.stringify(updatedMissions));
+              Alert.alert("미션 포기", "미션이 성공적으로 삭제되었습니다.");
+              navigation.replace("Mission");
+            } catch (error) {
+              console.error('미션 삭제 중 오류:', error);
+              Alert.alert("오류", "미션 삭제에 실패했습니다.");
+            }
+          },
+        },
+      ],
+      { cancelable: true }
+    );
+  };
 
   const handleChoosePhoto = () => {
     launchImageLibrary({ mediaType: 'photo' }, (response) => {
@@ -60,69 +92,99 @@ const MissionDetail = () => {
     }
 
     try {
-      let endpoint = customVisionEndpoint;
-      let apiKey = customVisionApiKey;
-      let headers = {
-        "Content-Type": "multipart/form-data",
-        "Prediction-Key": apiKey,
-      };
+      if (mission.includes("영수증")) {
+        const imageData = new FormData();
+        imageData.append("file", {
+          uri: imageFile.uri,
+          name: imageFile.name,
+          type: imageFile.type,
+        });
 
-      if (sendMissionList[0].description && sendMissionList[0].description.includes('영수증')) {
-        endpoint = computerVisionEndpoint;
-        apiKey = computerVisionApiKey;
-        headers = {
-          "Content-Type": "multipart/form-data",
-          "Ocp-Apim-Subscription-Key": apiKey,
-        };
-      }
+        const response = await axios.post(
+          `${computerVisionEndpoint}?language=ko&detectOrientation=true`,
+          imageData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+              "Ocp-Apim-Subscription-Key": computerVisionApiKey,
+            },
+          }
+        );
 
-      const formData = new FormData();
-      formData.append("file", {
-        uri: imageFile.uri,
-        name: imageFile.name,
-        type: imageFile.type,
-      });
+        if (response.data && response.data.regions) {
+          const texts = response.data.regions
+            .flatMap((region) => region.lines)
+            .flatMap((line) => line.words)
+            .map((word) => word.text);
 
-      const response = await axios.post(endpoint, formData, { headers });
+          if (texts.some(text => text.includes(mission.title.split("에서")[0].trim()))) {
+            await completeMissionAndRedirect();
+          } else {
+            Alert.alert("미션 실패!", "다른 가게거나 사진이 잘 보이지 않습니다. 다시 시도해주세요!");
+          }
+        }
+      } else {
+        const formData = new FormData();
+        formData.append("file", {
+          uri: imageFile.uri,
+          name: imageFile.name,
+          type: imageFile.type,
+        });
 
-      if (endpoint === customVisionEndpoint) {
-        const predictions = response.data.predictions;
-        if (predictions && predictions.length > 0) {
-          const bestPrediction = predictions.reduce((max, prediction) =>
-            prediction.probability > max.probability ? prediction : max
+        const response = await axios.post(customVisionEndpoint, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            "Prediction-Key": customVisionApiKey,
+          },
+        });
+
+        if (response.data && response.data.predictions) {
+          console.log("Custom Vision 응답:", response.data.predictions);
+
+          const highestPrediction = response.data.predictions.reduce((prev, current) =>
+            prev.probability > current.probability ? prev : current
           );
-          if (bestPrediction.tagName.toLowerCase() === "negative") {
-            Alert.alert(
-              "미션 실패",
-              `태그: ${bestPrediction.tagName}\n확률: ${(bestPrediction.probability * 100).toFixed(2)}%`
-            );
+
+          console.log("가장 높은 예측:", highestPrediction);
+
+          if (highestPrediction.tagName === mission.title && highestPrediction.probability >= 0.8) {
+            await completeMissionAndRedirect();
           } else {
             Alert.alert(
-              "미션 성공",
-              `태그: ${bestPrediction.tagName}\n확률: ${(bestPrediction.probability * 100).toFixed(2)}%`
+              "미션 실패!",
+              `예측 결과: ${highestPrediction.tagName} (${(highestPrediction.probability * 100).toFixed(2)}%)`
             );
           }
         } else {
-          Alert.alert("분석 결과", "적합한 예측 결과가 없습니다.");
-        }
-      } else {
-        const { analyzeResult } = response.data;
-        if (analyzeResult && analyzeResult.readResults.length > 0) {
-          const words = analyzeResult.readResults.flatMap(result =>
-            result.lines.flatMap(line =>
-              line.words.map(word => word.text)
-            )
-          );
-          Alert.alert("영수증 분석 결과", `분석된 텍스트: ${words.join(', ')}`);
-        } else {
-          Alert.alert("분석 결과", "텍스트를 감지할 수 없습니다.");
+          Alert.alert("미션 실패!", "분석 결과를 찾을 수 없습니다. 다시 시도해주세요.");
         }
       }
     } catch (error) {
-      console.error("API 호출 오류:", error.response?.data || error.message);
+      console.error("API 호출 오류:", error);
       Alert.alert("오류 발생", "이미지 업로드에 실패했습니다.");
     }
   };
+
+  const completeMissionAndRedirect = async () => {
+    try {
+      const storedMissions = await AsyncStorage.getItem('missions');
+      const parsedMissions = storedMissions ? JSON.parse(storedMissions) : [];
+      const updatedMissions = parsedMissions.filter((m) => m.id !== missionId);
+      await AsyncStorage.setItem('missions', JSON.stringify(updatedMissions));
+      Alert.alert("미션 성공!", "미션이 성공적으로 완료되었습니다.");
+      navigation.replace("Mission");
+    } catch (error) {
+      console.error('미션 처리 중 오류:', error);
+    }
+  };
+
+  if (!mission) {
+    return (
+      <View style={commonStyles.container}>
+        <Text>로딩 중...</Text>
+      </View>
+    );
+  }
 
   return (
     <KeyboardAvoidingView style={commonStyles.container} behavior="padding">
@@ -130,12 +192,12 @@ const MissionDetail = () => {
         <View style={commonStyles.header}>
           <Icon name="arrow-back" size={24} color="black" onPress={() => navigation.goBack()} />
           <Text style={commonStyles.headerTitle}>미션 세부 정보</Text>
-          <Icon size={24} />
         </View>
         <View style={styles.missionInfo}>
-          <Text style={styles.title}>{sendMissionList[0].description}</Text>
+          <Text style={styles.missionDescription}>{mission.description}</Text>
         </View>
         <View style={styles.photoSection}>
+          <Text style={styles.subtitle}>{mission}</Text>
           <View style={styles.buttonContainer}>
             <TouchableOpacity style={styles.button} onPress={handleChoosePhoto}>
               <Text style={styles.buttonText}>사진 선택</Text>
@@ -145,15 +207,21 @@ const MissionDetail = () => {
             </TouchableOpacity>
           </View>
           {imageUri && (
-            <Image source={{ uri: imageUri }} style={styles.previewImage} />
+            <>
+              <Image source={{ uri: imageUri }} style={styles.previewImage} />
+              <TouchableOpacity style={styles.completeButton} onPress={submitToApi}>
+                <Text style={styles.completeButtonText}>성공?실패?</Text>
+              </TouchableOpacity>
+            </>
           )}
         </View>
-      </ScrollView>
-      <View style={styles.uploadbutton}>
-        <TouchableOpacity style={styles.completeButton} onPress={submitToApi}>
-          <Text style={styles.completeButtonText}>업로드</Text>
+        <TouchableOpacity
+          style={[styles.completeButton, styles.cancelButton]}
+          onPress={handleCancelMission}
+        >
+          <Text style={styles.completeButtonText}>미션 포기</Text>
         </TouchableOpacity>
-      </View>
+      </ScrollView>
     </KeyboardAvoidingView>
   );
 };
@@ -188,7 +256,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     borderRadius: 5,
     alignItems: 'center',
-    marginTop: 30,
+    marginTop: 10,
+  },
+  cancelButton: {
+    backgroundColor: '#FF6347',
   },
   completeButtonText: {
     color: '#FFFFFF',
@@ -219,22 +290,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginTop: 20,
     alignSelf: 'center',
-  },
-  uploadbutton: {
-    position: 'absolute',
-    bottom: 80,
-    left: 0,
-    right: 0,
-    padding: 20,
-    alignItems: 'center',
-  },
-  footer: {
-    position: 'absolute',
-    bottom: 20,
-    left: 0,
-    right: 0,
-    padding: 20,
-    alignItems: 'center',
   },
 });
 
