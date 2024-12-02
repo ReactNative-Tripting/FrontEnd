@@ -13,14 +13,15 @@ const commonStyles = StyleSheet.create({
   },
   header: {
     flexDirection: 'row',
-    justifyContent: 'space-between', //사이에 빈 공간을 넣어, 균일히 공간을 맞추는 설정
+    justifyContent: 'space-between',
     padding: 16,
+    height: 60,
     alignItems: 'center',
     borderBottomWidth: 1,
     borderBottomColor: '#ddd',
   },
   headerTitle: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: 'bold',
   },
 
@@ -139,6 +140,12 @@ const commonStyles = StyleSheet.create({
   },
   productList: {
     padding: 16,
+  },
+  centerContent: {
+    flex: 1, // 헤더 아래의 나머지 공간을 차지
+    justifyContent: 'center', // 세로 중앙 정렬
+    alignItems: 'center', // 가로 중앙 정렬
+    paddingHorizontal: 20, // 좌우 여백을 추가할 수 있음
   },
   itemContainer: {
     flex: 1,

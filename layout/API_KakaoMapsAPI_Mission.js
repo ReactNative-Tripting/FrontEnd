@@ -1,13 +1,11 @@
 var level = 3
 var getImageSrc = 'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_number_blue.png'
 
-export default function KakaoMapsAPI(routesList){
-  const points = routesList.map(route => ({
-    name: route.name,
-    latlng: { latitude: route.latitude, longitude: route.longitude }
-  }));
+export default function KakaoMapsAPI_Mission(routesList){
+  console.log("여긴가?", routesList.latitude);
+  console.log("여긴가!", routesList.longitude);
 
-  if(points.length > 0) {
+  if(routesList.latitude.length > 0) {
     const html = `
       <html>
         <head>
@@ -22,7 +20,7 @@ export default function KakaoMapsAPI(routesList){
               const container = document.getElementById('map');
 
               const options = {
-                center: new kakao.maps.LatLng(36.79876109631288, 127.07585238863194),
+                center: new kakao.maps.LatLng({routesList.latitude}, {routesList.longitude}),
                 level: 3
               };
 
@@ -31,20 +29,8 @@ export default function KakaoMapsAPI(routesList){
               //마커 찍고 마커들을 한번에 볼 수 있게 지도 범위 재설정
               var pointstest = [
                 {
-                  content: '${points[0].name}',
-                  latlng: new kakao.maps.LatLng(${points[0].latlng.latitude}, ${points[0].latlng.longitude})
-                },
-                {
-                  content: '${points[1].name}',
-                  latlng: new kakao.maps.LatLng(${points[1].latlng.latitude}, ${points[1].latlng.longitude})
-                },
-                {
-                  content: '${points[2].name}',
-                  latlng: new kakao.maps.LatLng(${points[2].latlng.latitude}, ${points[2].latlng.longitude})
-                },
-                {
-                  content: '${points[3].name}',
-                  latlng: new kakao.maps.LatLng(${points[1].latlng.latitude}, ${points[3].latlng.longitude})
+                  content: '${routesList.description}',
+                  latlng: new kakao.maps.LatLng(${routesList.latitude}, ${routesList.longitude})
                 }
               ];
 

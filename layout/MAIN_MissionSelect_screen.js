@@ -4,11 +4,15 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import commonStyles from './components/Style';
 import BottomNavigation from './components/BottomNavigation';
+import KakaoMapsAPI from './API_KakaoMapsAPI_Mission';
 
 const MissionSelect = ({ route, navigation }) => {
   const getRoute = route.params;
-  const missionname = getRoute.missionname;
-  console.log("test",missionname);
+  const routes = getRoute.missionname;
+  missionname = routes.name;
+
+
+  console.log("missionname:", missionname);
   const [missionList, setMissionList] = useState([]);
   const [missionList2, setMissionList2] = useState([]);
 
@@ -25,7 +29,7 @@ const MissionSelect = ({ route, navigation }) => {
       console.log("요청 실패");
     }
     const data = await missionResponse.json();
-    console.log("가져온 것 : ", data);
+    console.log("ocr 가져온 것 : ", data);
     setMissionList(data);
 
     const missionResponse2 = await fetch(`http://localhost:8080/Tripting/missions/miss?type=cus&area=${missionname}`, {
@@ -36,9 +40,11 @@ const MissionSelect = ({ route, navigation }) => {
       console.log("요청 실패");
     }
     const data2 = await missionResponse2.json();
-    console.log("2가져온 것 : ", data2);
+    console.log("cus 가져온 것 : ", data2);
     setMissionList2(data2);
   }
+
+  const mapHtml = KakaoMapsAPI(routes);
 
   return (
     <View style={commonStyles.container}>
@@ -47,6 +53,9 @@ const MissionSelect = ({ route, navigation }) => {
         <Icon name="menu" size={24} color="black" />
         <Text style={commonStyles.headerTitle}>미션</Text>
         <Icon name="search" size={24} color="black" />
+        <View style={styles.mapSpace}>
+          
+        </View>
       </View>
 
       {/* 미션 리스트 */}
@@ -63,7 +72,6 @@ const MissionSelect = ({ route, navigation }) => {
             </TouchableOpacity>
             <TouchableOpacity style={commonStyles.navItem} onPress={() => {
                 const sendMissionList = missionList2;
-                console.log('확인 : ', sendMissionList);
                 navigation.navigate('MissionDetail', { missionname, sendMissionList });}}>
               <View style={commonStyles.missionLabelContainer}>
                 <Text>{missionList2[0].title}</Text>

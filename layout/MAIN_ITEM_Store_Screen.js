@@ -30,9 +30,9 @@ const StoreScreen = ({ navigation }) => {
     <View style={commonStyles.container}>
       {/* Header */}
       <View style={commonStyles.header}>
-        <Icon name="menu" size={24} color="black" />
+        <Icon size={24} color="black" />
         <Text style={commonStyles.headerTitle}>상점</Text>
-        <Icon name="search" size={24} color="black" />
+        <Icon size={24} color="black" />
       </View>
 
       {/* Category Filters */}

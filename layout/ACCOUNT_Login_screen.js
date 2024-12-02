@@ -29,7 +29,6 @@ export default function LoginScreen() {
 
   const handleLogin = async () => {
     try {
-      console.log('로그인 시도 중...');
       const response = await fetch('http://localhost:8080/Tripting/users/login', {
         method: 'POST',
         headers: {
@@ -43,7 +42,6 @@ export default function LoginScreen() {
 
       if (response.ok) {
         const data = await response.json();
-        console.log('API 응답 데이터:', data);
 
         const { token, user } = data; // API 응답에 맞게 구조 분해
         if (token && user) {
@@ -67,13 +65,10 @@ export default function LoginScreen() {
             const data = await pointResponse.text(); // 응답 본문은 문자열 형태로 받음
             const parsedPoints = Number(data) || 0; // 숫자로 변환
             await AsyncStorage.setItem('userPoints', parsedPoints.toString()); // AsyncStorage에 저장
-            console.log('Loaded currentPoints from API:', parsedPoints);
           } else {
             console.error('Error fetching currentPoints from API');
             Alert.alert('오류', '포인트 데이터를 가져오는 데 실패했습니다.');
           }
-
-          console.log('Id 저장값',userId);
 
           Alert.alert('로그인 성공', `환영합니다, ${user.username}!`); // 사용자 이름을 표시
           const getEventList = await getEvent();
@@ -100,6 +95,7 @@ export default function LoginScreen() {
       <Text style={styles.subtitle}>Tripting 입니다.</Text>
       <Text style={styles.description}>먼저 로그인이 필요합니다 :)</Text>
 
+      <View style={styles.IdContainer}>
       <TextInput
         style={styles.input}
         placeholder="Enter your ID"
@@ -107,6 +103,7 @@ export default function LoginScreen() {
         value={userId}
         onChangeText={setUserId}
       />
+      </View>
 
       <View style={styles.passwordContainer}>
         <TextInput
@@ -166,13 +163,18 @@ const styles = StyleSheet.create({
     marginBottom: 30,
     textAlign: 'left',
   },
-  input: {
+  IdContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
     borderWidth: 1,
     borderColor: '#ccc',
     borderRadius: 25,
-    padding: 12,
     paddingHorizontal: 20,
+    paddingVertical: 12,
     marginBottom: 10,
+  },
+  IdInput: {
+    flex: 1,
     fontSize: 16,
   },
   passwordContainer: {

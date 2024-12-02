@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, Image, ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, Image, TouchableOpacity, StyleSheet, FlatList } from 'react-native';
+import Swiper from 'react-native-swiper';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import IconAnt from 'react-native-vector-icons/AntDesign';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import BottomNavigation from './components/BottomNavigation';
 import commonStyles from './components/Style';
 
@@ -10,69 +10,76 @@ import event1Image from './image/event1.png';
 import event2Image from './image/event2.png';
 
 export default function MainScreen({ route, navigation }) {
-  const eventList = route.params.getEventList;
+  const eventLists = route.params.getEventList;
+  const eventList = eventLists.map((event, index) => ({
+    eventenddate: event.eventenddate,
+    eventstartdate: event.eventstartdate,
+    firstimage: event.firstimage,
+    mapx: event.mapx,
+    mpay: event.mpay,
+    tel: event.tel,
+    title: event.title,
+    id: index.toString(),
+  }));
+
+  const renderEventItem = ({ item }) => (
+    <View style={styles.eventItem}>
+      <Image source={{uri: item.firstimage}} style={styles.eventImage} />
+      <View style={styles.eventDescription}>
+        <Text style={styles.eventTextTitle}>{item.title}</Text>
+        <Text style={styles.eventTextDetail}>행사 시작일 : {item.eventstartdate}</Text>
+        <Text style={styles.eventTextDetail}>행사 종료일 : {item.eventenddate}</Text>
+        <Text style={styles.eventTextDetail}>행사 관련 전화번호 : {item.tel}</Text>
+      </View>
+    </View>
+  );
+
+  const renderBanner = () => (
+    <View style={styles.eventItem}>
+      <Swiper
+        style={styles.swiperContainer}
+        showsButtons={false}
+        autoplay
+        autoplayTimeout={5}
+        dotStyle={styles.dotStyle}
+        activeDotStyle={styles.activeDotStyle}
+      >
+        {eventList.map((event) => (
+          <View key={event.id} style={styles.bannerItem}>
+            <Image source={{ uri: event .firstimage }} style={styles.bannerImage} resizeMode="cover" />
+          </View>
+        ))}
+      </Swiper>
+    </View>
+  );
 
   return (
     <View style={styles.container}>
       {/* 헤더 */}
-      <View style={commonStyles.header}>
-        <TouchableOpacity onPress={async () => {
-          try {
-            const token = await AsyncStorage.getItem('userToken');
-            const userData = await AsyncStorage.getItem('userData');
-            if (token && userData) {
-              console.log('Stored Token:', token);
-              console.log('Stored userData:', userData);
-            } else {
-              console.log('No token found');
-            }
-          } catch (error) {
-            console.error('Error retrieving token:', error);
-          }
-        }}>
-          <Icon name="menu" size={28} color="black" />
+      <View style={styles.headerContainer}>
+        <TouchableOpacity>
+          <Icon size={28} color="black"/>
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>트립팅 {eventList.length}</Text>
+        <Text style={styles.headerTitle}>트립팅</Text>
         <TouchableOpacity onPress={() => navigation.navigate('User')}>
           <IconAnt name="user" size={28} color="black" />
         </TouchableOpacity>
       </View>
 
       {/* 배너 섹션 */}
-      <View style={styles.bannerContainer}>
-        <Image
-          source={{uri: eventList[0].firstimage}}
-          style={styles.bannerImage}
-        />
-        <Text style={styles.bannerText}>{eventList[0].title}</Text>
-        </View>
+      {renderBanner()}
+
 
       {/* 행사 D-day 섹션 */}
       <View style={styles.sectionHeader}>
         <Text style={styles.sectionTitle}>행사 List</Text>
-
       </View>
-      <ScrollView style={styles.eventList}>
-        <View style={styles.eventItem}>
-          <Image
-            source={{uri: eventList[0].firstimage}}
-            style={styles.eventImage}
-          />
-          <View style={styles.eventDescription}>
-            <Text style={styles.eventTextTitle}>{eventList[0].title}</Text>
-          </View>
-        </View>
-        {/**/}
-        <View style={styles.eventItem}>
-          <Image
-            source={{uri: eventList[1].firstimage}}
-            style={styles.eventImage}
-          />
-          <View style={styles.eventDescription}>
-            <Text style={styles.eventTextTitle}>{eventList[1].title}</Text>
-          </View>
-        </View>
-      </ScrollView>
+      <FlatList
+        data={eventList}
+        renderItem={renderEventItem}
+        keyExtractor={(item) => item.id}
+        contentContainerStyle={styles.eventList}
+      />
       {/* 하단 네비게이션 바 */}
       <BottomNavigation navigation={navigation} />
     </View>
@@ -83,43 +90,47 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    paddingHorizontal: 0,
   },
-  header: {
+  headerContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 20,
+    paddingHorizontal: 20,
+    zIndex: 2, // 헤더가 다른 요소들보다 위로 오도록 설정
+    backgroundColor: '#fff',
+    height: 60,
   },
   headerTitle: {
     fontSize: 24,
     fontWeight: 'bold',
     color: '#333',
   },
+  scrollView: {
+    marginTop: 0
+  },
   bannerContainer: {
-    backgroundColor: '#f1f1f1',
-    borderRadius: 10,
-    marginTop: 20,
-    padding: 15,
+    width: '100%',
+    height: 250,
+  },
+  swiperContainer: {
+    height: 250,
+  },
+  bannerItem: {
+    width: '100%',
+    height: 300,
     alignItems: 'center',
+    justifyContent: 'center',
   },
   bannerImage: {
     width: '100%',
-    height: 200,
-    borderRadius: 10,
+    height: 250,
   },
   bannerText: {
     marginTop: 10,
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 'bold',
     textAlign: 'center',
     color: '#333',
-  },
-  moreText: {
-    marginTop: 5,
-    color: '#007BFF',
-    fontSize: 14,
-    fontWeight: 'bold',
   },
   sectionHeader: {
     flexDirection: 'row',
@@ -134,9 +145,7 @@ const styles = StyleSheet.create({
     color: '#333',
   },
   eventList: {
-    marginBottom: 20,
-    paddingHorizontal: 0,
-    paddingHorizontal: 20,
+    paddingHorizontal: 2,
   },
   eventItem: {
     flexDirection: 'row',
@@ -163,20 +172,18 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#777',
   },
-  scheduleList: {
-    marginBottom: 30,
-    paddingHorizontal: 20,
+  dotStyle: {
+    backgroundColor: 'rgba(0,0,0,0.2)',
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    marginHorizontal: 3,
   },
-  scheduleItem: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ddd',
-  },
-  scheduleText: {
-    fontSize: 16,
-    color: '#333',
+  activeDotStyle: {
+    backgroundColor: '#333',
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    marginHorizontal: 3,
   },
 });

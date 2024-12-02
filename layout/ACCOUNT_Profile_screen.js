@@ -22,13 +22,6 @@ const UserProfileScreen = ({ navigation }) => {
       const email = await AsyncStorage.getItem('userEmail');
       const points = await AsyncStorage.getItem('userPoints');
 
-      // 값 출력 (디버깅용)
-      console.log('Fetched user data from AsyncStorage:');
-      console.log('Name:', name);
-      console.log('ID:', id);
-      console.log('Email:', email);
-      console.log('Points:', points);
-
       // 데이터가 없다면 기본값 설정
       setUser({
         name: name || '홍길동',
@@ -125,11 +118,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#555',
     marginTop: 8,
-  },
-  userJoinDate: {
-    fontSize: 14,
-    color: '#777',
-    marginTop: 4,
   },
   storageButton: {
     marginTop: 20,

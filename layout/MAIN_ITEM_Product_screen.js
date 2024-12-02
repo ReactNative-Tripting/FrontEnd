@@ -35,7 +35,6 @@ const ProductContent = ({ item, setStorageItems, currentPoints, setCurrentPoints
   const handlePurchase = async () => {
     // item.points가 "5,000 포인트" 형식이므로, 숫자만 추출해서 사용해야 합니다.
     const pointsRequired = parseInt(item.points.replace(/[^0-9]/g, '')); // 쉼표와 '포인트'를 제거하고 숫자만 추출
-    console.log("상품 포인트 : ", pointsRequired);
 
     if (remainingPoints < pointsRequired) {
       Alert.alert('구매 실패', '포인트가 부족합니다.');
@@ -48,8 +47,6 @@ const ProductContent = ({ item, setStorageItems, currentPoints, setCurrentPoints
     };
 
     try {
-      console.log('요청 본문:', requestBody);
-
       const response = await fetch('http://localhost:8080/Tripting/point/use', {
         method: 'PATCH',
         headers: {
@@ -57,16 +54,11 @@ const ProductContent = ({ item, setStorageItems, currentPoints, setCurrentPoints
         },
         body: JSON.stringify(requestBody),
       });
-
-      console.log('응답 상태 드:', response.status);
-
       const responseBody = await response.text();
-      console.log('응답 본문:', responseBody);
 
       if (response.ok) {
         const responseBodyGet = JSON.parse(responseBody);
         const responseBodyGetPoint = responseBodyGet.point
-        console.log("으흐흐 : ", responseBodyGetPoint);
 
         setRemainingPoints(responseBodyGetPoint);  // 남은 포인트 업데이트
         const stringResponseBodyGetPoint = responseBodyGetPoint.toString();
@@ -85,9 +77,6 @@ const ProductContent = ({ item, setStorageItems, currentPoints, setCurrentPoints
 
         const formattedDate = `${year}-${month}-${day} ${hour}:${minute}`;
 
-        console.log("년도 : ", year);
-        console.log("시간 : ", formattedDate);
-
         // 구매한 아이템을 저장소에 추가하는 API 호출
         const itemimage = storageItems[item.id - 1].image;
 
@@ -102,8 +91,6 @@ const ProductContent = ({ item, setStorageItems, currentPoints, setCurrentPoints
           }], // 구매한 상품의 이름을 배열로 전달 (배열로 전달)
         };
 
-        console.log('저장소 요청 본문:', storageRequestBody);
-
         const storageResponse = await fetch('http://localhost:8080/Tripting/storage/add', {
           method: 'POST',
           headers: {
@@ -111,13 +98,6 @@ const ProductContent = ({ item, setStorageItems, currentPoints, setCurrentPoints
           },
           body: JSON.stringify(storageRequestBody),
         });
-
-        if (storageResponse.ok) {
-          console.log('아이템이 저장소에 추가되었습니다.');
-        } else {
-          console.error('저장소에 아이템을 추가하는 데 실패했습니다.');
-          Alert.alert('오류', '저장소에 아이템을 추가하는 데 실패했습니다.');
-        }
       } else {
         Alert.alert('구매 실패', '포인트 차감에 실패했습니다.');
       }
@@ -141,7 +121,7 @@ const ProductContent = ({ item, setStorageItems, currentPoints, setCurrentPoints
       {/* 상품 정보 */}
       <Text style={styles.productName}>{item?.name || '상품명 없음'}</Text>
       <Text style={styles.productPoints}>필요 포인트: {item?.points || 0}</Text>
-      <Text style={styles.userPoints}>현재 포인트: {remainingPoints}</Text>
+      <Text style={styles.userPoints}>현재 포인트: {remainingPoints || currentPoints}</Text>
 
       {/* 구매 버튼 */}
       <TouchableOpacity style={styles.purchaseButton} onPress={handlePurchase}>
@@ -201,22 +181,33 @@ const ProductScreen = ({ route, navigation, storageItems, setStorageItems, curre
         </TouchableOpacity>
       </View>
 
-      <ProductContent
-        item={item}
-        setStorageItems={setStorageItems}
-        currentPoints={currentPoints}
-        setCurrentPoints={setCurrentPoints}
-        navigation={navigation}
-      />
+      <View style={commonStyles.centerContent}>
+        <ProductContent
+          item={item}
+          setStorageItems={setStorageItems}
+          currentPoints={currentPoints}
+          setCurrentPoints={setCurrentPoints}
+          navigation={navigation}
+        />
+      </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1, // 전체 화면을 차지
+  },
+  centerContent: {
+    flex: 1, // 남은 공간을 차지
+    justifyContent: 'center', // 세로 중앙 정렬
+    alignItems: 'center', // 가로 중앙 정렬
+    paddingHorizontal: 20, // 좌우 여백을 추가할 수 있음
+  },
   content: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'space-between',
+    justifyContent: 'Spacebetween',
     paddingHorizontal: 26,
   },
   header: {

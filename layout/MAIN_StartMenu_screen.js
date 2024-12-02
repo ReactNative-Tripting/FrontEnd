@@ -184,9 +184,9 @@ const StartMenuScreen = ({ navigation }) => {
 		<View style={commonStyles.container}>
 			{/* Header */}
 			<View style={commonStyles.header}>
-				<Icon name="menu" size={24} color="black" />
+				<Icon size={24} color="black" />
 				<Text style={commonStyles.headerTitle}>일정 선택</Text>
-				<Icon name="search" size={24} color="black" />
+				<Icon size={24} color="black" />
 			</View>
 
 			{/* Menu Items */}

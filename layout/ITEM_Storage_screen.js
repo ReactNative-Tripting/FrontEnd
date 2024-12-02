@@ -27,7 +27,6 @@ const StorageScreen = ({ navigation }) => {
 
   const getStorageItems = async () => {
     const getUserId = await AsyncStorage.getItem('userId');
-    console.log("유저ID:", getUserId);
     const storageResponse = await fetch('http://localhost:8080/Tripting/storage/select', {
       method: 'POST',
       headers: {
@@ -38,8 +37,15 @@ const StorageScreen = ({ navigation }) => {
 
     if(storageResponse.ok) {
       const data = await storageResponse.json();
-      console.log("가져온 것 : ", data);
-      setStorageItemList(data);
+      const getData = data.map((da, index) => ({
+        date: da.date,
+        id: da.id,
+        image: da.image,
+        name: da.name,
+        point: da.point,
+        sid: index.toString(),
+      }));
+      setStorageItemList(getData);
     } else {
       console.log("요청 실패");
     }
@@ -76,7 +82,7 @@ const StorageScreen = ({ navigation }) => {
       <FlatList
         data={storageItemList}
         renderItem={renderItem}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item.sid}
         numColumns={2}
         contentContainerStyle={styles.productList}
       />

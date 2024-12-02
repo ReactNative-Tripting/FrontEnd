@@ -11,8 +11,6 @@ const MissionDetail = () => {
   const route = useRoute();
   const navigation = useNavigation();
   const { missionname, sendMissionList } = route.params;
-  const mission = sendMissionList[0].title;
-  console.log("미션 이름 : ", mission);
   const [imageUri, setImageUri] = useState(null);
   const [imageFile, setImageFile] = useState(null);
 
@@ -69,7 +67,7 @@ const MissionDetail = () => {
         "Prediction-Key": apiKey,
       };
 
-      if (mission && sendMissionList[0].description.includes('영수증')) {
+      if (sendMissionList[0].description && sendMissionList[0].description.includes('영수증')) {
         endpoint = computerVisionEndpoint;
         apiKey = computerVisionApiKey;
         headers = {
@@ -126,25 +124,16 @@ const MissionDetail = () => {
     }
   };
 
-  if (!mission) {
-    return (
-      <View style={commonStyles.container}>
-        <Text>로딩 중...</Text>
-      </View>
-    );
-  }
-
   return (
     <KeyboardAvoidingView style={commonStyles.container} behavior="padding">
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <View style={commonStyles.header}>
           <Icon name="arrow-back" size={24} color="black" onPress={() => navigation.goBack()} />
           <Text style={commonStyles.headerTitle}>미션 세부 정보</Text>
-          <Icon name="" size={24} />
+          <Icon size={24} />
         </View>
         <View style={styles.missionInfo}>
-          <Text style={styles.title}>{mission}</Text>
-          <Text style={styles.missionDescription}>{mission.description}</Text>
+          <Text style={styles.title}>{sendMissionList[0].description}</Text>
         </View>
         <View style={styles.photoSection}>
           <View style={styles.buttonContainer}>

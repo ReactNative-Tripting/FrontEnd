@@ -1,11 +1,13 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Animated, Dimensions, Image, ScrollView} from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Animated, Dimensions, Image, navigation, ScrollView} from 'react-native';
 import KakaoMapsAPI from './API_KakaoMapsAPI';
 import { WebView } from 'react-native-webview';
+import { useNavigation } from '@react-navigation/native';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function HealingScreen() {
+  const navigation = useNavigation();
   const [selectedTab, setSelectedTab] = useState('힐링');
   const [checkedItems, setCheckedItems] = useState([false, false, false, false]);
   const [isPanelVisible, setIsPanelVisible] = useState(false); // 패널 상태
@@ -23,7 +25,6 @@ export default function HealingScreen() {
     });
 
     const data = await routesResponse.json();
-    console.log("가져온 것 : ", data);
     setRoutesList(data);
   }
 
@@ -85,7 +86,10 @@ export default function HealingScreen() {
 
         {/* 힐링 탭 */}
         <View style={styles.tabsContainerSingle}>
-          <TouchableOpacity style={styles.tabButtonSingle} onPress={handleConfirm}>
+          <TouchableOpacity style={styles.tabButtonSingle} onPress={() => {
+            handleConfirm();
+            navigation.replace('Mission');
+          }}>
             <Text style={styles.tabTextSingle}>힐링 일정 시작</Text>
           </TouchableOpacity>
         </View>

@@ -84,7 +84,7 @@ export default function SignUpScreen({ navigation }) {
 
   const earnWelcomePoints = async (userId) => {
     try {
-      const response = await fetch('http://localhost:8080/point/earn', {
+      const response = await fetch('http://localhost:8080/Tripting/point/earn', {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',

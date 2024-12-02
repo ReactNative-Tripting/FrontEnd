@@ -14,7 +14,6 @@ const MissionScreen = ({ navigation }) => {
     try {
       const storedMissions = await AsyncStorage.getItem('missions');
       const parsedMissions = storedMissions ? JSON.parse(storedMissions) : [];
-      console.log('AsyncStorage에 저장된 미션:', parsedMissions);  // 로드된 미션 출력
       setMissions(parsedMissions);
     } catch (error) {
       console.error('미션 로드 중 오류:', error);
@@ -73,9 +72,13 @@ const MissionScreen = ({ navigation }) => {
     <View style={commonStyles.container}>
       {/* 헤더 */}
       <View style={commonStyles.header}>
-        <Icon name="menu" size={24} color="black" />
+        <TouchableOpacity>
+          <Icon size={28} color="black" />
+        </TouchableOpacity>
         <Text style={commonStyles.headerTitle}>미션</Text>
-        <Icon name="search" size={24} color="black" />
+        <TouchableOpacity>
+          <Icon size={28} color="black" />
+        </TouchableOpacity>
       </View>
 
       {/* 미션 리스트 */}
@@ -90,7 +93,7 @@ const MissionScreen = ({ navigation }) => {
             <TouchableOpacity
               key={mission.id}
               style={commonStyles.missionItem}
-              onPress={() => navigation.navigate('MissionSelect', { missionname: mission.name })}
+              onPress={() => navigation.navigate('MissionSelect', { missionname: mission })}
             >
               <View style={commonStyles.missionLabelContainer}>
                 {/* 미션 제목을 mission.title로 출력 */}
