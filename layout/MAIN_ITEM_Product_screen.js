@@ -47,7 +47,7 @@ const ProductContent = ({ item, setStorageItems, currentPoints, setCurrentPoints
     };
 
     try {
-      const response = await fetch('http://localhost:8080/Tripting/point/use', {
+      const response = await fetch('http://tripting.kro.kr/Tripting/point/use', {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -91,7 +91,7 @@ const ProductContent = ({ item, setStorageItems, currentPoints, setCurrentPoints
           }], // 구매한 상품의 이름을 배열로 전달 (배열로 전달)
         };
 
-        const storageResponse = await fetch('http://localhost:8080/Tripting/storage/add', {
+        const storageResponse = await fetch('http://tripting.kro.kr/Tripting/storage/add', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

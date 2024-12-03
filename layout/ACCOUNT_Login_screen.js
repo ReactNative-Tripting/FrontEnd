@@ -12,7 +12,7 @@ export default function LoginScreen() {
   const navigation = useNavigation();
 
   const getEvent = async () => {
-    const responseAPI = await fetch('http://localhost:8080/Tripting/events/eventinfo', {
+    const responseAPI = await fetch('http://tripting.kro.kr/Tripting/events/eventinfo', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -28,7 +28,7 @@ export default function LoginScreen() {
 
   const handleLogin = async () => {
     try {
-      const response = await fetch('http://localhost:8080/Tripting/users/login', {
+      const response = await fetch('http://tripting.kro.kr/Tripting/users/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -59,7 +59,7 @@ export default function LoginScreen() {
           await AsyncStorage.setItem('userCredentialsNonExpired', JSON.stringify(user.credentialsNonExpired)); // 자격증명 만료 여부
           await AsyncStorage.setItem('userEnabled', JSON.stringify(user.enabled)); // 계정 활성화 여부
           //get point
-          const pointResponse = await fetch(`http://localhost:8080/Tripting/point/userid/${userId}/point`);
+          const pointResponse = await fetch(`http://tripting.kro.kr/Tripting/point/userid/${userId}/point`);
           if (pointResponse.ok) {
             const data = await pointResponse.text(); // 응답 본문은 문자열 형태로 받음
             const parsedPoints = Number(data) || 0; // 숫자로 변환

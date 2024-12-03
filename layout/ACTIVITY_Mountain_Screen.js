@@ -20,7 +20,7 @@ export default function HealingScreen() {
   }, []);
 
   const getRoutes = async () => {
-    const routesResponse = await fetch('http://localhost:8080/Tripting/routes/type?type=mountain', {
+    const routesResponse = await fetch('http://tripting.kro.kr/Tripting/routes/type?type=mountain', {
       method: 'GET',
     });
 

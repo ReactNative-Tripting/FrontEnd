@@ -16,7 +16,6 @@ const MissionScreen = ({ navigation }) => {
     const loadMissions = async () => {
       try {
         const storedMissions = await AsyncStorage.getItem('missions');
-        console.log("미션 스크린 받는 미션 : ", storedMissions);
         const parsedMissions = storedMissions ? JSON.parse(storedMissions) : [];
         setMissions(parsedMissions);
       } catch (error) {

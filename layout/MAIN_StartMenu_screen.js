@@ -63,7 +63,7 @@ const StartMenuScreen = ({ navigation }) => {
   // 개인 방 생성 버튼 처리 (백엔드 호출)
   const handleCreateIndividualRoom = async () => {
 	try {
-	  const response = await fetch('http://localhost:8080/Tripting/rooms/create', {
+	  const response = await fetch('http://tripting.kro.kr/Tripting/rooms/create', {
 		method: 'POST',
 		headers: {
 		  'Content-Type': 'application/json',
@@ -100,7 +100,7 @@ const StartMenuScreen = ({ navigation }) => {
   // 팀 방 생성 버튼 처리 (백엔드 호출)
   const handleCreateTeamRoom = async () => {
     try {
-      const response = await fetch('http://localhost:8080/Tripting/rooms/create', {
+      const response = await fetch('http://tripting.kro.kr/Tripting/rooms/create', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -142,7 +142,7 @@ const StartMenuScreen = ({ navigation }) => {
     }
 
     try {
-      const response = await fetch('http://localhost:8080/Tripting/rooms/join', {
+      const response = await fetch('http://tripting.kro.kr/Tripting/rooms/join', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

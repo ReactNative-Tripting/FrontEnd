@@ -6,13 +6,14 @@ import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import commonStyles from './components/Style';
 import axios from 'axios';
+import ImageResizer from 'react-native-image-resizer';
+import stringSimilarity from 'string-similarity';
 
 const MissionDetail = () => {
   const route = useRoute();
   const { missionname, sendMissionList } = route.params;
   const mission = sendMissionList[0].description;
   const navigation = useNavigation();
-  console.log("missionname : ", missionname);
   const missionId = missionname.id;
   const [imageUri, setImageUri] = useState(null);
   const [imageFile, setImageFile] = useState(null);
@@ -52,25 +53,43 @@ const MissionDetail = () => {
     );
   };
 
+  const preprocessImage = async (uri) => {
+    try{
+      const resizedImage = await ImageResizer.createResizedImage(
+        uri,
+        1000, // 너비
+        1000, // 높이
+        'JPEG', // 형식
+        100 // 품질
+      );
+
+      return resizedImage.uri;
+    } catch (error) {
+      console.error("이미지 전처리 오류 : ", error);
+      return uri;
+    }
+  };
+
   const handleChoosePhoto = () => {
-    launchImageLibrary({ mediaType: 'photo' }, (response) => {
+    launchImageLibrary({ mediaType: 'photo' }, async (response) => {
       if (response.didCancel) {
         Alert.alert('알림', '사진 선택이 취소되었습니다.');
       } else if (response.errorCode) {
         Alert.alert('오류', `사진 선택 중 오류가 발생했습니다: ${response.errorMessage}`);
       } else if (response.assets) {
-        setImageUri(response.assets[0].uri);
+        const processedUri = await preprocessImage(response.assets[0].uri);
+        setImageUri(processedUri);
         setImageFile({
-          uri: response.assets[0].uri,
-          name: response.assets[0].fileName || "photo.jpg",
-          type: response.assets[0].type || "image/jpeg",
+          uri: processedUri,
+          name: response.assets[0].fileName || 'photo.jpg',
+          type: response.assets[0].type || 'image/jpeg',
         });
       }
     });
   };
 
   const handleTakePhoto = () => {
-    launchCamera({ mediaType: 'photo' }, (response) => {
+    launchCamera({ mediaType: 'photo' }, async (response) => {
       if (response.didCancel) {
         Alert.alert('알림', '사진 촬영이 취소되었습니다.');
       } else if (response.errorCode) {
@@ -119,10 +138,9 @@ const MissionDetail = () => {
             .map((word) => word.text);
 
           const missionna = sendMissionList[0].title.split("에서")[0].trim()
-          console.log("확확 : ", missionna);
-          console.log("text : ", texts);
+          const bestMatch = stringSimilarity.findBestMatch(missionna, texts);
 
-          if (texts.some(text => text.includes(sendMissionList[0].title.split("에서")[0].trim()))) {
+          if (bestMatch.bestMatch.rating > 0.55) {
             await completeMissionAndRedirect();
           } else {
             Alert.alert("미션 실패!", "다른 가게거나 사진이 잘 보이지 않습니다. 다시 시도해주세요!");
@@ -144,13 +162,9 @@ const MissionDetail = () => {
         });
 
         if (response.data && response.data.predictions) {
-          console.log("Custom Vision 응답:", response.data.predictions);
-
           const highestPrediction = response.data.predictions.reduce((prev, current) =>
             prev.probability > current.probability ? prev : current
           );
-
-          console.log("가장 높은 예측:", highestPrediction);
 
           if (highestPrediction.tagName === sendMissionList[0].area && highestPrediction.probability >= 0.8) {
             await completeMissionAndRedirect();
@@ -172,14 +186,26 @@ const MissionDetail = () => {
 
   const completeMissionAndRedirect = async () => {
     try {
+      const userId = await AsyncStorage.getItem('userId');
+      const points = await AsyncStorage.getItem('userPoints');
+      const randomPoint = Math.floor(Math.random() * (10000 - 500 + 1)) + 500;
+      const sumPoint = parseInt(points) + parseInt(randomPoint);
+      await AsyncStorage.setItem('userPoints', sumPoint.toString());
+      const pointResponse = await fetch('http://tripting.kro.kr/Tripting/point/earn', {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userId: userId,
+          point: randomPoint,
+        }),
+      });
       const storedMissions = await AsyncStorage.getItem('missions');
       const parsedMissions = storedMissions ? JSON.parse(storedMissions) : [];
       const updatedMissions = parsedMissions.filter((m) => m.id !== missionId);
-      console.log("storedMissions : ", storedMissions);
-      console.log("parsedMissions : ", parsedMissions);
-      console.log("updatedMissions : ", updatedMissions);
       await AsyncStorage.setItem('missions', JSON.stringify(updatedMissions));
-      Alert.alert("미션 성공!", "미션이 성공적으로 완료되었습니다.");
+      Alert.alert("미션 성공!", `${randomPoint}포인트가 지급되었습니다.`);
       navigation.replace("Mission");
     } catch (error) {
       console.error('미션 처리 중 오류:', error);

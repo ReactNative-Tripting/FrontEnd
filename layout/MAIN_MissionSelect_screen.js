@@ -16,7 +16,7 @@ const MissionSelect = ({ route, navigation }) => {
   }, []);
 
   const getMissionList = async () => {
-    const missionResponse = await fetch(`http://localhost:8080/Tripting/missions/miss?type=ocr&area=${namename}`, {
+    const missionResponse = await fetch(`http://tripting.kro.kr/Tripting/missions/miss?type=ocr&area=${namename}`, {
       method: 'GET'
     });
 
@@ -24,10 +24,9 @@ const MissionSelect = ({ route, navigation }) => {
       console.log("요청 실패");
     }
     const data = await missionResponse.json();
-    console.log("가져온 것 : ", data);
     setMissionList(data);
 
-    const missionResponse2 = await fetch(`http://localhost:8080/Tripting/missions/miss?type=cus&area=${namename}`, {
+    const missionResponse2 = await fetch(`http://tripting.kro.kr/Tripting/missions/miss?type=cus&area=${namename}`, {
       method: 'GET'
     });
 
@@ -35,7 +34,6 @@ const MissionSelect = ({ route, navigation }) => {
       console.log("요청 실패");
     }
     const data2 = await missionResponse2.json();
-    console.log("2가져온 것 : ", data2);
     setMissionList2(data2);
   }
 
@@ -56,7 +54,6 @@ const MissionSelect = ({ route, navigation }) => {
               style={styles.missionButton}
               onPress={() => {
                 const sendMissionList = missionList;
-                console.log(sendMissionList);
                 navigation.navigate('MissionDetail', { missionname, sendMissionList });
               }}
             >
@@ -66,7 +63,6 @@ const MissionSelect = ({ route, navigation }) => {
               style={styles.missionButton}
               onPress={() => {
                 const sendMissionList = missionList2;
-                console.log('확인 : ', sendMissionList);
                 navigation.navigate('MissionDetail', { missionname, sendMissionList });
               }}
             >

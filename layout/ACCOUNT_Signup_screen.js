@@ -22,11 +22,10 @@ export default function SignUpScreen({ navigation }) {
   // 아이디 중복 검사 함수
   const checkUserIdAvailability = async (userId) => {
     try {
-      const response = await fetch(`http://localhost:8080/Tripting/users/userid/${userId}/exists`);
+      const response = await fetch(`http://tripting.kro.kr/Tripting/users/userid/${userId}/exists`);
       
       if (response.ok) {
         const exists = await response.json(); // Boolean 값 직접 사용
-        console.log('UserId exists:', exists); // 응답 값 확인
         setIsUserIdValid(!exists); // 존재 여부에 따라 유효성 설정
 
         if (exists) {
@@ -49,7 +48,7 @@ export default function SignUpScreen({ navigation }) {
     if (signupData.termsAccepted && signupData.privacyAccepted) {
 
       try {
-        const response = await fetch('http://localhost:8080/Tripting/users', {
+        const response = await fetch('http://tripting.kro.kr/Tripting/users', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -82,7 +81,7 @@ export default function SignUpScreen({ navigation }) {
 
   const earnWelcomePoints = async (userId) => {
     try {
-      const response = await fetch('http://localhost:8080/Tripting/point/earn', {
+      const response = await fetch('http://tripting.kro.kr/Tripting/point/earn', {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -92,12 +91,6 @@ export default function SignUpScreen({ navigation }) {
           point: 1, // 지급할 포인트
         }),
       });
-
-      if (response.ok) {
-        console.log("포인트 지급 완료");
-      } else {
-        console.error("포인트 지급 실패");
-      }
     } catch (error) {
       console.error("포인트 지급 중 오류 발생:", error);
     }
