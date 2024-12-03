@@ -11,6 +11,18 @@ export default function LoginScreen() {
   const [password, setPassword] = useState('');
   const navigation = useNavigation();
 
+  const handleNextLogin = () => {
+    if(!userId) {
+      Alert.alert("경고, 아이디를 입력해주세요.");
+      return;
+    } else if(!password) {
+      Alert.alert("경고, 비밀번호를 입력해주세요.");
+      return;
+    } else{
+      handleLogin();
+    }
+  }
+
   const getEvent = async () => {
     const responseAPI = await fetch('http://tripting.kro.kr/Tripting/events/eventinfo', {
       method: 'GET',
@@ -77,9 +89,7 @@ export default function LoginScreen() {
           Alert.alert('로그인 실패', '서버에서 유효한 데이터를 받지 못했습니다.');
         }
       } else {
-        const error = await response.json();
-        console.log('Error Response:', error);
-        Alert.alert('로그인 실패', error.message || '아이디 또는 비밀번호를 확인하세요.');
+        Alert.alert('로그인 실패');
       }
     } catch (error) {
       console.error('Error during login:', error);
@@ -118,7 +128,7 @@ export default function LoginScreen() {
           </TouchableOpacity>
         </View>
 
-        <TouchableOpacity style={commonStyles.loginButton} onPress={handleLogin}>
+        <TouchableOpacity style={commonStyles.loginButton} onPress={handleNextLogin}>
           <Text style={commonStyles.loginText}>로그인</Text>
         </TouchableOpacity>
 
