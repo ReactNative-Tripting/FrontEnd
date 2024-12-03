@@ -12,7 +12,8 @@ const MissionDetail = () => {
   const { missionname, sendMissionList } = route.params;
   const mission = sendMissionList[0].description;
   const navigation = useNavigation();
-  const { missionId } = route.params;
+  console.log("missionname : ", missionname);
+  const missionId = missionname.id;
   const [imageUri, setImageUri] = useState(null);
   const [imageFile, setImageFile] = useState(null);
 
@@ -147,7 +148,7 @@ const MissionDetail = () => {
 
           console.log("가장 높은 예측:", highestPrediction);
 
-          if (highestPrediction.tagName === mission.title && highestPrediction.probability >= 0.8) {
+          if (highestPrediction.tagName === sendMissionList[0].area && highestPrediction.probability >= 0.8) {
             await completeMissionAndRedirect();
           } else {
             Alert.alert(
@@ -170,6 +171,9 @@ const MissionDetail = () => {
       const storedMissions = await AsyncStorage.getItem('missions');
       const parsedMissions = storedMissions ? JSON.parse(storedMissions) : [];
       const updatedMissions = parsedMissions.filter((m) => m.id !== missionId);
+      console.log("storedMissions : ", storedMissions);
+      console.log("parsedMissions : ", parsedMissions);
+      console.log("updatedMissions : ", updatedMissions);
       await AsyncStorage.setItem('missions', JSON.stringify(updatedMissions));
       Alert.alert("미션 성공!", "미션이 성공적으로 완료되었습니다.");
       navigation.replace("Mission");
