@@ -196,41 +196,51 @@ const MissionDetail = () => {
         <View style={commonStyles.header}>
           <Icon name="arrow-back" size={24} color="black" onPress={() => navigation.goBack()} />
           <Text style={commonStyles.headerTitle}>미션 세부 정보</Text>
+          <Icon name="clear" size={24} color ="white"/>
         </View>
+
+      <View style={styles.missionContainer}>
         <View style={styles.missionInfo}>
           <Text style={styles.missionDescription}>{mission.description}</Text>
         </View>
-        <View style={styles.photoSection}>
-          <Text style={styles.subtitle}>{mission}</Text>
-          <View style={styles.buttonContainer}>
-            <TouchableOpacity style={styles.button} onPress={handleChoosePhoto}>
-              <Text style={styles.buttonText}>사진 선택</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.button} onPress={handleTakePhoto}>
-              <Text style={styles.buttonText}>사진 촬영</Text>
-            </TouchableOpacity>
-          </View>
-          {imageUri && (
-            <>
-              <Image source={{ uri: imageUri }} style={styles.previewImage} />
-              <TouchableOpacity style={styles.completeButton} onPress={submitToApi}>
-                <Text style={styles.completeButtonText}>성공?실패?</Text>
+
+          <View style={styles.photoSection}>
+            <Text style={styles.subtitle}>{mission}</Text>
+            <View style={styles.buttonContainer}>
+              <TouchableOpacity style={styles.button} onPress={handleChoosePhoto}>
+                <Text style={styles.buttonText}>사진 선택</Text>
               </TouchableOpacity>
-            </>
-          )}
+              <TouchableOpacity style={styles.button} onPress={handleTakePhoto}>
+                <Text style={styles.buttonText}>사진 촬영</Text>
+              </TouchableOpacity>
+            </View>
+            {imageUri && (
+              <>
+                <Image source={{ uri: imageUri }} style={styles.previewImage} />
+                <TouchableOpacity style={styles.completeButton} onPress={submitToApi}>
+                  <Text style={styles.completeButtonText}>성공?실패?</Text>
+                </TouchableOpacity>
+              </>
+            )}
+          </View>
+          <TouchableOpacity
+            style={[styles.completeButton, styles.cancelButton]}
+            onPress={handleCancelMission}
+          >
+            <Text style={styles.completeButtonText}>미션 포기</Text>
+          </TouchableOpacity>
         </View>
-        <TouchableOpacity
-          style={[styles.completeButton, styles.cancelButton]}
-          onPress={handleCancelMission}
-        >
-          <Text style={styles.completeButtonText}>미션 포기</Text>
-        </TouchableOpacity>
       </ScrollView>
+      
     </KeyboardAvoidingView>
   );
 };
 
 const styles = StyleSheet.create({
+  missionContainer :{
+    flex:1,
+    padding :20
+  },
   missionDescription: {
     fontSize: 16,
     color: '#555',

@@ -43,9 +43,9 @@ const MissionSelect = ({ route, navigation }) => {
     <View style={commonStyles.container}>
       {/* 헤더 */}
       <View style={commonStyles.header}>
-        <Icon name="menu" size={24} color="black" />
+        <Icon name="clear" size={24} color="white" />
         <Text style={commonStyles.headerTitle}>미션</Text>
-        <Icon name="search" size={24} color="black" />
+        <Icon name="clear" size={24} color="white" />
       </View>
   
       {/* 미션 리스트 */}

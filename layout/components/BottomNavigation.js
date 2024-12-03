@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import Icons from 'react-native-vector-icons/MaterialCommunityIcons'
 import commonStyles from './Style';  // 공통 스타일 import
 import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 function BottomNavigation({ navigation }) {
   const [getEventList, setEventList] = useState(null);
@@ -27,8 +29,8 @@ function BottomNavigation({ navigation }) {
           <Text style={commonStyles.navText}>미션</Text>
         </TouchableOpacity>
         <TouchableOpacity style={commonStyles.navItem} onPress={() => navigation.replace('StartMenu')}>
-          <Icon name="add-circle-outline" size={24} color="black" />
-          <Text style={commonStyles.navText}>추가</Text>
+          <Icons name="clock-outline" size={24} color="black" />
+          <Text style={commonStyles.navText}>활동</Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={commonStyles.navItem} onPress={() => navigation.replace('Store')}>

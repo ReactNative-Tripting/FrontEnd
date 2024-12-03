@@ -4,6 +4,7 @@ import Swiper from 'react-native-swiper';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import IconAnt from 'react-native-vector-icons/AntDesign';
 import BottomNavigation from './components/BottomNavigation';
+import commonStyles from './components/Style';
 
 export default function MainScreen({ route, navigation }) {
   const eventLists = route.params.getEventList;
@@ -61,11 +62,9 @@ export default function MainScreen({ route, navigation }) {
   return (
     <View style={styles.container}>
       {/* 헤더 */}
-      <View style={styles.headerContainer}>
-        <TouchableOpacity>
-          <Icon size={28} color="black"/>
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>트립팅</Text>
+      <View style={commonStyles.header}>
+        <Icon name="clear" size={28} color="white"/>
+        <Text style={commonStyles.headerTitle}>트립팅</Text>
         <TouchableOpacity onPress={() => navigation.navigate('User')}>
           <IconAnt name="user" size={28} color="black" />
         </TouchableOpacity>
