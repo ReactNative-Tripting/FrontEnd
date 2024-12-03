@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Switch, Alert } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import commonStyles from './components/Style';  
 
 export default function LoginScreen() {
-  const [rememberMe, setRememberMe] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [userId, setUserId] = useState('');
   const [password, setPassword] = useState('');
@@ -88,173 +87,49 @@ export default function LoginScreen() {
     }
   };
 
-
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>안녕하세요.</Text>
-      <Text style={styles.subtitle}>Tripting 입니다.</Text>
-      <Text style={styles.description}>먼저 로그인이 필요합니다 :)</Text>
+    <View style={commonStyles.container}>
+      <View style={commonStyles.logintextcon}>
+        <Text style={commonStyles.logintitle}>안녕하세요.</Text>
+        <Text style={commonStyles.loginsubtitle}>Tripting 입니다.</Text>
+        <Text style={commonStyles.description}>먼저 로그인이 필요합니다 :)</Text>
+      
+        <View style={commonStyles.IdContainer}>
+          <TextInput
+            style={commonStyles.IdInput}
+            placeholder="Enter your ID"
+            placeholderTextColor="#999"
+            value={userId}
+            onChangeText={setUserId}
+          />
+        </View>
 
-      <View style={styles.IdContainer}>
-      <TextInput
-        style={styles.input}
-        placeholder="Enter your ID"
-        placeholderTextColor="#999"
-        value={userId}
-        onChangeText={setUserId}
-      />
-      </View>
+        <View style={commonStyles.passwordContainer}>
+          <TextInput
+            style={commonStyles.passwordInput}
+            placeholder="Enter your password"
+            placeholderTextColor="#999"
+            secureTextEntry={!showPassword}
+            value={password}
+            onChangeText={setPassword}
+          />
+          <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+            <Icon name="remove-red-eye" size={20} color="#000000" />
+          </TouchableOpacity>
+        </View>
 
-      <View style={styles.passwordContainer}>
-        <TextInput
-          style={styles.passwordInput}
-          placeholder="Enter your password"
-          placeholderTextColor="#999"
-          secureTextEntry={!showPassword}
-          value={password}
-          onChangeText={setPassword}
-        />
-        <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
-          <Icon name="remove-red-eye" size={20} color="#000000" />
+        <TouchableOpacity style={commonStyles.loginButton} onPress={handleLogin}>
+          <Text style={commonStyles.loginText}>로그인</Text>
         </TouchableOpacity>
+
+        {/* Navigation Links */}
+        <View style={commonStyles.linkContainer}>
+          <TouchableOpacity onPress={() => navigation.navigate('SignUp')}>
+            <Text style={commonStyles.linkText}>회원가입</Text>
+          </TouchableOpacity>
+        </View> 
+
       </View>
-
-
-
-      <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-        <Text style={styles.loginText}>로그인</Text>
-      </TouchableOpacity>
-
-      {/* Navigation Links */}
-      <View style={styles.linkContainer}>
-        <TouchableOpacity onPress={() => navigation.navigate('SignUp')}>
-          <Text style={styles.linkText}>회원가입</Text>
-        </TouchableOpacity>
-      </View>
-
-      <View style={styles.divider}></View>
     </View>
   );
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-    backgroundColor: '#fff',
-    justifyContent: 'center',
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#000',
-    marginBottom: 5,
-    textAlign: 'left',
-  },
-  subtitle: {
-    fontSize: 20,
-    color: '#000',
-    marginBottom: 10,
-    textAlign: 'left',
-  },
-  description: {
-    fontSize: 14,
-    color: '#666',
-    marginBottom: 30,
-    textAlign: 'left',
-  },
-  IdContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 25,
-    paddingHorizontal: 20,
-    paddingVertical: 12,
-    marginBottom: 10,
-  },
-  IdInput: {
-    flex: 1,
-    fontSize: 16,
-  },
-  passwordContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 25,
-    paddingHorizontal: 20,
-    paddingVertical: 12,
-    marginBottom: 10,
-  },
-  passwordInput: {
-    flex: 1,
-    fontSize: 16,
-  },
-  eyeIcon: {
-    fontSize: 18,
-    color: '#999',
-  },
-  rememberContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  rememberText: {
-    marginLeft: 10,
-    fontSize: 14,
-    color: '#666',
-  },
-  loginButton: {
-    backgroundColor: '#ADD8E6',
-    paddingVertical: 15,
-    borderRadius: 25,
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  loginText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  linkContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    marginBottom: 20,
-  },
-  linkText: {
-    fontSize: 12,
-    color: '#0066cc',
-    marginHorizontal: 10,
-  },
-  divider: {
-    borderBottomColor: '#ccc',
-    borderBottomWidth: 1,
-    marginVertical: 20,
-  },
-  quickLoginText: {
-    fontSize: 14,
-    textAlign: 'center',
-    marginBottom: 20,
-  },
-  socialButton: {
-    paddingVertical: 15,
-    borderRadius: 25,
-    alignItems: 'center',
-    marginBottom: 10,
-  },
-  kakaoButton: {
-    backgroundColor: '#fee500',
-  },
-  naverButton: {
-    backgroundColor: '#03C75A',
-  },
-  googleButton: {
-    backgroundColor: '#4285F4',
-  },
-  socialText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-});
+};

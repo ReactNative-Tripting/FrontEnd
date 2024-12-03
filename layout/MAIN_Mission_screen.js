@@ -75,11 +75,11 @@ const MissionScreen = ({ navigation }) => {
       {/* 헤더 */}
       <View style={commonStyles.header}>
         <TouchableOpacity>
-          <Icon size={28} color="black" />
+          <Icon size={28} color="white" />
         </TouchableOpacity>
         <Text style={commonStyles.headerTitle}>미션</Text>
         <TouchableOpacity>
-          <Icon size={28} color="black" />
+          <Icon size={28} color="white" />
         </TouchableOpacity>
       </View>
 

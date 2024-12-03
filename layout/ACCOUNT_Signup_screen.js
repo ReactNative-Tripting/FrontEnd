@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
-import {
-  View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Switch, ScrollView,
-} from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, Alert, Switch, ScrollView,} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import commonStyles from './components/Style';
 

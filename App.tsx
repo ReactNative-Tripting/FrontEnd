@@ -10,9 +10,6 @@ import LoginScreen from './layout/ACCOUNT_Login_screen';
 
 import SignUp from './layout/ACCOUNT_Signup_screen';
 
-import FindPw from './layout/ACCOUNT_FindPassword';
-import FindID from './layout/ACCOUNT_FindID';
-
 import Main from './layout/MAIN_Main_screen';
 import Event from './layout/MAIN_Event_screen';
 import Store from './layout/MAIN_ITEM_Store_Screen';
@@ -44,8 +41,6 @@ export default function App() {
         <Stack.Screen name="Splash" component={SplashScreen}/>
         <Stack.Screen name="Login" component={LoginScreen}/>
         <Stack.Screen name="SignUp" component={SignUp}/>
-        <Stack.Screen name="FindPw" component={FindPw}/>
-        <Stack.Screen name="FindID" component={FindID}/>
         <Stack.Screen name="Main" component={Main}/>
         <Stack.Screen name="Event" component={Event}/>
         <Stack.Screen name="Store" component={Store}/>
