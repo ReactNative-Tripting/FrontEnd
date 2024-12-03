@@ -3,6 +3,7 @@ import { View, Text, Image, FlatList, StyleSheet, TouchableOpacity } from 'react
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import BottomNavigation from './components/BottomNavigation';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import commonStyles from './components/Style';
 
 const storageItems = [
   { id: '1', name: '금위버섯', date: '~2025-12-31', image: require('./image/item1.png') },
@@ -67,12 +68,12 @@ const StorageScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       {/* Header */}
-      <View style={styles.header}>
+      <View style={commonStyles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Icon name="arrow-back" size={24} color="black" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>보관함</Text>
-        <Icon size={24} color="black" />
+        <Icon name="clear" size={24} color="white" />
       </View>
 
       {/* Title */}
