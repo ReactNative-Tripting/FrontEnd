@@ -2,14 +2,14 @@ import React from 'react';
 import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import BottomNavigation from './components/BottomNavigation';
-
+import commonStyles from './components/Style';
 export default function EventDetail({ route, navigation }) {
   // route.params로 전달된 데이터 받아오기
   const { eventData } = route.params; // MainScreen에서 전달한 eventData
 
   return (
  
-    <View style={styles.container}>
+    <View style={commonStyles.container}>
     
     <View style={styles.headerContainer}>
       <TouchableOpacity onPress={() => navigation.goBack()}>
@@ -17,7 +17,7 @@ export default function EventDetail({ route, navigation }) {
       </TouchableOpacity>
       <Text style={styles.headerTitle}>이벤트 상세</Text>
       <TouchableOpacity>
-        <Icon  size={28} color="black" />
+        <Icon name="clear" size={28} color="white" />
       </TouchableOpacity>
     </View>
 

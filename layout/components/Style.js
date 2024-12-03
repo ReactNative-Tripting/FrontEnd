@@ -4,7 +4,8 @@ const commonStyles = StyleSheet.create({
   //모든 화면에 사용될 컴포넌트 스타일.
   container: {
     flex: 1,
-    backgroundColor: '#fff', //배경 색상
+    backgroundColor: '#fff',
+    justifyContent: 'center',
   },
   scrollContainer: {
     flexGrow: 1,
@@ -19,12 +20,150 @@ const commonStyles = StyleSheet.create({
     alignItems: 'center',
     borderBottomWidth: 1,
     borderBottomColor: '#ddd',
+
   },
   headerTitle: {
     fontSize: 18,
     fontWeight: 'bold',
   },
+  //프로필 페이지
+  profilecontainer:{
+    flex:1,
+    paddingHorizontal: 16,
+  },
+  userInfoContainer: {
+    alignItems: 'center',
+    marginTop: 20,
+  },
+  userName: {
+    fontSize: 22,
+    fontWeight: '600',
+    color: '#333',
+  },
+  userId: {
+    fontSize: 16,
+    color: '#555',
+    marginTop: 8,
+  },
+  userEmail: {
+    fontSize: 16,
+    color: '#555',
+    marginTop: 8,
+  },
+  profileuserPoints: {
+    fontSize: 16,
+    color: '#555',
+    marginTop: 8,
+  },
+  profilestorageButton: {
+    marginTop: 20,
+    backgroundColor: '#2196F3',
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 5,
+    alignItems: 'center',
+  },
+  profilestorageButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  profilefooter: {
+    position: 'absolute',
+    bottom: 20,
+    left: 16,
+    right: 16,
+  },
+  profilelogoutButton: {
+    backgroundColor: '#FF5733',
+    padding: 15,
+    borderRadius: 8,
+    alignItems: 'center',
+  },
+  profilelogoutButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
 
+  //로그인 페이지
+  logintextcon:{
+    padding: 20,
+  },
+  logintitle: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: '#000',
+    marginBottom: 5,
+    textAlign: 'left',
+  },
+  loginsubtitle: {
+    fontSize: 20,
+    color: '#000',
+    marginBottom: 10,
+    textAlign: 'left',
+  },
+  IdContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 25,
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    marginBottom: 10,
+  },
+  IdInput: {
+    flex: 1,
+    fontSize: 16,
+  },
+  passwordContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 25,
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    marginBottom: 10,
+  },
+  passwordInput: {
+    flex: 1,
+    fontSize: 16,
+  },
+  eyeIcon: {
+    fontSize: 18,
+    color: '#999',
+  },
+
+  loginButton: {
+    backgroundColor: '#ADD8E6',
+    paddingVertical: 15,
+    borderRadius: 25,
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  loginText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  linkContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginBottom: 20,
+  },
+  linkText: {
+    fontSize: 12,
+    color: '#0066cc',
+    marginHorizontal: 10,
+  },
+  divider: {
+    borderBottomColor: '#ccc',
+    borderBottomWidth: 1,
+    marginVertical: 20,
+  },
+ 
   //메인페이지에서 사용되는 스타일.
   bannerContainer: {
     padding: 16,
@@ -312,8 +451,9 @@ const commonStyles = StyleSheet.create({
   },
   description: {
     fontSize: 16,
-    color: '#000000',
+    color: '#666',
     marginBottom: 30,
+    textAlign: 'left',
   },
   label: {
     fontSize: 16,
