@@ -4,7 +4,6 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import BottomNavigation from './components/BottomNavigation';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import commonStyles from './components/Style';
-
 const storageItems = [
   { id: '1', name: '금위버섯', date: '~2025-12-31', image: require('./image/item1.png') },
   { id: '2', name: '배', date: '~2025-12-31', image: require('./image/item2.png') },
@@ -66,13 +65,13 @@ const StorageScreen = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={commonStyles.container}>
       {/* Header */}
       <View style={commonStyles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Icon name="arrow-back" size={24} color="black" />
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>보관함</Text>
+        <Text style={commonStyles.headerTitle}>보관함</Text>
         <Icon name="clear" size={24} color="white" />
       </View>
 
@@ -95,23 +94,8 @@ const StorageScreen = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#FFFFFF',
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 16,
-    paddingVertical: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#E0E0E0',
-  },
-  headerTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
+ 
+ 
   title: {
     fontSize: 24,
     fontWeight: 'bold',

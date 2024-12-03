@@ -69,14 +69,14 @@ const UserProfileScreen = ({ navigation }) => {
       </View>
 
       {/* Button to Storage */}
-      <TouchableOpacity style={styles.storageButton} onPress={() => navigation.navigate('Storage')}>
-        <Text style={styles.storageButtonText}>보관함으로 이동</Text>
+      <TouchableOpacity style={commonStyles.storageButton} onPress={() => navigation.navigate('Storage')}>
+        <Text style={commonStyles.storageButtonText}>보관함으로 이동</Text>
       </TouchableOpacity>
 
       {/* Logout Button at the Bottom */}
-      <View style={styles .footer}>
-        <TouchableOpacity style={styles.logoutButton} onPress={() => navigation.replace('Login')}>
-          <Text style={styles.logoutButtonText}>Logout</Text>
+      <View style={commonStyles.footer}>
+        <TouchableOpacity style={commonStyles.logoutButton} onPress={() => navigation.replace('Login')}>
+          <Text style={commonStyles.logoutButtonText}>Logout</Text>
         </TouchableOpacity>
       
         </View>
@@ -84,40 +84,5 @@ const UserProfileScreen = ({ navigation }) => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-
-
-  storageButton: {
-    marginTop: 20,
-    backgroundColor: '#2196F3',
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-    borderRadius: 5,
-    alignItems: 'center',
-  },
-  storageButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  footer: {
-    position: 'absolute',
-    bottom: 20,
-    left: 16,
-    right: 16,
-  },
-  logoutButton: {
-    backgroundColor: '#FF5733',
-    padding: 15,
-    borderRadius: 8,
-    alignItems: 'center',
-  },
-  logoutButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-});
 
 export default UserProfileScreen;

@@ -20,12 +20,12 @@ const commonStyles = StyleSheet.create({
     alignItems: 'center',
     borderBottomWidth: 1,
     borderBottomColor: '#ddd',
-
   },
   headerTitle: {
     fontSize: 18,
     fontWeight: 'bold',
   },
+
   //프로필 페이지
   profilecontainer:{
     flex:1,
@@ -50,12 +50,12 @@ const commonStyles = StyleSheet.create({
     color: '#555',
     marginTop: 8,
   },
-  profileuserPoints: {
+  userPoints: {
     fontSize: 16,
     color: '#555',
     marginTop: 8,
   },
-  profilestorageButton: {
+  storageButton: {
     marginTop: 20,
     backgroundColor: '#2196F3',
     paddingVertical: 12,
@@ -63,24 +63,24 @@ const commonStyles = StyleSheet.create({
     borderRadius: 5,
     alignItems: 'center',
   },
-  profilestorageButtonText: {
+  storageButtonText: {
     color: '#fff',
     fontSize: 16,
     fontWeight: 'bold',
   },
-  profilefooter: {
+  footer: {
     position: 'absolute',
     bottom: 20,
     left: 16,
     right: 16,
   },
-  profilelogoutButton: {
+  logoutButton: {
     backgroundColor: '#FF5733',
     padding: 15,
     borderRadius: 8,
     alignItems: 'center',
   },
-  profilelogoutButtonText: {
+  logoutButtonText: {
     color: '#fff',
     fontSize: 16,
     fontWeight: 'bold',
@@ -203,61 +203,6 @@ const commonStyles = StyleSheet.create({
     fontWeight: 'bold',
   },
 
-  //이벤트 페이지에서 사용되는 스타일.
-  eventList: {
-    paddingHorizontal: 16,
-  },
-  eventCard: {
-    width: 120,
-    marginRight: 10,
-  },
-  eventImage: {
-    width: '100%',
-    height: 80,
-    borderRadius: 8,
-  },
-  eventImage: {
-    width: 100,
-    height: 80,
-    borderRadius: 8,
-    marginRight: 10,
-  },
-  eventDescription: {
-    flex: 2,
-  },
-  eventText: {
-    fontSize: 12,
-    textAlign: 'center',
-    marginTop: 5,
-  },
-  eventTextTitle: {
-    fontSize: 14,
-    fontWeight: 'bold',
-  },
-  eventTextDetail: {
-    fontSize: 12,
-    color: '#555',
-    marginTop: 4,
-  },
-  calendar: {
-    marginVertical: 16,
-  },
-  scheduleList: {
-    paddingHorizontal: 16,
-  },
-  scheduleItem: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingVertical: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
-    alignItems: 'center',
-  },
-  scheduleText: {
-    fontSize: 14,
-    color: '#333',
-  },
-
   //상점 페이지에서 사용되는 스타일.
   filters: {
     flexDirection: 'row',
@@ -281,10 +226,10 @@ const commonStyles = StyleSheet.create({
     padding: 16,
   },
   centerContent: {
-    flex: 1, // 헤더 아래의 나머지 공간을 차지
-    justifyContent: 'center', // 세로 중앙 정렬
-    alignItems: 'center', // 가로 중앙 정렬
-    paddingHorizontal: 20, // 좌우 여백을 추가할 수 있음
+    flex: 1, 
+    justifyContent: 'center', 
+    alignItems: 'center', 
+    paddingHorizontal: 20,
   },
   itemContainer: {
     flex: 1,
@@ -313,7 +258,7 @@ const commonStyles = StyleSheet.create({
 
   },
 
-  //스타트 메뉴 페이지에서 사용되는 스타일.
+  //스타트 메뉴 페이지
   menuContainer: {
 		flex: 1,
 		paddingHorizontal: 15,
@@ -380,7 +325,7 @@ const commonStyles = StyleSheet.create({
 		fontSize: 16,
 	},
 
-  //미션 페이지에서 사용되는 스타일.
+  //미션 페이지
   missionItem: {
     padding: 16,
     marginVertical: 8,
@@ -393,14 +338,14 @@ const commonStyles = StyleSheet.create({
     color: '#000000',
   },
   missionLabelContainer: {
-    backgroundColor: '#B3E5FC',  // 라벨 배경색
+    backgroundColor: '#B3E5FC',  
     borderRadius: 8,
     padding: 16,
-    alignItems: 'center',  // 텍스트를 중앙 정렬
-    justifyContent: 'center',  // 세로 중앙 정렬
+    alignItems: 'center',  
+    justifyContent: 'center',
   },
   
-  // 하단 네비게이션 페이지에서 사용되는 스타일.
+  // 하단 네비게이션 페이지
   bottomNav: {
     flexDirection: 'row',
     justifyContent: 'space-around',
@@ -411,7 +356,7 @@ const commonStyles = StyleSheet.create({
   },
   bottomNavContainer: {
     flex: 1,
-    justifyContent: 'flex-end', //하단에 붙게끔 설정.
+    justifyContent: 'flex-end',
   },
   iconStyle: {
     size: 28,
@@ -420,11 +365,12 @@ const commonStyles = StyleSheet.create({
   navText: {
     fontSize: 10,
     marginTop: 4,
-    color: '#333', // 텍스트 색상
+    color: '#333', 
   },
   navItem: {
     alignItems: 'center',
   },
+
   //회원가입
   navBar: {
     flexDirection: 'row',
