@@ -4,21 +4,27 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import commonStyles from './components/Style';
 import BottomNavigation from './components/BottomNavigation';
+import { useFocusEffect } from '@react-navigation/native';
 
 const MissionScreen = ({ navigation }) => {
   const [missions, setMissions] = useState([]);
   const [newMissionLabel, setNewMissionLabel] = useState('');  // 추가할 미션 이름을 위한 상태
 
   // AsyncStorage에서 미션 데이터 로드
-  const loadMissions = async () => {
-    try {
-      const storedMissions = await AsyncStorage.getItem('missions');
-      const parsedMissions = storedMissions ? JSON.parse(storedMissions) : [];
-      setMissions(parsedMissions);
-    } catch (error) {
-      console.error('미션 로드 중 오류:', error);
-    }
-  };
+
+  useEffect(() => {
+    const loadMissions = async () => {
+      try {
+        const storedMissions = await AsyncStorage.getItem('missions');
+        console.log("미션 스크린 받는 미션 : ", storedMissions);
+        const parsedMissions = storedMissions ? JSON.parse(storedMissions) : [];
+        setMissions(parsedMissions);
+      } catch (error) {
+        console.error('미션 로드 중 오류:', error);
+      }
+    };
+    loadMissions();
+  }, []);
 
   // 미션 초기 데이터 저장 (처음 실행 시)
   const initializeMissions = async () => {
@@ -63,10 +69,6 @@ const MissionScreen = ({ navigation }) => {
       console.error('미션 추가 중 오류:', error);
     }
   };
-
-  useEffect(() => {
-    loadMissions();  // 컴포넌트가 마운트될 때 미션 데이터 로드
-  }, []);
 
   return (
     <View style={commonStyles.container}>

@@ -49,7 +49,7 @@ export default function SignUpScreen({ navigation }) {
 
   const handleSubmit = async () => {
     if (signupData.termsAccepted && signupData.privacyAccepted) {
-      // 회원가입 데이터 API로 전송
+
       try {
         const response = await fetch('http://localhost:8080/Tripting/users', {
           method: 'POST',
