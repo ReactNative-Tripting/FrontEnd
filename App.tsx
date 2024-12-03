@@ -11,7 +11,6 @@ import LoginScreen from './layout/ACCOUNT_Login_screen';
 import SignUp from './layout/ACCOUNT_Signup_screen';
 
 import Main from './layout/MAIN_Main_screen';
-import Event from './layout/MAIN_Event_screen';
 import Store from './layout/MAIN_ITEM_Store_Screen';
 import Product from './layout/MAIN_ITEM_Product_screen';
 import Storage from './layout/ITEM_Storage_screen'
@@ -42,7 +41,6 @@ export default function App() {
         <Stack.Screen name="Login" component={LoginScreen}/>
         <Stack.Screen name="SignUp" component={SignUp}/>
         <Stack.Screen name="Main" component={Main}/>
-        <Stack.Screen name="Event" component={Event}/>
         <Stack.Screen name="Store" component={Store}/>
         <Stack.Screen name="Product" component={Product}/>
         <Stack.Screen name="Storage" component={Storage}/>

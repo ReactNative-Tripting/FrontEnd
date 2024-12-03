@@ -11,11 +11,11 @@ export default function EventDetail({ route, navigation }) {
  
     <View style={commonStyles.container}>
     
-    <View style={styles.headerContainer}>
+    <View style={commonStyles.header}>
       <TouchableOpacity onPress={() => navigation.goBack()}>
         <Icon name="arrow-back" size={28} color="black" />
       </TouchableOpacity>
-      <Text style={styles.headerTitle}>이벤트 상세</Text>
+      <Text style={commonStyles.headerTitle}>이벤트 상세</Text>
       <TouchableOpacity>
         <Icon name="clear" size={28} color="white" />
       </TouchableOpacity>
@@ -36,25 +36,7 @@ export default function EventDetail({ route, navigation }) {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
-  headerContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 20,
-    height: 60,
-    backgroundColor: '#fff',
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
-  },
-  headerTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#333',
-  },
+
   eventcontainer:{
     flex:1,
     padding:20
