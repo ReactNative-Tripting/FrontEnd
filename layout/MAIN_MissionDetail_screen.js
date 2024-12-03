@@ -19,8 +19,8 @@ const MissionDetail = () => {
 
   const customVisionEndpoint = "https://customvisiontripting-prediction.cognitiveservices.azure.com/customvision/v3.0/Prediction/ec56b14e-0c38-4424-95d8-fd423dff805f/classify/iterations/Iteration4/image";
   const customVisionApiKey = "4BoNZBWyOr7WlGsLIMD9WfHjjO6XLMqTJkpaTrau5c1eBAp3WOOVJQQJ99AJACYeBjFXJ3w3AAAIACOGbNIB";
-  const computerVisionEndpoint = "https://tripting003033.cognitiveservices.azure.com/vision/v3.2/ocr";
-  const computerVisionApiKey = "FiT3qKeYV32sXVEzJzOBvLb9TB1DhHEr0FkQU8V48bkqzu9GPBixJQQJ99ALACYeBjFXJ3w3AAAFACOGvqCc";
+  const computerVisionEndpoint = "https://tripting241018.cognitiveservices.azure.com/vision/v3.2/ocr";
+  const computerVisionApiKey = "FM40SSr87cSKWHzaxziKTBr5D40hbkyvYDURsWAFERdCL99nVu21JQQJ99ALACNns7RXJ3w3AAAFACOG69sJ";
 
   const handleCancelMission = async () => {
     Alert.alert(
@@ -118,7 +118,11 @@ const MissionDetail = () => {
             .flatMap((line) => line.words)
             .map((word) => word.text);
 
-          if (texts.some(text => text.includes(mission.title.split("에서")[0].trim()))) {
+          const missionna = sendMissionList[0].title.split("에서")[0].trim()
+          console.log("확확 : ", missionna);
+          console.log("text : ", texts);
+
+          if (texts.some(text => text.includes(sendMissionList[0].title.split("에서")[0].trim()))) {
             await completeMissionAndRedirect();
           } else {
             Alert.alert("미션 실패!", "다른 가게거나 사진이 잘 보이지 않습니다. 다시 시도해주세요!");

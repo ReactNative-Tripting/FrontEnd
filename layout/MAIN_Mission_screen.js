@@ -95,7 +95,7 @@ const MissionScreen = ({ navigation }) => {
             <TouchableOpacity
               key={mission.id}
               style={commonStyles.missionItem}
-              onPress={() => navigation.navigate('MissionSelect', { missionname: mission })}
+              onPress={() => navigation.replace('MissionSelect', { missionname: mission })}
             >
               <View style={commonStyles.missionLabelContainer}>
                 {/* 미션 제목을 mission.title로 출력 */}
