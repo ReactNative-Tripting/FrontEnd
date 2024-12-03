@@ -30,7 +30,7 @@ const RoomScreenP = ({ route, navigation }) => {
             // 방에 입장할 때 참여자 리스트 가져오기
             const fetchParticipants = async () => {
                 try {
-                    const response = await fetch(`http://tripting.kro.kr/Tripting/rooms/list?inviteCode=${roomCode}`);
+                    const response = await fetch(`http://localhost:8080/Tripting/rooms/list?inviteCode=${roomCode}`);
                     if (response.ok) {
                         const data = await response.json();
                         setParticipants(data.members);  // 데이터에서 members 배열만 가져옴
@@ -56,7 +56,7 @@ const RoomScreenP = ({ route, navigation }) => {
 
         try {
             // 템플릿 리터럴을 사용하여 URL에 변수 삽입
-            const response = await fetch(`http://tripting.kro.kr/Tripting/rooms/exit?inviteCode=${roomCode}&userId=${userId}`, {
+            const response = await fetch(`http://localhost:8080/Tripting/rooms/exit?inviteCode=${roomCode}&userId=${userId}`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',

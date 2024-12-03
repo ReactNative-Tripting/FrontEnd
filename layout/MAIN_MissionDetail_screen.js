@@ -191,7 +191,7 @@ const MissionDetail = () => {
       const randomPoint = Math.floor(Math.random() * (10000 - 500 + 1)) + 500;
       const sumPoint = parseInt(points) + parseInt(randomPoint);
       await AsyncStorage.setItem('userPoints', sumPoint.toString());
-      const pointResponse = await fetch('http://tripting.kro.kr/Tripting/point/earn', {
+      const pointResponse = await fetch('http://localhost:8080/Tripting/point/earn', {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',

@@ -16,7 +16,7 @@ const MissionSelect = ({ route, navigation }) => {
   }, []);
 
   const getMissionList = async () => {
-    const missionResponse = await fetch(`http://tripting.kro.kr/Tripting/missions/miss?type=ocr&area=${namename}`, {
+    const missionResponse = await fetch(`http://localhost:8080/Tripting/missions/miss?type=ocr&area=${namename}`, {
       method: 'GET'
     });
 
@@ -26,7 +26,7 @@ const MissionSelect = ({ route, navigation }) => {
     const data = await missionResponse.json();
     setMissionList(data);
 
-    const missionResponse2 = await fetch(`http://tripting.kro.kr/Tripting/missions/miss?type=cus&area=${namename}`, {
+    const missionResponse2 = await fetch(`http://localhost:8080/Tripting/missions/miss?type=cus&area=${namename}`, {
       method: 'GET'
     });
 

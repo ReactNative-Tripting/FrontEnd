@@ -27,7 +27,7 @@ const StorageScreen = ({ navigation }) => {
 
   const getStorageItems = async () => {
     const getUserId = await AsyncStorage.getItem('userId');
-    const storageResponse = await fetch('http://tripting.kro.kr/Tripting/storage/select', {
+    const storageResponse = await fetch('http://localhost:8080/Tripting/storage/select', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
